@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.0</ProductVersion>
+    <ProjectGuid>{fe11e500-8edb-4833-954c-c510b6b071b8}</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>OpenVPN_UI-Setup</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <Name>Esp.Tools.OpenVPN.Installer</Name>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>
+    </DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AppData.wxi" />
+    <Content Include="Binaries.wxi" />
+    <Content Include="Dialogs.wxi" />
+    <Content Include="InstallSetup.wxi" />
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="License.rtf" />
+    <Content Include="OpenVPNUI.wxi" />
+    <Content Include="OpenVPNx64.wxi" />
+    <Content Include="OpenVPNx86.wxi" />
+    <Content Include="OpenVPN\bin\libeay32.dll" />
+    <Content Include="OpenVPN\bin\liblzo2-2.dll" />
+    <Content Include="OpenVPN\bin\libpkcs11-helper-1.dll" />
+    <Content Include="OpenVPN\bin\msvcr90.dll" />
+    <Content Include="OpenVPN\bin\openssl.exe" />
+    <Content Include="OpenVPN\bin\openvpn.exe" />
+    <Content Include="OpenVPN\bin\ssleay32.dll" />
+    <Content Include="OpenVPN\bin\tapinstall.exe" />
+    <Content Include="OpenVPN\bin\x64\libeay32.dll" />
+    <Content Include="OpenVPN\bin\x64\liblzo2-2.dll" />
+    <Content Include="OpenVPN\bin\x64\libpkcs11-helper-1.dll" />
+    <Content Include="OpenVPN\bin\x64\msvcr100.dll" />
+    <Content Include="OpenVPN\bin\x64\msvcr90.dll" />
+    <Content Include="OpenVPN\bin\x64\openssl.exe" />
+    <Content Include="OpenVPN\bin\x64\openvpn.exe" />
+    <Content Include="OpenVPN\bin\x64\ssleay32.dll" />
+    <Content Include="OpenVPN\bin\x64\tapinstall.exe" />
+    <Content Include="OpenVPN\tap-x64\OemWin2k.inf" />
+    <Content Include="OpenVPN\tap-x64\tap0901.cat" />
+    <Content Include="OpenVPN\tap-x64\tap0901.sys" />
+    <Content Include="OpenVPN\tap-x86\OemWin2k.inf" />
+    <Content Include="OpenVPN\tap-x86\tap0901.cat" />
+    <Content Include="OpenVPN\tap-x86\tap0901.sys" />
+    <Content Include="Properties.wxi" />
+    <Content Include="ServiceInstall.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="OpenVPN" />
+    <Folder Include="OpenVPN\bin" />
+    <Folder Include="OpenVPN\bin\x64\" />
+    <Folder Include="OpenVPN\tap-x64" />
+    <Folder Include="OpenVPN\tap-x86" />
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>

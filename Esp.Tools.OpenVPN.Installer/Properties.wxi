@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <Property Id="SCANENGINE_SERVICE_LOGON_TYPE"><![CDATA[CustomServiceAccount]]></Property>
+  <Property Id="SCANENGINE_SERVICE_PASSWORD"><![CDATA[ESP\BuildAgent]]></Property>
+  <Property Id="SCANENGINE_SERVICE_USERNAME"><![CDATA[]]></Property>
+
+  <Property Id="ButtonText_No"><![CDATA[&No]]></Property>
+  <Property Id="ButtonText_Install"><![CDATA[&Install]]></Property>
+  <Property Id="ButtonText_Next"><![CDATA[&Next >]]></Property>
+  <Property Id="ButtonText_IAgree"><![CDATA[I &Agree]]></Property>
+  <Property Id="Setup"><![CDATA[Setup]]></Property>
+  <Property Id="ButtonText_Browse"><![CDATA[Br&owse]]></Property>
+  <Property Id="CustomSetupIcon"><![CDATA[custicon]]></Property>
+  <Property Id="RepairIcon"><![CDATA[repairic]]></Property>
+  <Property Id="ExclamationIcon"><![CDATA[exclamic]]></Property>
+  <Property Id="ButtonText_Repair"><![CDATA[&Repair]]></Property>
+  <Property Id="ButtonText_Back"><![CDATA[< &Back]]></Property>
+  <Property Id="InstallMode"><![CDATA[Typical]]></Property>
+  <Property Id="Progress2"><![CDATA[installs]]></Property>
+  <Property Id="Progress1"><![CDATA[Installing]]></Property>
+  <Property Id="Wizard"><![CDATA[Setup Wizard]]></Property>
+  <Property Id="RemoveIcon"><![CDATA[removico]]></Property>
+  <Property Id="ButtonText_Yes"><![CDATA[&Yes]]></Property>
+  <Property Id="ButtonText_Ignore"><![CDATA[&Ignore]]></Property>
+  <Property Id="ProductID"><![CDATA[none]]></Property>
+  <Property Id="ButtonText_Reset"><![CDATA[&Reset]]></Property>
+  <Property Id="ButtonText_Remove"><![CDATA[&Remove]]></Property>
+  <Property Id="ShowUserRegistrationDlg"><![CDATA[0]]></Property>
+  <Property Id="ButtonText_Exit"><![CDATA[&Exit]]></Property>
+  <Property Id="ButtonText_Return"><![CDATA[&Return]]></Property>
+  <Property Id="ButtonText_OK"><![CDATA[OK]]></Property>
+  <Property Id="CompleteSetupIcon"><![CDATA[completi]]></Property>
+  <Property Id="ButtonText_Resume"><![CDATA[&Resume]]></Property>
+  <Property Id="InstallerIcon"><![CDATA[insticon]]></Property>
+  <Property Id="ButtonText_Finish"><![CDATA[&Finish]]></Property>
+  <Property Id="PROMPTROLLBACKCOST"><![CDATA[P]]></Property>
+  <Property Id="PIDTemplate"><![CDATA[12345<###-%%%%%%%>@@@@@]]></Property>
+  <Property Id="DlgTitleFont"><![CDATA[{&DlgFontBold8}]]></Property>
+  <Property Id="ButtonText_Cancel"><![CDATA[Cancel]]></Property>
+  <Property Id="INSTALLLEVEL"><![CDATA[3]]></Property>
+  <Property Id="InfoIcon"><![CDATA[info]]></Property>
+  <Property Id="ButtonText_Retry"><![CDATA[&Retry]]></Property>
+  <Property Id="ComponentDownload"><![CDATA[ftp://anonymous@microsoft.com/components/]]></Property>
+  <Property Id="BannerBitmap"><![CDATA[bannrbmp]]></Property>
+  <Property Id="DialogBitmap"><![CDATA[dlgbmp]]></Property>
+</Include>

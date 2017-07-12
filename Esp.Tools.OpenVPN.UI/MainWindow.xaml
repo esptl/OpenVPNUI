@@ -1,0 +1,87 @@
+﻿<Window x:Class="Esp.Tools.OpenVPN.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:UI="clr-namespace:Esp.Tools.OpenVPN.UI" 
+        Title="MainWindow" Width="430" ShowInTaskbar="False" WindowStyle="None" 
+        ResizeMode="NoResize" Loaded="Window_Loaded" Deactivated="Window_Deactivated" 
+        Name="ConWindow" AllowsTransparency="True" Topmost="True"  Background="Transparent" >
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard Name="FormFade">
+                    <DoubleAnimation  Name="FormFadeAnimation"
+                                            Storyboard.TargetName="ConWindow"
+                                            Storyboard.TargetProperty="(Window.Opacity)"
+                                            From="0.0" To="1.0" Duration="00:00:00.2000000"
+                                            AutoReverse="False" RepeatBehavior="1x"
+                                         />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="Window.Unloaded">
+            <BeginStoryboard>
+                <Storyboard Name="FormFadeOut" >
+                    <DoubleAnimation  Name="FormFadeOutAnimation"
+                                            Storyboard.TargetName="ConWindow"
+                                            Storyboard.TargetProperty="(Window.Opacity)"
+                                            From="1.0" To="0.0" Duration="0:0:0.5"
+                                            AutoReverse="False" RepeatBehavior="1x"
+                                         />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+    <Grid  Name="_border" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="1" Background="{x:Null}">
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="0"/>
+            </Grid.Effect>
+            <Border Margin="10,10,10,0" Name="mask" Background="White" BorderThickness="0" CornerRadius="5,5,0,0" />
+            <Grid Margin="10,10,10,0" Name="_content" Background="{DynamicResource ControlBackgroundBrush}" VerticalAlignment="Top" >
+                <Grid.OpacityMask>
+                    <VisualBrush Visual="{Binding ElementName=mask}"/>
+                </Grid.OpacityMask>
+
+                <Grid.Resources>
+                    <BooleanToVisibilityConverter x:Key="boolToVis" />
+                </Grid.Resources>
+
+
+                <ItemsControl Grid.Row="1" Margin="5"
+            ItemsSource="{Binding Connections, UpdateSourceTrigger=PropertyChanged}" 
+            Name="items" HorizontalAlignment="Stretch" VerticalAlignment="Top" VerticalContentAlignment="Top" IsTextSearchEnabled="False" Focusable="False" >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid  VerticalAlignment="Top" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Label Height="0" />
+
+                                <UI:AuthenticatingView Margin="5,5" Grid.Row="1" />
+                                <UI:ConnectedView Margin="5,5" Grid.Row="1" />
+                                <UI:ConnectingView Margin="5,5" Grid.Row="1" />
+                                <UI:DisconnectedView Margin="5,5" Grid.Row="1"  />
+                                <UI:ErrorView Margin="5,5" Grid.Row="1"  />
+
+                                <UI:DisconnectingView Margin="5,5" Grid.Row="1" />
+                                <UI:LogViewer Grid.Row="2" />
+                                <Separator  Margin="0" Grid.Row="2" VerticalAlignment="Bottom"/>
+                            </Grid>
+
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Grid>
+    </Grid>
+
+</Window>

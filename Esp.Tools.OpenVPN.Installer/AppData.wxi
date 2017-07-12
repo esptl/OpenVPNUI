@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <Directory Id="CommonAppDataFolder">
+    <Directory Id="RootData" Name="OpenVPN UI">
+      <Directory Id="aaaonfigKey" Name="Keys">
+      </Directory>
+      <Directory Id="aaaaonfigKey" Name="Configs">
+      </Directory>
+    </Directory>
+  </Directory>
+</Include>

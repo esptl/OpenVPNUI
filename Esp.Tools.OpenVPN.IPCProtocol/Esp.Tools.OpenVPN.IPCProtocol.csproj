@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{092F0406-8B22-4A73-8806-196720B2AC36}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Esp.Tools.OpenVPN.IPCProtocol</RootNamespace>
+    <AssemblyName>Esp.Tools.OpenVPN.IPCProtocol</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Esp.Tools.OpenVPN.IPCProtocol.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Esp.Tools.OpenVPN.IPCProtocol.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Itanium'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Itanium\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>Itanium</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Esp.Tools.OpenVPN.IPCProtocol.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Itanium'">
+    <OutputPath>bin\Itanium\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>Itanium</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Esp.Tools.OpenVPN.IPCProtocol.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Esp.Tools.OpenVPN.IPCProtocol.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Esp.Tools.OpenVPN.IPCProtocol.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseMessage.cs" />
+    <Compile Include="Configuration\Commands\Contracts\DeleteCertificateInfo.cs" />
+    <Compile Include="Configuration\Commands\Contracts\DeleteConfigurationInfo.cs" />
+    <Compile Include="Configuration\Commands\Contracts\ImportPfxInfo.cs" />
+    <Compile Include="Configuration\Commands\Contracts\InstallConfigurationInfo.cs" />
+    <Compile Include="Configuration\Commands\Contracts\SetConfigurationCertificateInfo.cs" />
+    <Compile Include="Configuration\Commands\DeleteCertificateCommand.cs" />
+    <Compile Include="Configuration\Commands\DeleteConfigurationCommand.cs" />
+    <Compile Include="Configuration\Commands\ImportPfxCommand.cs" />
+    <Compile Include="Configuration\Commands\InstallConfigurationCommand.cs" />
+    <Compile Include="Configuration\Commands\SetConfigurationCertificateCommand.cs" />
+    <Compile Include="Configuration\Messages\ConfigurationsMessage.cs" />
+    <Compile Include="Configuration\Messages\Contracts\ConfigurationsInfo.cs" />
+    <Compile Include="Contracts\ConnectionConfigurationInfo.cs" />
+    <Compile Include="Contracts\GeneralConfigurationInfo.cs" />
+    <Compile Include="Controller\Commands\Contracts\ConnectionInfoCommandInfo.cs" />
+    <Compile Include="Controller\Commands\Contracts\ConnectionStartInfo.cs" />
+    <Compile Include="Controller\Commands\Contracts\ClearLogInfo.cs" />
+    <Compile Include="Controller\Commands\Contracts\AuthInfo.cs" />
+    <Compile Include="Controller\Commands\ClearLogCommand.cs" />
+    <Compile Include="Controller\Commands\ConnectionInfoCommand.cs" />
+    <Compile Include="Controller\Commands\ConnectionStartCommand.cs" />
+    <Compile Include="Controller\Commands\ConnectionStopCommand.cs" />
+    <Compile Include="Controller\Commands\Contracts\ConnectionStopInfo.cs" />
+    <Compile Include="Configuration\Commands\Contracts\EnrollRequestInfo.cs" />
+    <Compile Include="Configuration\Commands\Contracts\GetCertificatesInfo.cs" />
+    <Compile Include="Configuration\Commands\EnrollCommand.cs" />
+    <Compile Include="Configuration\Commands\Contracts\EnrollInfo.cs" />
+    <Compile Include="Configuration\Commands\EnrollRequestCommand.cs" />
+    <Compile Include="Configuration\Commands\GetCertificatesCommand.cs" />
+    <Compile Include="Controller\Commands\SendAuthInfoCommand.cs" />
+    <Compile Include="Contracts\ConnectionError.cs" />
+    <Compile Include="Contracts\ConfigurationInfo.cs" />
+    <Compile Include="Configuration\Messages\AvailableCertificatesMessage.cs" />
+    <Compile Include="Controller\Messages\ConnectionInfoMessage.cs" />
+    <Compile Include="Controller\Messages\ConnectionOutputMessage.cs" />
+    <Compile Include="Contracts\ConnectionStatus.cs" />
+    <Compile Include="Configuration\Messages\Contracts\CertificatesInfo.cs" />
+    <Compile Include="Configuration\Messages\Contracts\EnrollRequestResponseInfo.cs" />
+    <Compile Include="Configuration\Messages\Contracts\EnrollResponseInfo.cs" />
+    <Compile Include="Controller\Messages\Contracts\InitializedInfo.cs" />
+    <Compile Include="Configuration\Messages\EnrollResponseMessage.cs" />
+    <Compile Include="Configuration\Messages\EnrollRequestResponseMessage.cs" />
+    <Compile Include="Controller\Messages\InitializedMessage.cs" />
+    <Compile Include="MessageReader.cs" />
+    <Compile Include="Controller\Messages\Contracts\RequestPasswordInfo.cs" />
+    <Compile Include="Controller\Messages\Contracts\OutputLine.cs" />
+    <Compile Include="Controller\Messages\Contracts\OutputType.cs" />
+    <Compile Include="Contracts\ShutDownInfo.cs" />
+    <Compile Include="Messages\ShutDownMessage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Controller\Messages\RequestAuthInfoMessage.cs" />
+    <Compile Include="UtilityMethods.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\SharedContracts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Esp.Tools.OpenVPN.Certificates\Esp.Tools.OpenVPN.Certificates.csproj">
+      <Project>{A6246878-4F92-4CF0-BB68-D754D8A7CDED}</Project>
+      <Name>Esp.Tools.OpenVPN.Certificates</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Esp.Tools.OpenVPN.ConnectionFile\Esp.Tools.OpenVPN.ConnectionFile.csproj">
+      <Project>{16059C68-E707-406B-A36B-E95AF78C9B7C}</Project>
+      <Name>Esp.Tools.OpenVPN.ConnectionFile</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

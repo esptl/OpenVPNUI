@@ -1,0 +1,36 @@
+﻿<Window x:Class="Esp.Tools.OpenVPN.ConnectionFile.Editor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     Title="MainWindow" Height="400" Width="600" 
+      
+        Background="Transparent" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Border Name="mask" Background="White" BorderThickness="0" CornerRadius="7" />
+
+        <Grid  Background="{DynamicResource ControlBackgroundBrush}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition />
+                <RowDefinition Height="29" />
+            </Grid.RowDefinitions>
+            <Grid  >
+                <TextBlock Margin="5"  Foreground="White"  VerticalAlignment="Center" Width="570" MouseDown="Grid_MouseDown" HorizontalAlignment="Left">OpenVPN Configuration</TextBlock>
+            </Grid>
+            <Grid  Margin="5,5,5,0" Grid.Row="1">
+                
+            </Grid>
+            <Grid Grid.Row="2" Margin="5,2,5,5" >
+                <StackPanel Orientation="Horizontal">
+                    <Button Width="90" Height="23" Command="{Binding CloseCommand}">Close</Button>
+                    <Button Width="90" Height="23" Command="{Binding CloseCommand}">Help</Button>
+                </StackPanel>
+            </Grid>
+            <Grid.OpacityMask>
+                <VisualBrush Visual="{Binding ElementName=mask}"/>
+            </Grid.OpacityMask>
+
+        </Grid>
+
+    </Grid>
+</Window>

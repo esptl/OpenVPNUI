@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="8EDA72AA-85B8-474A-B274-B688510B9D9B" Name="OpenVPN UI" Language="1033" Version="1.0.7.0" Manufacturer="ESP Technologies Ltd" UpgradeCode="DB96C5A7-589F-45D2-8E84-322474207358">
+    <Package InstallerVersion="200" Compressed="yes" />
+
+    <Media Id="1" Cabinet="OpenVPNUIInstaller.cab" EmbedCab="yes" />
+    <Upgrade Id="DB96C5A7-589F-45D2-8E84-322474207359">
+      <UpgradeVersion OnlyDetect="no" Property="PREVIOUSFOUND"       
+        Maximum="1.0.6.0" IncludeMaximum="yes" RemoveFeatures='all' />
+    </Upgrade>
+
+    <?include Dialogs.wxi ?>
+    <?include Properties.wxi ?>
+    <?include Binaries.wxi ?>
+    <?include InstallSetup.wxi ?>
+
+
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuDir" Name="OpenVPN UI"  />
+      </Directory>
+      <?include AppData.wxi ?>
+      <Directory Id="$(var.PlatformProgramFilesFolder)">
+        <Directory Id="INSTALLLOCATION" Name="OpenVPN UI">
+          <?include OpenVPNUI.wxi ?>
+          <?if $(var.Platform) = x64 ?>
+            <?include OpenVPNx64.wxi ?>
+          <?else ?>
+            <?include OpenVPNx86.wxi ?>
+          <?endif ?>
+          <?include ServiceInstall.wxi ?>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="ProductFeature" Title="OpenVPN UI" Level="1">
+      <ComponentRef Id="Main" />
+      <ComponentRef Id="Service" />
+      <?if $(var.Platform) = x64 ?>
+      <ComponentRef Id="OpenVPNTapX64"/>
+      <?else ?>
+      <ComponentRef Id="OpenVPNTapX86"/>
+      <?endif ?>
+     
+     
+      <ComponentRef Id="OpenVPNbin"/>
+    </Feature>
+  </Product>
+</Wix>
