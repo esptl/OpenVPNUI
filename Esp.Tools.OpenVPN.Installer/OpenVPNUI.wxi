@@ -40,7 +40,7 @@
 
     <File Id="Esp.Tools.OpenVPN.Certificates.dll" LongName="Esp.Tools.OpenVPN.Certificates.dll" Source="..\Esp.Tools.OpenVPN.Certificates\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Certificates.dll"/>
     <File Id="ovpncli.exe" LongName="ovpncli.exe" Source="..\Esp.Tools.OpenVPN.CLI\bin\$(var.OutputPrefix)Release\ovpncli.exe"/>
-    <!--<File Id="MakeOpenVPNConfig.exe" LongName="MakeOpenVPNConfig.exe" Source="..\MakeOpenVPNConfig\bin\$(var.OutputPrefix)Release\MakeOpenVPNConfig.exe"/>-->
+    <File Id="MakeOpenVPNConfig.exe" LongName="MakeOpenVPNConfig.exe" Source="..\MakeOpenVPNConfig\bin\$(var.OutputPrefix)Release\MakeOpenVPNConfig.exe"/>
     <File Id="Esp.Tools.OpenVPN.Client.dll" LongName="Esp.Tools.OpenVPN.Client.dll" Source="..\Esp.Tools.OpenVPN.Client\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Client.dll"/>
     <File Id="Esp.Tools.OpenVPN.Configuration.dll" LongName="Esp.Tools.OpenVPN.Configuration.dll" Source="..\Esp.Tools.OpenVPN.Configuration\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Configuration.dll"/>
     <File Id="Esp.Tools.OpenVPN.Configuration.UI.exe" LongName="Esp.Tools.OpenVPN.Configuration.UI.exe" Source="..\Esp.Tools.OpenVPN.Configuration.UI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Configuration.UI.exe"/>

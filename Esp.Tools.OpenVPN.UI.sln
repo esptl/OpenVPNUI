@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esp.Tools.OpenVPN.UI", "Esp.Tools.OpenVPN.UI\Esp.Tools.OpenVPN.UI.csproj", "{8A79B4C9-2752-4503-850D-63C252E77999}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esp.Tools.OpenVPN.Hosting", "Esp.Tools.OpenVPN.Hosting\Esp.Tools.OpenVPN.Hosting.csproj", "{4EB4A0FF-1F86-4F97-8E0B-BAD78214743A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esp.Tools.OpenVPN.ServiceHost", "Esp.Tools.OpenVPN.ServiceHost\Esp.Tools.OpenVPN.ServiceHost.csproj", "{239F956D-7DA1-4060-BC14-0D4F62B6AC5E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESP-OVPNGui", "TestApp\ESP-OVPNGui.csproj", "{0A2BB135-B66E-4C81-BA76-63BD49A1E461}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esp.Tools.OpenVPN.CLI", "Esp.Tools.OpenVPN.CLI\Esp.Tools.OpenVPN.CLI.csproj", "{9B231B8E-5D47-4988-858C-62AC042B5248}"
 EndProject
@@ -124,20 +122,6 @@ Global
 		{239F956D-7DA1-4060-BC14-0D4F62B6AC5E}.Release|x64.Build.0 = Release|x64
 		{239F956D-7DA1-4060-BC14-0D4F62B6AC5E}.Release|x86.ActiveCfg = Release|x86
 		{239F956D-7DA1-4060-BC14-0D4F62B6AC5E}.Release|x86.Build.0 = Release|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Debug|x64.ActiveCfg = Debug|x64
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Debug|x64.Build.0 = Debug|x64
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Debug|x86.ActiveCfg = Debug|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Debug|x86.Build.0 = Debug|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Release|Any CPU.ActiveCfg = Release|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Release|Mixed Platforms.Build.0 = Release|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Release|x64.ActiveCfg = Release|x64
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Release|x64.Build.0 = Release|x64
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Release|x86.ActiveCfg = Release|x86
-		{0A2BB135-B66E-4C81-BA76-63BD49A1E461}.Release|x86.Build.0 = Release|x86
 		{9B231B8E-5D47-4988-858C-62AC042B5248}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{9B231B8E-5D47-4988-858C-62AC042B5248}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{9B231B8E-5D47-4988-858C-62AC042B5248}.Debug|Mixed Platforms.Build.0 = Debug|x86
