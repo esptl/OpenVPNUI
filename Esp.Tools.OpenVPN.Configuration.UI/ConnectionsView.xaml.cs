@@ -16,12 +16,13 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
-using System.Windows.Controls;
+
+using System.Windows;
 
 namespace Esp.Tools.OpenVPN.Configuration.UI
 {
     /// <summary>
-    /// Interaction logic for ConnectionsView.xaml
+    ///     Interaction logic for ConnectionsView.xaml
     /// </summary>
     public partial class ConnectionsView
     {
@@ -30,7 +31,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
             InitializeComponent();
         }
 
-        private void _actionsButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void _actionsButton_Click(object sender, RoutedEventArgs e)
         {
             popup1.IsOpen = true;
         }

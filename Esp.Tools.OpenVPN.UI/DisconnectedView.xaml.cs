@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+
 //  This file is part of OpenVPN UI.
 //  Copyright 2011 ESP Technologies Ltd.
 //
@@ -21,7 +22,7 @@
 namespace Esp.Tools.OpenVPN.UI
 {
     /// <summary>
-    /// Interaction logic for DisconnectedView.xaml
+    ///     Interaction logic for DisconnectedView.xaml
     /// </summary>
     public partial class DisconnectedView : UserControl
     {

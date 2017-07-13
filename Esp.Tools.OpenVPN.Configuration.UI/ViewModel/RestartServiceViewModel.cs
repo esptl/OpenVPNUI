@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
 using System.Threading;
 using Esp.Tools.OpenVPN.SharedUI;
 
 namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 {
-    public class RestartServiceViewModel : ViewModelBase 
+    public class RestartServiceViewModel : ViewModelBase
     {
         private readonly IViewModelDialogs _dialogs;
-        private Thread _thread;
+
+        private string _errorText;
+
+        private string _operationText;
+        private readonly Thread _thread;
 
         public RestartServiceViewModel(IViewModelDialogs pDialogs)
         {
@@ -20,40 +21,9 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             _thread.Start();
         }
 
-        private void Run()
-        {
-            OperationText = "Finding Service.....";
-          
-            var serviceController = new ServiceController(Configuration.Current.ServiceName); 
-            
-                      
-            if (serviceController.CanStop)            
-            {
-                OperationText = "Stopping Service.....";                
-                serviceController.Stop();
-                serviceController.WaitForStatus(ServiceControllerStatus.Stopped);
-                OperationText = "Starting Service.....";                
-                serviceController.Start();
-                serviceController.WaitForStatus(ServiceControllerStatus.Running);
-                OperationText = "Done";
-                if(Completed!=null)
-                    Dispatch(()=>Completed());
-            }  else
-            {
-                OperationText = "Cannot stop service.";
-                Dispatch(()=>_dialogs.ShowError("Cannot stop service"));
-            }
-            
-
-        }
-
-        public event Action Completed;
-
-        private string _errorText;
-
         public string ErrorText
         {
-            get { return _errorText; }
+            get => _errorText;
             private set
             {
                 _errorText = value;
@@ -61,16 +31,42 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             }
         }
 
-        private string _operationText;
         public string OperationText
         {
-            get { return _operationText; }
+            get => _operationText;
             set
             {
                 _operationText = value;
-                Dispatch(()=> OnPropertyChanged("OperationText"));
-                
+                Dispatch(() => OnPropertyChanged("OperationText"));
             }
         }
+
+        private void Run()
+        {
+            OperationText = "Finding Service.....";
+
+            var serviceController = new ServiceController(Configuration.Current.ServiceName);
+
+
+            if (serviceController.CanStop)
+            {
+                OperationText = "Stopping Service.....";
+                serviceController.Stop();
+                serviceController.WaitForStatus(ServiceControllerStatus.Stopped);
+                OperationText = "Starting Service.....";
+                serviceController.Start();
+                serviceController.WaitForStatus(ServiceControllerStatus.Running);
+                OperationText = "Done";
+                if (Completed != null)
+                    Dispatch(() => Completed());
+            }
+            else
+            {
+                OperationText = "Cannot stop service.";
+                Dispatch(() => _dialogs.ShowError("Cannot stop service"));
+            }
+        }
+
+        public event Action Completed;
     }
 }

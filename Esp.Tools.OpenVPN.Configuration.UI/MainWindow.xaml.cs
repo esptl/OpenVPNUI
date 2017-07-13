@@ -9,7 +9,7 @@ using Esp.Tools.OpenVPN.SharedUI;
 namespace Esp.Tools.OpenVPN.Configuration.UI
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : DropShadowWindow
     {
@@ -23,7 +23,8 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
             {
                 if (TapDeviceManager.GetTapDevices().ToArray().Length == 0)
                     TapDeviceManager.SetupTapDevice();
-            } catch(Win32Exception we)
+            }
+            catch (Win32Exception we)
             {
                 TapDeviceManager.SetupTapDevice();
             }
@@ -32,11 +33,9 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
 
             DataContext = _viewModel;
 
-            GlassMargin = new Margins(12, 12, 105,12);
-
+            GlassMargin = new Margins(12, 12, 105, 12);
         }
 
-       
 
         private void Grid_MouseDown(object pSender, MouseButtonEventArgs pE)
         {

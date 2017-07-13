@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Runtime.Serialization;
 
 namespace Esp.Tools.OpenVPN.ConnectionFile
@@ -27,6 +28,7 @@ namespace Esp.Tools.OpenVPN.ConnectionFile
         {
             Locks = pLocks;
         }
+
         [DataMember]
         public ConnectionDefinitionFileLocks Locks { get; private set; }
 
@@ -38,6 +40,5 @@ namespace Esp.Tools.OpenVPN.ConnectionFile
 
         [DataMember]
         public ConnectionSaveLevel KeyAuthSaveLevel { get; set; }
-        
     }
 }

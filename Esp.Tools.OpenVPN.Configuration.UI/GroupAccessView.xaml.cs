@@ -16,13 +16,14 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Esp.Tools.OpenVPN.Configuration.UI
 {
     /// <summary>
-    /// Interaction logic for GroupAccessView.xaml
+    ///     Interaction logic for GroupAccessView.xaml
     /// </summary>
     public partial class GroupAccessView : UserControl
     {

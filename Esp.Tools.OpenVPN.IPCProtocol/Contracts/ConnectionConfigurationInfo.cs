@@ -15,6 +15,5 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Contracts
 
         [DataMember]
         public ConnectionSaveLevel RemoteAuthSaveLevel { get; set; }
-
     }
 }

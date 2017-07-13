@@ -27,28 +27,25 @@ namespace Esp.Tools.OpenVPN.Hosting.PowerEvents
     public class PowerEventHandlers
     {
         private readonly OpenVPNConfigurations _configurations;
-        private readonly List<OpenVPNConfiguration> _connectionsToRestart = new List<OpenVPNConfiguration>(); 
+        private readonly List<OpenVPNConfiguration> _connectionsToRestart = new List<OpenVPNConfiguration>();
 
         public PowerEventHandlers(OpenVPNConfigurations pConfigurations)
         {
             _configurations = pConfigurations;
-           
         }
 
         public void Suspend()
         {
             _connectionsToRestart.Clear();
-            foreach(var connection in _configurations)
-            {
+            foreach (var connection in _configurations)
                 if (connection.Status != ConnectionStatus.Disconnected &&
                     connection.Status != ConnectionStatus.Disconnecting)
                 {
                     connection.Disconnect(false);
                     _connectionsToRestart.Add(connection);
                 }
-            }
         }
-        
+
         public void Resume()
         {
             foreach (var connection in _connectionsToRestart)
@@ -60,19 +57,16 @@ namespace Esp.Tools.OpenVPN.Hosting.PowerEvents
                 {
                     var con = connection;
                     Action<ConnectionStatus> reconnect = null;
-                    reconnect = new Action<ConnectionStatus>(pStatus =>
+                    reconnect = pStatus =>
                     {
                         if (pStatus != ConnectionStatus.Disconnected)
                             return;
                         con.StatusChanged -= reconnect;
                         con.Connect();
-                    });
+                    };
                     connection.StatusChanged += reconnect;
                 }
             _connectionsToRestart.Clear();
-            
         }
-
-    
     }
 }

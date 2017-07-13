@@ -16,17 +16,15 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using Esp.Tools.OpenVPN.Certificates;
 using Esp.Tools.OpenVPN.Configuration;
 using Esp.Tools.OpenVPN.ConnectionFile;
-using Esp.Tools.OpenVPN.EventLog;
-using Esp.Tools.OpenVPN.IPCProtocol;
 using Esp.Tools.OpenVPN.IPCProtocol.Contracts;
 using Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages.Contracts;
 
@@ -38,44 +36,27 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
         public OpenVPNConfigurations()
         {
-            foreach (OpenVPNConfiguration co in _configs)
+            foreach (var co in _configs)
             {
-                OpenVPNConfiguration con = co;
+                var con = co;
                 con.OutputRecieved += pLine => OnOutputRecieved(con, pLine);
                 con.StatusChanged += pStatus => OnStatusChanged(con, pStatus);
                 con.InterfaceChanged += pInterface => OnInterfaceChanged(con, pInterface);
                 con.AuthInfoRequired += () => OnAuthInfoRequired(con);
             }
-            while(TapDeviceManager.GetTapDevices().ToArray().Length < _configs.Count)
+            while (TapDeviceManager.GetTapDevices().ToArray().Length < _configs.Count)
                 TapDeviceManager.SetupTapDevice();
             foreach (var config in _configs)
                 config.Deleted += OnDeleted;
         }
+
+        public OpenVPNConfiguration this[int pI] => _configs[pI];
 
         private void OnAuthInfoRequired(OpenVPNConfiguration pCon)
         {
             if (AuthInfoRequired != null)
                 AuthInfoRequired(pCon);
         }
-
-        public OpenVPNConfiguration this[int pI]
-        {
-            get { return _configs[pI]; }
-        }
-
-        #region IEnumerable<OpenVPNConfiguration> Members
-
-        public IEnumerator<OpenVPNConfiguration> GetEnumerator()
-        {
-            return _configs.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
 
         private void OnInterfaceChanged(OpenVPNConfiguration pCon, string pInterface)
         {
@@ -86,7 +67,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
         private static IEnumerable<OpenVPNConfiguration> GetConfigs()
         {
             var i = 0;
-            return new ConnectionDefinitionFiles().Select(pCon => new OpenVPNConfiguration(i++,pCon));
+            return new ConnectionDefinitionFiles().Select(pCon => new OpenVPNConfiguration(i++, pCon));
         }
 
         private void OnStatusChanged(OpenVPNConfiguration pCon, ConnectionStatus pStatus)
@@ -114,7 +95,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
             {
                 var configs = _configs.ToArray();
                 foreach (var config in configs)
-                    if(config.Status!=ConnectionStatus.Disconnected)
+                    if (config.Status != ConnectionStatus.Disconnected)
                         config.Disconnect(false);
 
                 var waiting = true;
@@ -126,33 +107,29 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
                             waiting = true;
                     Thread.Sleep(250);
                 }
-            } catch(Exception)
+            }
+            catch (Exception)
             {
-                
             }
         }
 
         public void InstallConfiguration(ConnectionDefinitionFile pConfigFile)
         {
-            
-            var fileName = Configuration.Configuration.Current.ConnecitonDataPath+"\\" + pConfigFile.ConnectionName +
+            var fileName = Configuration.Configuration.Current.ConnecitonDataPath + "\\" + pConfigFile.ConnectionName +
                            ".openvpn";
-            
-            if(pConfigFile.AuthorityCert!=null)
+
+            if (pConfigFile.AuthorityCert != null)
                 CertificateManager.Current.InstallCertificate(pConfigFile.AuthorityCert);
             pConfigFile.SaveFile(fileName);
-            var configuration = new OpenVPNConfiguration(_configs.Count,pConfigFile);
+            var configuration = new OpenVPNConfiguration(_configs.Count, pConfigFile);
             configuration.Deleted += OnDeleted;
             _configs.Add(configuration);
 
             if (TapDeviceManager.GetTapDevices().ToArray().Length < _configs.Count)
                 TapDeviceManager.SetupTapDevice();
-            
+
             if (NewConfiguration != null)
                 NewConfiguration(configuration);
-
-
-
         }
 
         private void OnDeleted(OpenVPNConfiguration pConfiguration)
@@ -161,5 +138,19 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
             if (DeletedConfiguration != null)
                 DeletedConfiguration(pConfiguration);
         }
+
+        #region IEnumerable<OpenVPNConfiguration> Members
+
+        public IEnumerator<OpenVPNConfiguration> GetEnumerator()
+        {
+            return _configs.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
     }
 }

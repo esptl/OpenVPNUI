@@ -1,14 +1,14 @@
 ﻿<UserControl x:Class="Esp.Tools.OpenVPN.UI.DisconnectedView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:UI="clr-namespace:Esp.Tools.OpenVPN.UI"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
-        <Image x:Key="OnImage" Source="/Icons/viewmag-.png" Width="11" Height="11"/>
-        <Image x:Key="OffImage" Source="/Icons/viewmag+.png" Width="11" Height="11"/>
+        <Image x:Key="OnImage" Source="/Icons/viewmag-.png" Width="11" Height="11" />
+        <Image x:Key="OffImage" Source="/Icons/viewmag+.png" Width="11" Height="11" />
         <Style x:Key="OnOffToggleImageStyle" TargetType="ToggleButton">
             <Style.Triggers>
                 <Trigger Property="IsChecked" Value="True">
@@ -19,24 +19,22 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="Grid" x:Key="GridStyle" >
+        <Style TargetType="Grid" x:Key="GridStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsDisconnected}" Value="True">
                     <DataTrigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard Name="GridShow">
                                 <DoubleAnimation
-                                            
-                                            Storyboard.TargetProperty="Height"
-                                            From="0" To="26" Duration="00:00:00.0000000"
-                                            AutoReverse="False" RepeatBehavior="1x"
-                                         />
-                                <DoubleAnimation  
-                                            
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="1.0" To="1.0" Duration="00:00:00.0000000"
-                                            AutoReverse="False" RepeatBehavior="1x"
-                                         />
+
+                                    Storyboard.TargetProperty="Height"
+                                    From="0" To="26" Duration="00:00:00.0000000"
+                                    AutoReverse="False" RepeatBehavior="1x" />
+                                <DoubleAnimation
+
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="1.0" To="1.0" Duration="00:00:00.0000000"
+                                    AutoReverse="False" RepeatBehavior="1x" />
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.EnterActions>
@@ -44,17 +42,15 @@
                         <BeginStoryboard>
                             <Storyboard Name="GridHide">
                                 <DoubleAnimation
-                                            
-                                            Storyboard.TargetProperty="Height"
-                                            From="26" To="0" Duration="00:00:00.0000000"
-                                            AutoReverse="False" RepeatBehavior="1x"
-                                         />
-                                <DoubleAnimation  
-                                            
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="1.0" To="0.0" Duration="00:00:00.1000000"
-                                            AutoReverse="False" RepeatBehavior="1x"
-                                         />
+
+                                    Storyboard.TargetProperty="Height"
+                                    From="26" To="0" Duration="00:00:00.0000000"
+                                    AutoReverse="False" RepeatBehavior="1x" />
+                                <DoubleAnimation
+
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="1.0" To="0.0" Duration="00:00:00.1000000"
+                                    AutoReverse="False" RepeatBehavior="1x" />
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.ExitActions>
@@ -63,31 +59,37 @@
         </Style>
     </UserControl.Resources>
     <Grid Margin="0,0,0,0" VerticalAlignment="Top">
-        
+
         <Grid Style="{DynamicResource GridStyle}" Height="0" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="32" />
                 <ColumnDefinition />
                 <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
 
-            <Image VerticalAlignment="Top"  Width="22" Height="22" Source="/Icons/connect_no.png" />
+            <Image VerticalAlignment="Top" Width="22" Height="22" Source="/Icons/connect_no.png" />
 
-            <Grid Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center" >
+            <Grid Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center">
                 <TextBlock FontSize="10" Foreground="White">
-                   <TextBlock Text="{Binding Name}" />
+                    <TextBlock Text="{Binding Name}" />
                 </TextBlock>
             </Grid>
-            
+
             <Grid Grid.Column="2" VerticalAlignment="Center">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button Width="70" Margin="0,0,0,5" Height="18"  FontSize="10" Foreground="#FFD5D5D5" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="4,1,4,2" Command="{Binding ConnectCommand}" FontWeight="Bold">Connect</Button>
-                    <ToggleButton VerticalAlignment="Top" Focusable="False"  Style="{StaticResource OnOffToggleImageStyle}" Name="ShowLog" IsChecked="{Binding ShowLog}"/>
+                    <Button Width="70" Margin="0,0,0,5" Height="18" FontSize="10" Foreground="#FFD5D5D5"
+                            VerticalAlignment="Top" HorizontalAlignment="Center" Padding="4,1,4,2"
+                            Command="{Binding ConnectCommand}" FontWeight="Bold">
+                        Connect
+                    </Button>
+                    <ToggleButton VerticalAlignment="Top" Focusable="False"
+                                  Style="{StaticResource OnOffToggleImageStyle}" Name="ShowLog"
+                                  IsChecked="{Binding ShowLog}" />
                 </StackPanel>
             </Grid>
 
         </Grid>
-        
+
     </Grid>
 
 </UserControl>

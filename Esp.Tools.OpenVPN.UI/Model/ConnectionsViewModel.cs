@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +32,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
     public class ConnectionsViewModel : ViewModelBase
     {
         private readonly ControllerPipeClient _controllerPipeClient;
-        private List<ConnectionViewModel> _connections = new List<ConnectionViewModel>();
-        private bool _initialized = false;
+        private bool _initialized;
 
         public ConnectionsViewModel()
         {
@@ -43,36 +43,33 @@ namespace Esp.Tools.OpenVPN.UI.Model
             _controllerPipeClient.Initialized += OnInitialized;
         }
 
-        private void OnInitialized(BaseMessage<InitializedInfo> pObj)
-        {
-            _initialized = true;
-            OnPropertyChanged("Connections");
-                                           
-        }
 
-
-        public List<ConnectionViewModel> Connections
-        {
-            get { return _connections; }
-        }
+        public List<ConnectionViewModel> Connections { get; private set; } = new List<ConnectionViewModel>();
 
         public bool AnyConnected
         {
-            get { return _connections.Any(con => con.Status == ConnectionStatus.Connected); }
+            get { return Connections.Any(con => con.Status == ConnectionStatus.Connected); }
         }
+
         public bool AnyAuthenticating
         {
-            get { return _connections.Any(con => con.Status == ConnectionStatus.Authenticating); }
+            get { return Connections.Any(con => con.Status == ConnectionStatus.Authenticating); }
         }
 
         public bool AnyConnecting
         {
-            get { return _connections.Any(con => con.Status == ConnectionStatus.Connecting); }
+            get { return Connections.Any(con => con.Status == ConnectionStatus.Connecting); }
         }
 
         public bool AnyShowLog
         {
-            get { return _connections.Any(con => con.ShowLog); }
+            get { return Connections.Any(con => con.ShowLog); }
+        }
+
+        private void OnInitialized(BaseMessage<InitializedInfo> pObj)
+        {
+            _initialized = true;
+            OnPropertyChanged("Connections");
         }
 
         private void OnRequestPassword(BaseMessage<RequestPasswordInfo> pInfo)
@@ -81,8 +78,8 @@ namespace Esp.Tools.OpenVPN.UI.Model
                 DispatcherPriority.Normal,
                 new Action(() =>
                 {
-                    ConnectionViewModel item =
-                        _connections.FirstOrDefault(pX => pX.Index == pInfo.Connection);
+                    var item =
+                        Connections.FirstOrDefault(pX => pX.Index == pInfo.Connection);
                     if (item != null)
                         item.OnRequestPassword(pInfo.Data);
                 }));
@@ -94,13 +91,13 @@ namespace Esp.Tools.OpenVPN.UI.Model
             Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
                 new Action(() =>
-                               {
-                                   ConnectionViewModel item =
-                                       _connections.FirstOrDefault(pX => pX.Index == pInfo.Connection);
-                                   if (item != null)
-                                       item.OnMessage(pInfo)
-                                           ;
-                               }));
+                {
+                    var item =
+                        Connections.FirstOrDefault(pX => pX.Index == pInfo.Connection);
+                    if (item != null)
+                        item.OnMessage(pInfo)
+                            ;
+                }));
         }
 
         public event Action<ConnectionViewModel> Connected;
@@ -113,45 +110,47 @@ namespace Esp.Tools.OpenVPN.UI.Model
             Application.Current.Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
                 new Action(() =>
-                               {
-                                   ConnectionViewModel item =
-                                       _connections.FirstOrDefault(pX => pX.Index == pInfo.Connection);
-                                   if (item != null)
-                                       item.OnConnectInfo(pInfo)
-                                           ;
-                                   else
-                                   {
-                                       item = new ConnectionViewModel(this,_controllerPipeClient, pInfo);
-                                       item.LogShown += () =>
-                                                            {
-                                                                foreach (var con in _connections)
-                                                                    if (con.ShowLog)
-                                                                       con.ShowLog = false;
-                                                            };
-                                       item.Connected += () =>
-                                                             {
-                                                                 if (Connected != null)
-                                                                     Connected(item);
-                                                             };
-                                       item.Disconnected += () =>
-                                                                {
-                                                                    if (Disconnected != null)
-                                                                        Disconnected(item);
-                                                                };
-                                       item.Connecting += () =>
-                                                              {
-                                                                  if (Connecting != null)
-                                                                      Connecting(item);
-                                                              };
-                                       _connections.Add(item);
-                                       _connections = new List<ConnectionViewModel>(_connections);
-                                       if(_initialized)
-                                           OnPropertyChanged("Connections");
-                                           
-                                       if (NewConnection != null)
-                                           NewConnection(item);
-                                   }
-                               }));
+                {
+                    var item =
+                        Connections.FirstOrDefault(pX => pX.Index == pInfo.Connection);
+                    if (item != null)
+                    {
+                        item.OnConnectInfo(pInfo)
+                            ;
+                    }
+                    else
+                    {
+                        item = new ConnectionViewModel(this, _controllerPipeClient, pInfo);
+                        item.LogShown += () =>
+                        {
+                            foreach (var con in Connections)
+                                if (con.ShowLog)
+                                    con.ShowLog = false;
+                        };
+                        item.Connected += () =>
+                        {
+                            if (Connected != null)
+                                Connected(item);
+                        };
+                        item.Disconnected += () =>
+                        {
+                            if (Disconnected != null)
+                                Disconnected(item);
+                        };
+                        item.Connecting += () =>
+                        {
+                            if (Connecting != null)
+                                Connecting(item);
+                        };
+                        Connections.Add(item);
+                        Connections = new List<ConnectionViewModel>(Connections);
+                        if (_initialized)
+                            OnPropertyChanged("Connections");
+
+                        if (NewConnection != null)
+                            NewConnection(item);
+                    }
+                }));
         }
     }
 }

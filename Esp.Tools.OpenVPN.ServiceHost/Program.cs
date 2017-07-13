@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.ServiceProcess;
 
 namespace Esp.Tools.OpenVPN.ServiceHost
@@ -25,9 +26,9 @@ namespace Esp.Tools.OpenVPN.ServiceHost
         private static void Main()
         {
             var servicesToRun = new ServiceBase[]
-                                              {
-                                                  new OpenVPNHostService()
-                                              };
+            {
+                new OpenVPNHostService()
+            };
             ServiceBase.Run(servicesToRun);
         }
     }

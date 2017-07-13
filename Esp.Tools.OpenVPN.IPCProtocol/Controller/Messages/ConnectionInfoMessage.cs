@@ -18,7 +18,6 @@
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
 
 using Esp.Tools.OpenVPN.IPCProtocol.Contracts;
-using Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages.Contracts;
 
 namespace Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages
 {

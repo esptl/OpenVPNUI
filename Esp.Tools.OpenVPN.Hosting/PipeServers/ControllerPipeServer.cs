@@ -35,7 +35,8 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
         private readonly OpenVPNConfigurations _configurations;
 
 
-        public ControllerPipeServer(OpenVPNConfigurations pConfigurations) : base(Configuration.Configuration.Current.ControlPipe,1)
+        public ControllerPipeServer(OpenVPNConfigurations pConfigurations) : base(
+            Configuration.Configuration.Current.ControlPipe, 1)
         {
             _configurations = pConfigurations;
             _configurations.OutputRecieved += SendOutputRecievedMessage;
@@ -45,50 +46,42 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
         }
 
         #region Overrides
+
         protected override void OnConnection()
         {
             SendConnectionInfoForAllConnections();
         }
 
-        protected override IEnumerable<PipeAccessRule> PipeAccessRules
+        protected override IEnumerable<PipeAccessRule> PipeAccessRules => new[]
         {
-            get
-            {
-                return new[]
-                           {
-                               new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null),
-                                                  PipeAccessRights.ReadWrite |
-                                                  PipeAccessRights.CreateNewInstance, AccessControlType.Allow),
-                               new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.CreatorOwnerSid, null), PipeAccessRights.FullControl,
-                                                  AccessControlType.Allow),
-                               new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null), PipeAccessRights.FullControl,
-                                                  AccessControlType.Allow)
-                           };
-            }
-        }
+            new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null),
+                PipeAccessRights.ReadWrite |
+                PipeAccessRights.CreateNewInstance, AccessControlType.Allow),
+            new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.CreatorOwnerSid, null),
+                PipeAccessRights.FullControl,
+                AccessControlType.Allow),
+            new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null),
+                PipeAccessRights.FullControl,
+                AccessControlType.Allow)
+        };
 
-        protected override IEnumerable<IMessageReader> MessageReaders
+        protected override IEnumerable<IMessageReader> MessageReaders => new IMessageReader[]
         {
-            get
-            {
-                return new IMessageReader[]
-                           {
-                               new MessageReader<ConnectionStartInfo>("Start")
-                                   {MessageRecieved = OnConnectionStartCommand},
-                               new MessageReader<ConnectionStopInfo>("Stop")
-                                   {MessageRecieved = OnConnectionStopCommand},
-                               new MessageReader<ConnectionInfoCommandInfo>("Info")
-                                   {MessageRecieved = OnConnectionInfoCommand},
+            new MessageReader<ConnectionStartInfo>("Start")
+                {MessageRecieved = OnConnectionStartCommand},
+            new MessageReader<ConnectionStopInfo>("Stop")
+                {MessageRecieved = OnConnectionStopCommand},
+            new MessageReader<ConnectionInfoCommandInfo>("Info")
+                {MessageRecieved = OnConnectionInfoCommand},
 
-                               new MessageReader<ClearLogInfo>("ClearLog")
-                                   {MessageRecieved = OnClearLogCommand},
-                               new MessageReader<AuthInfo>("AuthInfo")
-                                   {
-                                       MessageRecieved = OnSendPasswordCommand
-                                   }
-                           };
+            new MessageReader<ClearLogInfo>("ClearLog")
+                {MessageRecieved = OnClearLogCommand},
+            new MessageReader<AuthInfo>("AuthInfo")
+            {
+                MessageRecieved = OnSendPasswordCommand
             }
-        }
+        };
+
         #endregion
 
         #region Message Sending Methods
@@ -96,13 +89,11 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
         private void SendInterfaceChangedMessage(OpenVPNConfiguration pConfig, string pInterface)
         {
             SendConnectionInfoMessage(pConfig);
-            
         }
 
         private void SendStatusChangedMessage(OpenVPNConfiguration pConfig, ConnectionStatus pStatus)
         {
             SendConnectionInfoMessage(pConfig);
-            
         }
 
         private void SendOutputRecievedMessage(OpenVPNConfiguration pConfig, OutputLine pLine)
@@ -112,36 +103,32 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         private void SendRequestAuthInfoMessage(OpenVPNConfiguration pConfig)
         {
-            SendMessage(new RequestAuthInfoMessage { Connection = pConfig.Index});
-            
+            SendMessage(new RequestAuthInfoMessage {Connection = pConfig.Index});
         }
 
         private void SendConnectionInfoMessage(OpenVPNConfiguration pConfig)
         {
             SendMessage(new ConnectionInfoMessage(pConfig.Index)
-                                                      {Data = pConfig.ConfigurationInfo});
+                {Data = pConfig.ConfigurationInfo});
         }
 
         private void SendConnectionInfoForAllConnections()
         {
-            foreach (OpenVPNConfiguration con in _configurations)
+            foreach (var con in _configurations)
                 SendConnectionInfoMessage(con);
         }
 
         #endregion
 
         #region Command Handlers
+
         private void OnConnectionInfoCommand(BaseMessage<ConnectionInfoCommandInfo> pInfo)
         {
-            OpenVPNConfiguration con = _configurations[pInfo.Connection];
+            var con = _configurations[pInfo.Connection];
             SendConnectionInfoMessage(con);
             if (pInfo.Data.Long)
-            {
-                foreach (OutputLine line in con.Output)
-                {
+                foreach (var line in con.Output)
                     SendOutputRecievedMessage(con, line);
-                }
-            }
         }
 
         private void OnConnectionStopCommand(BaseMessage<ConnectionStopInfo> pInfo)
@@ -164,6 +151,7 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
         {
             _configurations[pInfo.Connection].SendAuthInfo(pInfo);
         }
+
         #endregion
     }
 }

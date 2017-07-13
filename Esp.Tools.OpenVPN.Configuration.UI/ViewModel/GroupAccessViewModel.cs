@@ -24,25 +24,42 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 {
     public class GroupAccessViewModel : ViewModelBase
     {
-        private readonly IViewModelDialogs _dialogs;
         private readonly BaseAccessConfiguration _configuration;
+        private readonly IViewModelDialogs _dialogs;
 
         public GroupAccessViewModel(IViewModelDialogs pDialogs, BaseAccessConfiguration pConfiguration)
         {
             _dialogs = pDialogs;
             _configuration = pConfiguration;
-            SelectCommand = new BasicCommand(pValue=>
-                                                 {
-                                                     if(pValue!=null)
-                                                        Select(pValue.ToString());
-                                                 });
+            SelectCommand = new BasicCommand(pValue =>
+            {
+                if (pValue != null)
+                    Select(pValue.ToString());
+            });
             UnselectCommand = new BasicCommand(pValue =>
-                                                   {
-                                                       if(pValue!=null)                                                            
-                                                          Unselect(pValue.ToString());
-                                                   });
+            {
+                if (pValue != null)
+                    Unselect(pValue.ToString());
+            });
             RestartServiceCommand = new BasicCommand(RestartService);
         }
+
+        public List<string> UnselectedGroups => _configuration.UnselectedGroups;
+
+        public List<string> SelectedGroups
+        {
+            get => _configuration.SelectedGroups;
+            set
+            {
+                _configuration.SelectedGroups = value;
+                OnPropertyChanged("SelectedGroups");
+                OnPropertyChanged("UnselectedGroups");
+            }
+        }
+
+        public BasicCommand SelectCommand { get; }
+        public BasicCommand UnselectCommand { get; }
+        public BasicCommand RestartServiceCommand { get; }
 
         private void RestartService()
         {
@@ -62,25 +79,5 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             groups.Add(pGroup);
             SelectedGroups = groups;
         }
-
-        public List<string> UnselectedGroups
-        {
-            get { return _configuration.UnselectedGroups; }
-        }
-
-        public List<string> SelectedGroups
-        {
-            get { return _configuration.SelectedGroups; }
-            set
-            {
-                _configuration.SelectedGroups = value;
-                OnPropertyChanged("SelectedGroups");
-                OnPropertyChanged("UnselectedGroups");
-            }
-        }
-
-        public BasicCommand SelectCommand { get; private set; }
-        public BasicCommand UnselectCommand { get; private set; }
-        public BasicCommand RestartServiceCommand { get; private set; }
     }
 }

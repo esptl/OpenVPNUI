@@ -25,7 +25,7 @@ namespace Esp.Tools.OpenVPN.Certificates
         {
         }
 
-        public static CertificateManager Current { get; private set; }
+        public static CertificateManager Current { get; }
 
         public void DeleteCertificate(string pThumbPrint)
         {
@@ -49,22 +49,20 @@ namespace Esp.Tools.OpenVPN.Certificates
         {
             var workingPath = Configuration.Configuration.Current.WorkingPath + "openvpn\\bin\\";
             var process = new Process
-                              {
-                                  StartInfo =
-                                      {
-                                          WorkingDirectory = workingPath,
-                                          FileName = workingPath + "openssl.exe",
-                                          Arguments =
-                                              string.Format(
-                                                  @"pkcs12 -in ""{0}"" -inkey ""{1}"" -export -password pass:password",
-                                                  pCertFile, pKeyFile),
-                                          RedirectStandardOutput = true,
-                                          RedirectStandardInput = true,
-                                          RedirectStandardError = true,
-                                          UseShellExecute = false,
-                                          ErrorDialog = false
-                                      }
-                              };
+            {
+                StartInfo =
+                {
+                    WorkingDirectory = workingPath,
+                    FileName = workingPath + "openssl.exe",
+                    Arguments =
+                        $@"pkcs12 -in ""{pCertFile}"" -inkey ""{pKeyFile}"" -export -password pass:password",
+                    RedirectStandardOutput = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    ErrorDialog = false
+                }
+            };
             process.Start();
             var ms = new MemoryStream();
             var strm = process.StandardOutput.BaseStream;
@@ -96,47 +94,47 @@ namespace Esp.Tools.OpenVPN.Certificates
                         store.Certificates.Find(X509FindType.FindByThumbprint, pAuthority.Thumbprint, false).Count > 0;
 
                     if (!authCert)
-                    {
                         store.Add(pAuthority);
-                    }
                 }
                 var certs = store.Certificates.OfType<X509Certificate2>().Where(pX => pX.HasPrivateKey);
                 if (pAuthority != null)
-                {
                     certs = certs.Where(pX =>
-                                            {
-                                                var chain = new X509Chain();
-                                                chain.Build(pX);
-                                                return
-                                                    chain.ChainElements.Cast<X509ChainElement>().ToList().Exists(
-                                                        pY => pY.Certificate.Thumbprint == pAuthority.Thumbprint);
-                                            });
-                }
+                    {
+                        var chain = new X509Chain();
+                        chain.Build(pX);
+                        return
+                            chain.ChainElements.Cast<X509ChainElement>()
+                                .ToList()
+                                .Exists(
+                                    pY => pY.Certificate.Thumbprint == pAuthority.Thumbprint);
+                    });
                 return
                     certs.Select(
-                        pX =>
+                            pX =>
                             {
                                 var chain = new X509Chain();
                                 chain.Build(pX);
                                 return new CertificateDetails
-                                           {
-                                               CommonName = pX.GetNameInfo(X509NameType.SimpleName, false),
-                                               IssuerName = pX.GetNameInfo(X509NameType.SimpleName, true),
-                                               ThumbPrint = pX.Thumbprint,
-                                               ValidFrom = pX.NotBefore,
-                                               ValidTo = pX.NotAfter,
-                                               ChainThumbPrints =
-                                                   chain.ChainElements.Cast<X509ChainElement>().Select(
-                                                       pY => pY.Certificate.Thumbprint).ToArray()
-                                           };
-                            }).ToArray()
+                                {
+                                    CommonName = pX.GetNameInfo(X509NameType.SimpleName, false),
+                                    IssuerName = pX.GetNameInfo(X509NameType.SimpleName, true),
+                                    ThumbPrint = pX.Thumbprint,
+                                    ValidFrom = pX.NotBefore,
+                                    ValidTo = pX.NotAfter,
+                                    ChainThumbPrints =
+                                        chain.ChainElements.Cast<X509ChainElement>()
+                                            .Select(
+                                                pY => pY.Certificate.Thumbprint)
+                                            .ToArray()
+                                };
+                            })
+                        .ToArray()
                     ;
             }
             finally
             {
                 store.Close();
             }
-            return null;
         }
 
         public X509Certificate2 ImportResponse(string pResponse)
@@ -154,7 +152,7 @@ namespace Esp.Tools.OpenVPN.Certificates
                     strCert,
                     EncodingType.XCN_CRYPT_STRING_BASE64HEADER,
                     null
-                    );
+                );
                 var x509Cert = new X509Certificate2(Encoding.ASCII.GetBytes(pResponse));
                 return x509Cert;
             }
@@ -167,21 +165,27 @@ namespace Esp.Tools.OpenVPN.Certificates
 
         public string GenerateRequest(EnrollRequestDetails pDetails)
         {
-
             var objPkcs10 =
                 Activator.CreateInstance(Type.GetTypeFromProgID("X509Enrollment.CX509CertificateRequestPkcs10")) as
                     CX509CertificateRequestPkcs10;
-            var objPrivateKey = Activator.CreateInstance(Type.GetTypeFromProgID("X509Enrollment.CX509PrivateKey")) as CX509PrivateKey; 
-            var objCSP =  new CCspInformationClass();
+            var objPrivateKey =
+                Activator.CreateInstance(Type.GetTypeFromProgID("X509Enrollment.CX509PrivateKey")) as CX509PrivateKey;
+            var objCSP = new CCspInformationClass();
             var objCSPs = new CCspInformationsClass();
             var objDN = new CX500DistinguishedNameClass();
-            var objEnroll = Activator.CreateInstance(Type.GetTypeFromProgID("X509Enrollment.CX509Enrollment")) as CX509Enrollment; 
+            var objEnroll =
+                Activator.CreateInstance(Type.GetTypeFromProgID("X509Enrollment.CX509Enrollment")) as CX509Enrollment;
             var objObjectIds = new CObjectIdsClass();
             var objObjectId = new CObjectIdClass();
-            var objExtensionKeyUsage = Activator.CreateInstance(Type.GetTypeFromProgID("X509Enrollment.CX509ExtensionKeyUsage")) as CX509ExtensionKeyUsage;
+            var objExtensionKeyUsage =
+                Activator.CreateInstance(
+                    Type.GetTypeFromProgID("X509Enrollment.CX509ExtensionKeyUsage")) as CX509ExtensionKeyUsage;
 
-            var objX509ExtensionEnhancedKeyUsage = Activator.CreateInstance(Type.GetTypeFromProgID("X509Enrollment.CX509ExtensionEnhancedKeyUsage")) as CX509ExtensionEnhancedKeyUsage; 
-            
+            var objX509ExtensionEnhancedKeyUsage =
+                Activator.CreateInstance(
+                        Type.GetTypeFromProgID("X509Enrollment.CX509ExtensionEnhancedKeyUsage")) as
+                    CX509ExtensionEnhancedKeyUsage;
+
 
             try
             {
@@ -191,7 +195,7 @@ namespace Esp.Tools.OpenVPN.Certificates
                 //  Add this CSP object to the CSP collection object
                 objCSPs.Add(
                     objCSP
-                    );
+                );
 
                 //  Provide key container name, key length and key spec to the private key object
                 //objPrivateKey.ContainerName = "AlejaCMa";
@@ -215,7 +219,7 @@ namespace Esp.Tools.OpenVPN.Certificates
                     X509CertificateEnrollmentContext.ContextUser,
                     objPrivateKey,
                     ""
-                    );
+                );
 
                 // Key Usage Extension 
                 objExtensionKeyUsage.InitializeEncode(
@@ -223,7 +227,7 @@ namespace Esp.Tools.OpenVPN.Certificates
                     X509KeyUsageFlags.XCN_CERT_NON_REPUDIATION_KEY_USAGE |
                     X509KeyUsageFlags.XCN_CERT_KEY_ENCIPHERMENT_KEY_USAGE |
                     X509KeyUsageFlags.XCN_CERT_DATA_ENCIPHERMENT_KEY_USAGE
-                    );
+                );
                 objPkcs10.X509Extensions.Add((CX509Extension) objExtensionKeyUsage);
 
                 // Enhanced Key Usage Extension
@@ -235,15 +239,15 @@ namespace Esp.Tools.OpenVPN.Certificates
                 //  Encode the name in using the Distinguished Name object
                 objDN.Encode(
                     string.Format("C={0}, ST={1}, L={2}, O={3}, CN={4}, email={5},OU={6}",
-                                  pDetails.Country,
-                                  pDetails.County,
-                                  pDetails.City,
-                                  pDetails.CompanyName,
-                                  pDetails.CommonName,
-                                  pDetails.EmailAddress,
-                                  pDetails.Department),
+                        pDetails.Country,
+                        pDetails.County,
+                        pDetails.City,
+                        pDetails.CompanyName,
+                        pDetails.CommonName,
+                        pDetails.EmailAddress,
+                        pDetails.Department),
                     X500NameFlags.XCN_CERT_X500_NAME_STR
-                    );
+                );
 
                 //  Assing the subject name by using the Distinguished Name object initialized above
                 objPkcs10.Subject = objDN;
@@ -252,7 +256,7 @@ namespace Esp.Tools.OpenVPN.Certificates
                 objEnroll.InitializeFromRequest(objPkcs10);
                 var strRequest = objEnroll.CreateRequest(
                     EncodingType.XCN_CRYPT_STRING_BASE64
-                    );
+                );
                 var sb = new StringBuilder("-----BEGIN NEW CERTIFICATE REQUEST-----");
                 sb.AppendLine();
                 sb.Append(strRequest);
@@ -269,7 +273,7 @@ namespace Esp.Tools.OpenVPN.Certificates
         public void ImportPfx(byte[] pPfxData, string pPassword)
         {
             var cert = new X509Certificate2(pPfxData, pPassword,
-                                            X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
+                X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
             var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadWrite);
             store.Add(cert);

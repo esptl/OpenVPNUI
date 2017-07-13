@@ -28,6 +28,4 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Controller.Commands
             Code = "Start";
         }
     }
-
-
 }

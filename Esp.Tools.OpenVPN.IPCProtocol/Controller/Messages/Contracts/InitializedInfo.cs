@@ -24,6 +24,5 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages.Contracts
     [DataContract]
     public class InitializedInfo
     {
-
     }
 }

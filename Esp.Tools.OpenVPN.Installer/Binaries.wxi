@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Include>
   <Binary Id="bannrbmp" SourceFile="Binary\bannrbmp.bmp" />
   <Binary Id="completi" SourceFile="Binary\completi.ico" />
@@ -11,6 +12,6 @@
   <Binary Id="removico" SourceFile="Binary\removico.ico" />
   <Binary Id="repairic" SourceFile="Binary\repairic.ico" />
   <Binary Id="Up" SourceFile="Binary\Up.ico" />
-  <Icon Id="installicon.ico" SourceFile="..\Esp.Tools.OpenVPN.UI\Icons\connecting.ico"/>
+  <Icon Id="installicon.ico" SourceFile="..\Esp.Tools.OpenVPN.UI\Icons\connecting.ico" />
   <Property Id="ARPPRODUCTICON" Value="installicon.ico" />
 </Include>

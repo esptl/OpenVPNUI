@@ -16,11 +16,11 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace Esp.Tools.OpenVPN.Configuration
 {
     internal static class DefaultValues
     {
         public const string DefaultControllerAccessGroups = "Users";
-        
     }
 }

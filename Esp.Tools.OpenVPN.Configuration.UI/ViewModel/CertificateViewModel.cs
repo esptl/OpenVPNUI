@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using Esp.Tools.OpenVPN.Certificates;
 using Esp.Tools.OpenVPN.Client;
@@ -25,11 +26,12 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 {
     public class CertificateViewModel : ViewModelBase
     {
-        private readonly IViewModelDialogs _dialogs;
-        private readonly ConfigurationPipeClient _configClient;
         private readonly CertificateDetails _certificate;
+        private readonly ConfigurationPipeClient _configClient;
+        private readonly IViewModelDialogs _dialogs;
 
-        public CertificateViewModel(IViewModelDialogs pDialogs, ConfigurationPipeClient pConfigClient, CertificateDetails pCertificate)
+        public CertificateViewModel(IViewModelDialogs pDialogs, ConfigurationPipeClient pConfigClient,
+            CertificateDetails pCertificate)
         {
             _dialogs = pDialogs;
             _configClient = pConfigClient;
@@ -37,44 +39,27 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             DeleteCommand = new BasicCommand(OnDelete);
         }
 
-        public BasicCommand DeleteCommand
-        {
-            get; private set; }
+        public BasicCommand DeleteCommand { get; }
+
+
+        public string ThumbPrint => _certificate.ThumbPrint;
+
+        public DateTime ValidFrom => _certificate.ValidFrom;
+
+        public DateTime ValidUntil => _certificate.ValidTo;
+
+        public string SubjectName => _certificate.CommonName;
+
+        public string Issuer => _certificate.IssuerName;
 
         private void OnDelete()
         {
             _configClient.SendDeleteCertificateCommand(_certificate.ThumbPrint);
         }
 
-
-        public string ThumbPrint
-        {
-            get { return _certificate.ThumbPrint; }
-        }
-
-        public DateTime ValidFrom
-        {
-            get { return _certificate.ValidFrom; }
-        }
-
-        public DateTime ValidUntil
-        {
-            get { return _certificate.ValidTo; }
-        }
-
-        public string SubjectName
-        {
-            get { return _certificate.CommonName; }
-        }
-
-        public string Issuer
-        {
-            get { return _certificate.IssuerName; }
-        }
-
         public override string ToString()
         {
-            return string.Format("{0} ({1})",SubjectName, Issuer);
+            return string.Format("{0} ({1})", SubjectName, Issuer);
         }
 
 
@@ -89,13 +74,13 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
         {
             if (ReferenceEquals(null, pObj)) return false;
             if (ReferenceEquals(this, pObj)) return true;
-            if (pObj.GetType() != typeof (CertificateViewModel)) return false;
+            if (pObj.GetType() != typeof(CertificateViewModel)) return false;
             return Equals((CertificateViewModel) pObj);
         }
 
         public override int GetHashCode()
         {
-            return (_certificate != null ? _certificate.GetHashCode() : 0);
+            return _certificate != null ? _certificate.GetHashCode() : 0;
         }
     }
 }

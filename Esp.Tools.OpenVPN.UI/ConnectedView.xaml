@@ -1,15 +1,15 @@
 ﻿<UserControl x:Class="Esp.Tools.OpenVPN.UI.ConnectedView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:UI="clr-namespace:Esp.Tools.OpenVPN.UI"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" >
-   
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
-        <Image x:Key="OnImage" Source="/Icons/viewmag-.png" Width="11" Height="11"/>
-        <Image x:Key="OffImage" Source="/Icons/viewmag+.png" Width="11" Height="11"/>
+        <Image x:Key="OnImage" Source="/Icons/viewmag-.png" Width="11" Height="11" />
+        <Image x:Key="OffImage" Source="/Icons/viewmag+.png" Width="11" Height="11" />
         <Style x:Key="OnOffToggleImageStyle" TargetType="ToggleButton">
             <Style.Triggers>
                 <Trigger Property="IsChecked" Value="True">
@@ -20,24 +20,22 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="Grid" x:Key="GridStyle" >
+        <Style TargetType="Grid" x:Key="GridStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsConnected}" Value="True">
                     <DataTrigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard Name="GridShow">
                                 <DoubleAnimation
-                                            
-                                            Storyboard.TargetProperty="Height"
-                                            From="26" To="60" Duration="00:00:00.2000000"
-                                            AutoReverse="False" RepeatBehavior="1x"
-                                         />
-                                <DoubleAnimation  
-                                            
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="1.0" To="1.0" Duration="00:00:00.0000000"
-                                            AutoReverse="False" RepeatBehavior="1x"
-                                         />
+
+                                    Storyboard.TargetProperty="Height"
+                                    From="26" To="60" Duration="00:00:00.2000000"
+                                    AutoReverse="False" RepeatBehavior="1x" />
+                                <DoubleAnimation
+
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="1.0" To="1.0" Duration="00:00:00.0000000"
+                                    AutoReverse="False" RepeatBehavior="1x" />
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.EnterActions>
@@ -45,17 +43,15 @@
                         <BeginStoryboard>
                             <Storyboard Name="GridHide">
                                 <DoubleAnimation
-                                            
-                                            Storyboard.TargetProperty="Height"
-                                            From="60" To="0" Duration="00:00:00.2000000"
-                                            AutoReverse="False" RepeatBehavior="1x"
-                                         />
-                                <DoubleAnimation  
-                                            
-                                            Storyboard.TargetProperty="Opacity"
-                                            From="1.0" To="0.0" Duration="00:00:00.1000000"
-                                            AutoReverse="False" RepeatBehavior="1x"
-                                         />
+
+                                    Storyboard.TargetProperty="Height"
+                                    From="60" To="0" Duration="00:00:00.2000000"
+                                    AutoReverse="False" RepeatBehavior="1x" />
+                                <DoubleAnimation
+
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="1.0" To="0.0" Duration="00:00:00.1000000"
+                                    AutoReverse="False" RepeatBehavior="1x" />
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.ExitActions>
@@ -64,55 +60,61 @@
         </Style>
     </UserControl.Resources>
     <Grid VerticalAlignment="Top" Style="{DynamicResource GridStyle}" Height="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="32"/>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="32" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-            <Image VerticalAlignment="Top"  Width="32" Height="32" Source="/Icons/Network.png" />
+        <Image VerticalAlignment="Top" Width="32" Height="32" Source="/Icons/Network.png" />
 
         <Grid Grid.Column="1" Margin="5,0,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="22"/>
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Label Content="{Binding Name}" Foreground="#FFD0FF9F"></Label>
-                <StackPanel Grid.Column="1"  VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button Width="70" Margin="0,0,0,5" Height="18"  FontSize="10" Foreground="#FFD5D5D5" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="4,1,4,2" Command="{Binding ConnectCommand}" FontWeight="Bold">Disconnect</Button>
-                    <ToggleButton  Focusable="False" Style="{StaticResource OnOffToggleImageStyle}" Name="ShowLog" IsChecked="{Binding ShowLog, UpdateSourceTrigger= PropertyChanged}" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <TextBlock FontSize="10" Foreground="White" TextWrapping="Wrap">                
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="22" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Content="{Binding Name}" Foreground="#FFD0FF9F" />
+            <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Width="70" Margin="0,0,0,5" Height="18" FontSize="10" Foreground="#FFD5D5D5"
+                        VerticalAlignment="Top" HorizontalAlignment="Center" Padding="4,1,4,2"
+                        Command="{Binding ConnectCommand}" FontWeight="Bold">
+                    Disconnect
+                </Button>
+                <ToggleButton Focusable="False" Style="{StaticResource OnOffToggleImageStyle}" Name="ShowLog"
+                              IsChecked="{Binding ShowLog, UpdateSourceTrigger= PropertyChanged}"
+                              VerticalAlignment="Top" HorizontalAlignment="Left" />
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock FontSize="10" Foreground="White" TextWrapping="Wrap">
                         <TextBlock Padding="0,0,1,0">Ip Address:</TextBlock>
                         <TextBlock Text="{Binding IpAddress}" Foreground="#FFD0FF9F" />
                     </TextBlock>
-                        <TextBlock FontSize="10" Foreground="White" TextWrapping="Wrap" Grid.Column="1">
+                    <TextBlock FontSize="10" Foreground="White" TextWrapping="Wrap" Grid.Column="1">
                         <TextBlock Padding="3,0,1,0">Dns Addresses:</TextBlock>
                         <TextBlock Foreground="#FFD0FF9F" Text="{Binding DnsAddresses}" />
                     </TextBlock>
-                        <TextBlock FontSize="10" Foreground="White" TextWrapping="Wrap" Grid.Row="1">                
+                    <TextBlock FontSize="10" Foreground="White" TextWrapping="Wrap" Grid.Row="1">
                         <TextBlock Padding="0,0,1,0">Activity (In/Out): </TextBlock>
                         <TextBlock Text="{Binding BandwidthText}" Foreground="#FFD0FF9F" />
                     </TextBlock>
-                        <TextBlock FontSize="10" Foreground="White" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1">
+                    <TextBlock FontSize="10" Foreground="White" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1">
                         <TextBlock Padding="3,0,1,0">Total: </TextBlock>
-                        <TextBlock Text="{Binding TotalBandwidthText}" Foreground="#FFD0FF9F"/>
+                        <TextBlock Text="{Binding TotalBandwidthText}" Foreground="#FFD0FF9F" />
                     </TextBlock>
-                    </Grid>
-                </StackPanel>
-            </Grid>
+                </Grid>
+            </StackPanel>
         </Grid>
+    </Grid>
 </UserControl>

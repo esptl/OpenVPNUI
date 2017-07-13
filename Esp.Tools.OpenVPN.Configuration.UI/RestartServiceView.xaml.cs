@@ -1,10 +1,9 @@
 ﻿using Esp.Tools.OpenVPN.Configuration.UI.ViewModel;
-using Esp.Tools.OpenVPN.SharedUI;
 
 namespace Esp.Tools.OpenVPN.Configuration.UI
 {
     /// <summary>
-    /// Interaction logic for RestartServiceView.xaml
+    ///     Interaction logic for RestartServiceView.xaml
     /// </summary>
     public partial class RestartServiceView
     {

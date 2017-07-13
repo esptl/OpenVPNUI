@@ -16,13 +16,14 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace Esp.Tools.OpenVPN.Configuration
 {
     public class ControllerAccessConfiguration : BaseAccessConfiguration
     {
-        public ControllerAccessConfiguration() : 
+        public ControllerAccessConfiguration() :
             base(
-                RegistryKeys.MainKeyPath, 
+                RegistryKeys.MainKeyPath,
                 RegistryKeys.ControllerAccessGroups,
                 DefaultValues.DefaultControllerAccessGroups)
         {

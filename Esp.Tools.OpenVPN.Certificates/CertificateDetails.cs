@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Runtime.Serialization;
 
@@ -44,7 +45,7 @@ namespace Esp.Tools.OpenVPN.Certificates
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", CommonName, IssuerName);
+            return $"{CommonName} ({IssuerName})";
         }
     }
 }

@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Windows.Input;
 
@@ -35,8 +36,8 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         public BasicCommand(Action pExecute, Func<bool> pCanExecute)
         {
-            _execute = pObj=> pExecute();
-            _canExecute = pObj=> pCanExecute();
+            _execute = pObj => pExecute();
+            _canExecute = pObj => pCanExecute();
         }
 
         public BasicCommand(Action<object> pExecute)
@@ -52,6 +53,14 @@ namespace Esp.Tools.OpenVPN.UI.Model
             _canExecute = pObj => true;
         }
 
+        public void TriggerChanged()
+        {
+            if (CanExecuteChanged != null)
+                CanExecuteChanged(this, new EventArgs());
+        }
+
+        private event EventHandler CanExecuteChanged;
+
         #region ICommand Members
 
         void ICommand.Execute(object pParameter)
@@ -66,19 +75,11 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         event EventHandler ICommand.CanExecuteChanged
         {
-            add { CanExecuteChanged += value; }
+            add => CanExecuteChanged += value;
 
-            remove { CanExecuteChanged -= value; }
+            remove => CanExecuteChanged -= value;
         }
 
         #endregion
-
-        public void TriggerChanged()
-        {
-            if (CanExecuteChanged != null)
-                CanExecuteChanged(this, new EventArgs());
-        }
-
-        private event EventHandler CanExecuteChanged;
     }
 }

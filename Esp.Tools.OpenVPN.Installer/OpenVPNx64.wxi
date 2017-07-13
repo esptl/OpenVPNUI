@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <Include>
   <Directory Id="OpenVPNFiles" Name="OpenVPN">
     <Directory Id="OpenVPNBinFiles" Name="bin">
-      <Component Id ="OpenVPNbin"  DiskId="1" Guid="1E5BFC84-9E8E-4218-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
-        <File Id="libeay32.dll" LongName="libeay32.dll" Source="OpenVPN\bin\x64\libeay32.dll"/>
-        <File Id="libpkcs11helper1.dll" LongName="libpkcs11-helper-1.dll" Source="OpenVPN\bin\x64\libpkcs11-helper-1.dll"/>        
-        <File Id="liblzo2.dll" LongName="liblzo2-2.dll" Source="OpenVPN\bin\x64\liblzo2-2.dll"/>
-        <File Id="msvcr100.dll" LongName="msvcr100.dll" Source="OpenVPN\bin\x64\msvcr100.dll"/>
-        <File Id="openssl.exe" LongName="openssl.exe" Source="OpenVPN\bin\x64\openssl.exe"/>
-        <File Id="openvpn.exe" LongName="openvpn.exe" Source="OpenVPN\bin\x64\openvpn.exe"/>
-        <File Id="ssleay32.dll" LongName="ssleay32.dll" Source="OpenVPN\bin\x64\ssleay32.dll"/>
-        <File Id="tapinstall.exe" LongName="tapinstall.exe" Source="OpenVPN\bin\x64\tapinstall.exe"/>
+      <Component Id="OpenVPNbin" DiskId="1" Guid="1E5BFC84-9E8E-4218-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
+        <File Id="libeay32.dll" LongName="libeay32.dll" Source="OpenVPN\bin\x64\libeay32.dll" />
+        <File Id="libpkcs11helper1.dll" LongName="libpkcs11-helper-1.dll"
+              Source="OpenVPN\bin\x64\libpkcs11-helper-1.dll" />
+        <File Id="liblzo2.dll" LongName="liblzo2-2.dll" Source="OpenVPN\bin\x64\liblzo2-2.dll" />
+        <File Id="msvcr100.dll" LongName="msvcr100.dll" Source="OpenVPN\bin\x64\msvcr100.dll" />
+        <File Id="openssl.exe" LongName="openssl.exe" Source="OpenVPN\bin\x64\openssl.exe" />
+        <File Id="openvpn.exe" LongName="openvpn.exe" Source="OpenVPN\bin\x64\openvpn.exe" />
+        <File Id="ssleay32.dll" LongName="ssleay32.dll" Source="OpenVPN\bin\x64\ssleay32.dll" />
+        <File Id="tapinstall.exe" LongName="tapinstall.exe" Source="OpenVPN\bin\x64\tapinstall.exe" />
       </Component>
     </Directory>
     <Directory Id="OpenVPNTapFiles" Name="tap">
- 
-        <Component Id ="OpenVPNTapX64"  DiskId="1" Guid="1E5BFC84-9E8E-1248-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
-          <File Id="OemWin2kx64.inf" LongName="OemVista.inf" Source="OpenVPN\tap-x64\OemVista.inf"/>
-          <File Id="tap0901x64.cat" LongName="tap0901.cat" Source="OpenVPN\tap-x64\tap0901.cat"/>
-          <File Id="tap0901x64.sys" LongName="tap0901.sys" Source="OpenVPN\tap-x64\tap0901.sys"/>
-        </Component>
+
+      <Component Id="OpenVPNTapX64" DiskId="1" Guid="1E5BFC84-9E8E-1248-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
+        <File Id="OemWin2kx64.inf" LongName="OemVista.inf" Source="OpenVPN\tap-x64\OemVista.inf" />
+        <File Id="tap0901x64.cat" LongName="tap0901.cat" Source="OpenVPN\tap-x64\tap0901.cat" />
+        <File Id="tap0901x64.sys" LongName="tap0901.sys" Source="OpenVPN\tap-x64\tap0901.sys" />
+      </Component>
 
     </Directory>
   </Directory>

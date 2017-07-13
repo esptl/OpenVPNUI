@@ -18,10 +18,9 @@
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -38,19 +37,24 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 {
     public class OpenVPNConfiguration
     {
+        private readonly Regex _adaptersInUseRegex =
+            new Regex(".*All .* adapters on this system are currently in use.*");
+
         private readonly ConnectionDefinitionFile _file;
-        private readonly Regex _interfaceRegex = new Regex(".*device (?<intName>.*) opened: .*\\{(?<interface>.*)\\}.*");
-        private readonly Regex _adaptersInUseRegex = new Regex(".*All .* adapters on this system are currently in use.*");
+
+        private readonly Regex _interfaceRegex =
+            new Regex(".*device (?<intName>.*) opened: .*\\{(?<interface>.*)\\}.*");
+
         private readonly List<OutputLine> _output = new List<OutputLine>();
+        private ConnectionError _error;
+        private readonly byte[] _errorBuffer = new byte[4096];
         private IntPtr _event;
         private string _eventName;
+        private string _genericError;
         private string _interface;
         private string _password;
         private Process _process;
         private ConnectionStatus _status;
-        private string _genericError;
-        private ConnectionError _error;
-        private byte[] _errorBuffer = new byte[4096];
         private string _username;
 
 
@@ -62,14 +66,9 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
             LoadConfigFile();
         }
 
-        private void LoadConfigFile()
-        {            
-            RequiresUsername = _file.HasOption("auth-user-pass");
-        }
-
         public ConnectionStatus Status
         {
-            get { return _status; }
+            get => _status;
             private set
             {
                 _status = value;
@@ -80,7 +79,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
         public string Interface
         {
-            get { return _interface; }
+            get => _interface;
             set
             {
                 _interface = value;
@@ -91,31 +90,27 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
         public bool RequiresUsername { get; private set; }
 
-        public string ConfigurationName { get { return _file.ConnectionName; } }
+        public string ConfigurationName => _file.ConnectionName;
 
-        public ConfigurationInfo ConfigurationInfo
+        public ConfigurationInfo ConfigurationInfo => new ConfigurationInfo
         {
-            get
-            {
-                return new ConfigurationInfo
-                           {
-                               ConnectionStatus = Status,
-                               Name = ConfigurationName,
-                               Interface = Interface,
-                               Error = _error,
-                               GenericErrorMessage = _genericError,
-                               RequiresUsername = RequiresUsername,
-                               AuthorityThumbPrint = _file.AuthorityCert.Thumbprint,
-                               ThumbPrint = _file.CertificateThumbPrint
-                           };
-            }
-        }
+            ConnectionStatus = Status,
+            Name = ConfigurationName,
+            Interface = Interface,
+            Error = _error,
+            GenericErrorMessage = _genericError,
+            RequiresUsername = RequiresUsername,
+            AuthorityThumbPrint = _file.AuthorityCert.Thumbprint,
+            ThumbPrint = _file.CertificateThumbPrint
+        };
 
-        public int Index { get; private set; }
+        public int Index { get; }
 
-        public IEnumerable<OutputLine> Output
+        public IEnumerable<OutputLine> Output => _output;
+
+        private void LoadConfigFile()
         {
-            get { return _output; }
+            RequiresUsername = _file.HasOption("auth-user-pass");
         }
 
         public void Connect()
@@ -128,46 +123,45 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
                 ///Status = ConnectionStatus.Connecting;
 
-                _eventName = "vpn" + Guid.NewGuid().ToString();
+                _eventName = "vpn" + Guid.NewGuid();
                 _event = CreateEvent(IntPtr.Zero, true, false, _eventName);
                 _output.Clear();
-                var workingPath = Configuration.Configuration.Current.WorkingPath+ "openvpn\\bin\\";
+                var workingPath = Configuration.Configuration.Current.WorkingPath + "openvpn\\bin\\";
                 _process = new Process
-                               {
-                                   StartInfo =
-                                       {
-                                           WorkingDirectory = Configuration.Configuration.Current.AppDataPath,
-                                           FileName = workingPath+"openvpn.exe",
-                                           Arguments = "--service " + _eventName + " 0 --config stdin",
-                                           RedirectStandardOutput = true,
-                                           RedirectStandardInput = true,
-                                           RedirectStandardError = true,
-                                           UseShellExecute = false,
-                                           ErrorDialog = false
-                                       }
-                               };
+                {
+                    StartInfo =
+                    {
+                        WorkingDirectory = Configuration.Configuration.Current.AppDataPath,
+                        FileName = workingPath + "openvpn.exe",
+                        Arguments = "--service " + _eventName + " 0 --config stdin",
+                        RedirectStandardOutput = true,
+                        RedirectStandardInput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        ErrorDialog = false
+                    }
+                };
 
                 _process.OutputDataReceived += OnOutputDataRecieved;
                 _process.Exited += OnExited;
-                
-               
+
+
                 _process.EnableRaisingEvents = true;
                 _process.Start();
 
                 var configText = _file.ComposedConfiguration;
                 _process.StandardInput.WriteLine(configText);
-                _process.StandardInput.Write((char)26);
+                _process.StandardInput.Write((char) 26);
                 _process.StandardInput.Flush();
 
                 _process.StandardError.BaseStream.BeginRead(_errorBuffer, 0, _errorBuffer.Length, OnErrorData, null);
                 _process.BeginOutputReadLine();
-              
             }
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr CreateEvent(IntPtr pLpEventAttributes, bool pBManualReset, bool pBInitialState,
-                                                 [MarshalAs(UnmanagedType.LPStr)] string pLpName);
+            [MarshalAs(UnmanagedType.LPStr)] string pLpName);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -179,8 +173,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
         public void Disconnect(bool pKill)
         {
-            
-            if(Status == ConnectionStatus.Authenticating)
+            if (Status == ConnectionStatus.Authenticating)
             {
                 if (_process != null)
                 {
@@ -190,11 +183,10 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
                 Status = ConnectionStatus.Disconnecting;
             }
             if (Status == ConnectionStatus.Connected || Status == ConnectionStatus.Connecting ||
-                (Status == ConnectionStatus.Disconnecting && pKill))
-            {
+                Status == ConnectionStatus.Disconnecting && pKill)
                 if (pKill)
                 {
-                    if(_process!=null)
+                    if (_process != null)
                         _process.Kill();
                     OnExited(this, new EventArgs());
                 }
@@ -204,12 +196,11 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
                     Status = ConnectionStatus.Disconnecting;
                 }
-            }
         }
 
         private void OnErrorData(IAsyncResult pAr)
         {
-            if (_process!=null)
+            if (_process != null)
             {
                 var read = _process.StandardError.BaseStream.EndRead(pAr);
                 if (read != 0)
@@ -220,9 +211,9 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
                     if (str != null)
                         OnOutputRecieved(new OutputLine(OutputType.Error, str));
-                    _process.StandardError.BaseStream.BeginRead(_errorBuffer, 0, _errorBuffer.Length, OnErrorData, null);
+                    _process.StandardError.BaseStream.BeginRead(_errorBuffer, 0, _errorBuffer.Length, OnErrorData,
+                        null);
                 }
-                
             }
         }
 
@@ -242,7 +233,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
         protected void OnOutputRecieved(OutputLine pLine)
         {
-            if (pLine.Line != null && _process!=null)
+            if (pLine.Line != null && _process != null)
             {
                 if (pLine.Line.Contains("Initialization Sequence Completed"))
                     Status = ConnectionStatus.Connected;
@@ -259,7 +250,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
                 if (_interfaceRegex.IsMatch(pLine.Line))
                 {
-                    MatchCollection matches = _interfaceRegex.Matches(pLine.Line);
+                    var matches = _interfaceRegex.Matches(pLine.Line);
                     Interface = matches[0].Groups["interface"].Value;
                 }
 
@@ -268,24 +259,17 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
 
                 if (pLine.Line.StartsWith("Enter Auth Username:"))
-                {
                     SendAuthUsername();
-                   // Status = ConnectionStatus.Authenticating;
-                }
-                    
+
 
                 if (pLine.Line.StartsWith("Enter Auth Password:"))
                     SendAuthPassword();
 
-                if(_adaptersInUseRegex.IsMatch(pLine.Line))
-                {
-                    _error = ConnectionError.NoAvailableInterface;                    
-                }
+                if (_adaptersInUseRegex.IsMatch(pLine.Line))
+                    _error = ConnectionError.NoAvailableInterface;
 
                 if (pLine.Line.Contains("AUTH_FAILED"))
-                {
-                    _error = ConnectionError.Password;                    
-                }
+                    _error = ConnectionError.Password;
 
                 _output.Add(pLine);
                 if (OutputRecieved != null)
@@ -320,7 +304,6 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
         public void ClearOutput()
         {
             _output.Clear();
-            
         }
 
         public void SetCertificate(BaseMessage<SetConfigurationCertificateInfo> pRequest)
@@ -328,7 +311,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
             var certs = CertificateManager.Current.GetCertificates(_file.AuthorityCert);
             if (!certs.ToList().Exists(pX => pX.ThumbPrint == pRequest.Data.ThumbPrint))
             {
-                EventLogHelper.LogEvent("Error finding certificate with thumbprint: "+pRequest.Data.ThumbPrint);
+                EventLogHelper.LogEvent("Error finding certificate with thumbprint: " + pRequest.Data.ThumbPrint);
                 return;
             }
             _file.CertificateThumbPrint = pRequest.Data.ThumbPrint;
@@ -337,7 +320,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
         public void Delete()
         {
-            if(Status!=ConnectionStatus.Disconnected && Status!=ConnectionStatus.Disconnecting)
+            if (Status != ConnectionStatus.Disconnected && Status != ConnectionStatus.Disconnecting)
                 Disconnect(false);
             _file.Delete();
             if (Deleted != null)

@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -31,7 +32,7 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
 
     public class BaseMessage<TDataContract> : IMessage where TDataContract : new()
     {
-        private static DataContractSerializer _serializer = new DataContractSerializer(typeof (TDataContract));
+        private static readonly DataContractSerializer _serializer = new DataContractSerializer(typeof(TDataContract));
 
         public BaseMessage()
         {
@@ -51,7 +52,7 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
             get
             {
                 var sw = new StringWriter();
-                XmlWriter ms = XmlWriter.Create(sw);
+                var ms = XmlWriter.Create(sw);
                 _serializer.WriteObject(ms, Data);
                 ms.Flush();
                 return sw.ToString();
@@ -59,7 +60,7 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
             set
             {
                 var sr = new StringReader(value);
-                XmlReader ms = XmlReader.Create(sr);
+                var ms = XmlReader.Create(sr);
                 Data = (TDataContract) _serializer.ReadObject(ms);
             }
         }

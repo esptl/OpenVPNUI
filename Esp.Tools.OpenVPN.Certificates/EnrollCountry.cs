@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace Esp.Tools.OpenVPN.Certificates
 {
     public enum EnrollCountry
@@ -250,6 +251,6 @@ namespace Esp.Tools.OpenVPN.Certificates
         YU,
         ZR,
         ZM,
-        ZW,
+        ZW
     }
 }

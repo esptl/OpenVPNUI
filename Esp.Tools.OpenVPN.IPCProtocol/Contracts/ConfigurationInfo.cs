@@ -18,32 +18,30 @@
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Runtime.Serialization;
-using Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages.Contracts;
 
 namespace Esp.Tools.OpenVPN.IPCProtocol.Contracts
 {
     [DataContract]
     public class ConfigurationInfo
     {
+        private ConnectionConfigurationInfo _configuration;
+
         [DataMember]
         public string Name { get; set; }
 
         [DataMember]
         public ConnectionStatus ConnectionStatus { get; set; }
 
-
-        private ConnectionConfigurationInfo _configuration;
-
         [DataMember]
         public ConnectionConfigurationInfo Configuration
         {
             get
             {
-                if(_configuration==null)
+                if (_configuration == null)
                     _configuration = new ConnectionConfigurationInfo();
                 return _configuration;
             }
-            set { _configuration = value; }
+            set => _configuration = value;
         }
 
         [DataMember]

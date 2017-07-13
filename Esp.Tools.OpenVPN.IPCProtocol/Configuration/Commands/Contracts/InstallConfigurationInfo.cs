@@ -7,6 +7,5 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Commands.Contracts
     {
         [DataMember]
         public byte[] ConfigurationData { get; set; }
-
     }
 }

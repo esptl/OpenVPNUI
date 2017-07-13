@@ -39,11 +39,13 @@ namespace Esp.Tools.OpenVPN.Configuration
 
         public const int DIF_REGISTERDEVICE = 0x19;
         public const int SPDRP_HARDWAREID = 1;
-        public const int DIGCF_PRESENT = (0x00000002);
+        public const int DIGCF_PRESENT = 0x00000002;
         public const int MAX_DEV_LEN = 1000;
-        public const int SPDRP_FRIENDLYNAME = (0x0000000C);
+
+        public const int SPDRP_FRIENDLYNAME = 0x0000000C;
+
         // FriendlyName (R/W)
-        public const int SPDRP_DEVICEDESC = (0x00000000);
+        public const int SPDRP_DEVICEDESC = 0x00000000;
 
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiGetINFClass(
@@ -52,13 +54,13 @@ namespace Esp.Tools.OpenVPN.Configuration
             string pClassName,
             int pClassNameSize,
             int pRequiredSize
-            );
+        );
 
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern IntPtr SetupDiCreateDeviceInfoList(
             ref Guid pClassGuid,
             IntPtr pHwndParent
-            );
+        );
 
         [DllImport("Setupapi.dll")]
         public static extern bool SetupDiCreateDeviceInfo(IntPtr DeviceInfoSet, string DeviceName, ref Guid ClassGuid,
@@ -72,24 +74,25 @@ namespace Esp.Tools.OpenVPN.Configuration
             int pProperty,
             string pPropertyBuffer,
             int pPropertyBufferSize
-            );
+        );
 
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiCallClassInstaller(
             uint pInstallFunction,
             IntPtr pDeviceInfoSet,
             ref SP_DEVINFO_DATA pDeviceInfoData
-            );
+        );
 
         [DllImport("newdev.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool UpdateDriverForPlugAndPlayDevices(IntPtr pHwndParent,
-            [In, MarshalAs(UnmanagedType.LPTStr)] string pHardwareId,
-            [In, MarshalAs(UnmanagedType.LPTStr)] string pFullInfPath, INSTALLFLAG pInstallFlags, IntPtr pBRebootRequired);
+            [In] [MarshalAs(UnmanagedType.LPTStr)] string pHardwareId,
+            [In] [MarshalAs(UnmanagedType.LPTStr)] string pFullInfPath, INSTALLFLAG pInstallFlags,
+            IntPtr pBRebootRequired);
 
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiDestroyDeviceInfoList(
             IntPtr pDeviceInfoSet
-            );
+        );
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern int GetLastError();
@@ -118,7 +121,7 @@ namespace Esp.Tools.OpenVPN.Configuration
             StringBuilder pPropertyBuffer,
             uint pPropertyBufferSize,
             out uint pRequiredSize
-            );
+        );
 
         public static int EnumerateDevices(uint pDeviceIndex,
             string pClassName,
@@ -158,7 +161,7 @@ namespace Esp.Tools.OpenVPN.Configuration
             //get device info set for our device class
             var newDeviceInfoSet = SetupDiGetClassDevsA(ref guids[0], 0, IntPtr.Zero,
                 DIGCF_PRESENT);
-            if (newDeviceInfoSet == IntPtr.Add(IntPtr.Zero,-1))
+            if (newDeviceInfoSet == IntPtr.Add(IntPtr.Zero, -1))
                 if (!res)
                 {
                     //device information is unavailable:
@@ -230,9 +233,7 @@ namespace Esp.Tools.OpenVPN.Configuration
             var guid = new Guid();
             // var inf = 
             if (SetupApi.SetupDiGetINFClass(_infPath, ref guid, ClassName, 32, 0))
-            {
                 return guid;
-            }
             throw new IOException("Inf file could not be loaded");
         }
 
@@ -251,7 +252,7 @@ namespace Esp.Tools.OpenVPN.Configuration
             var cont = true;
             for (var i = 0; cont; i++)
             {
-                deviceInfoData.cbSize = (uint) Marshal.SizeOf(typeof (SetupApi.SP_DEVINFO_DATA));
+                deviceInfoData.cbSize = (uint) Marshal.SizeOf(typeof(SetupApi.SP_DEVINFO_DATA));
                 ;
                 //is devices exist for class
                 deviceInfoData.DevInst = 0;
@@ -311,7 +312,7 @@ namespace Esp.Tools.OpenVPN.Configuration
 
             var deviceInfoSet = SetupApi.SetupDiCreateDeviceInfoList(ref guid, IntPtr.Zero);
             var da = new SetupApi.SP_DEVINFO_DATA();
-            da.cbSize = (uint) Marshal.SizeOf(typeof (SetupApi.SP_DEVINFO_DATA));
+            da.cbSize = (uint) Marshal.SizeOf(typeof(SetupApi.SP_DEVINFO_DATA));
             var success = SetupApi.SetupDiCreateDeviceInfo(deviceInfoSet, ClassName, ref guid, null,
                 IntPtr.Zero, 0x00000001, ref da);
             if (!success)

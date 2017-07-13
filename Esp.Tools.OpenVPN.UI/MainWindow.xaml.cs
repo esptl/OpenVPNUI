@@ -16,125 +16,115 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
-using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Threading;
 using Esp.Tools.OpenVPN.UI.Model;
 using Application = System.Windows.Application;
-using ContextMenu = System.Windows.Forms.ContextMenu;
-using MenuItem = System.Windows.Forms.MenuItem;
-using MessageBox = System.Windows.MessageBox;
-using Point = System.Drawing.Point;
-using TextBox = System.Windows.Controls.TextBox;
-using UserControl = System.Windows.Controls.UserControl;
 
 namespace Esp.Tools.OpenVPN.UI
 {
-    
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        public enum Orientation
+        {
+            UpDown,
+            DownUp,
+            LeftRight,
+            RightLeft
+        }
+
+        private const int DispayTimeOut = 250;
         private readonly ConnectionsViewModel _context;
         private readonly NotifyIcon _notify;
-        private Timer _timer;
-        private System.Windows.Point _basePosition;
         private bool _aboutShowing;
-        private const int DispayTimeOut = 250;
-
-     
-        public enum Orientation { UpDown, DownUp, LeftRight, RightLeft }
+        private Point _basePosition;
+        private readonly Timer _timer;
 
         public MainWindow()
         {
             InitializeComponent();
-            
+
             _timer = new Timer();
             _timer.Interval = DispayTimeOut;
             _timer.Tick += (s, o) =>
-                               {
-                                   FadeOut();
-                                   _timer.Enabled = false;
-                               };
+            {
+                FadeOut();
+                _timer.Enabled = false;
+            };
             _context = new ConnectionsViewModel();
             FormFadeOut.Completed += (s, o) => Hide();
-            
+
             _notify = new NotifyIcon {Text = "VPN Client", Icon = Properties.Resources.disconnected, Visible = true};
-            _notify.MouseClick+=(pS,pArg)=>
-            
-                                 {
-                                     
-                                     if (!_aboutShowing && pArg.Button==MouseButtons.Left)
-                                     {
-                                         _timer.Enabled = false;
-                                         if (!IsVisible)
-                                         {
-                                             Show();
-                                             Activate();
-                                             FormFade.Begin();
-                                         }
-                                         else
-                                         {
-                                             FadeOut();
-                                         }
-                                     }
-                                 };
+            _notify.MouseClick += (pS, pArg) =>
+
+            {
+                if (!_aboutShowing && pArg.Button == MouseButtons.Left)
+                {
+                    _timer.Enabled = false;
+                    if (!IsVisible)
+                    {
+                        Show();
+                        Activate();
+                        FormFade.Begin();
+                    }
+                    else
+                    {
+                        FadeOut();
+                    }
+                }
+            };
 
             _notify.ContextMenu = new ContextMenu(new[]
-                                                      {
-                                                          new MenuItem("&About",
-                                                                       (pS, pE) => ShowAboutDialog()),
-                                                          new System.Windows.Forms.MenuItem("-"), 
-                                                          new MenuItem("&Exit",
-                                                                       (pS, pE) => Application.Current.Shutdown()),
-                                                          
-                                                          
-                                                      });
+            {
+                new MenuItem("&About",
+                    (pS, pE) => ShowAboutDialog()),
+                new MenuItem("-"),
+                new MenuItem("&Exit",
+                    (pS, pE) => Application.Current.Shutdown())
+            });
 
             _context.NewConnection += pCon => UpdateNotifyIcon();
             _context.Connecting += pCon => UpdateNotifyIcon();
             DataContext = _context;
             _context.Connected +=
                 pCon =>
-                Dispatcher.BeginInvoke(
-                    new Action(() =>
-                                   {
-                                       if(!IsActive)
-                                       _notify.ShowBalloonTip(2000, "OpenVPN", "You are connected to " + pCon.Name,
-                                                              ToolTipIcon.Info);
-                                       UpdateNotifyIcon();
-                                   }));
+                    Dispatcher.BeginInvoke(
+                        new Action(() =>
+                        {
+                            if (!IsActive)
+                                _notify.ShowBalloonTip(2000, "OpenVPN", "You are connected to " + pCon.Name,
+                                    ToolTipIcon.Info);
+                            UpdateNotifyIcon();
+                        }));
             _context.Disconnected += pCon => Dispatcher.BeginInvoke(
                 new Action(
                     () =>
-                        {
-                            if (!IsActive)
+                    {
+                        if (!IsActive)
                             _notify.ShowBalloonTip(2000, "OpenVPN", "You are disconnected from " + pCon.Name,
-                                                   ToolTipIcon.Info);
-                            UpdateNotifyIcon();
-                        }));
-            
+                                ToolTipIcon.Info);
+                        UpdateNotifyIcon();
+                    }));
         }
 
         private void ShowAboutDialog()
         {
-        //    _notify.Visible = false;
+            //    _notify.Visible = false;
             _aboutShowing = true;
             var aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
             _aboutShowing = false;
-          //  _notify.Visible = true;
+            //  _notify.Visible = true;
         }
 
         private void FadeOut()
         {
-            if(!_context.AnyAuthenticating)
+            if (!_context.AnyAuthenticating)
                 FormFadeOut.Begin();
         }
 
@@ -148,32 +138,25 @@ namespace Esp.Tools.OpenVPN.UI
                 _notify.Icon = Properties.Resources.disconnected;
         }
 
-       
-
 
         private void Window_Loaded(object pSender, RoutedEventArgs pE)
         {
-
             var source = PresentationSource.FromVisual(this);
             var transformToDevice = source.CompositionTarget.TransformFromDevice;
             var p = TrayInfo.GetTrayLocation();
-            foreach(var screen in Screen.AllScreens)
-            {
-                if(!screen.Bounds.Equals(screen.WorkingArea))
+            foreach (var screen in Screen.AllScreens)
+                if (!screen.Bounds.Equals(screen.WorkingArea))
                 {
-                    
                 }
-            }
 
-            _basePosition = transformToDevice.Transform(new System.Windows.Point(p.X, p.Y));
+            _basePosition = transformToDevice.Transform(new Point(p.X, p.Y));
             _basePosition.Y -= 4;
             //_basePosition.X -= 11;
 
             Height = _basePosition.Y < 0 ? 0 : _basePosition.Y;
             Top = 5;
-          
+
             Left = _basePosition.X - Width;
-         
         }
 
         private void Window_Deactivated(object pSender, EventArgs pE)
@@ -183,14 +166,12 @@ namespace Esp.Tools.OpenVPN.UI
 
         private void Window_SizeChanged(object pSender, SizeChangedEventArgs e)
         {
-           // var top = _border.Margin.Top;
+            // var top = _border.Margin.Top;
 
-           // var delta = e.NewSize.Height - e.PreviousSize.Height;
+            // var delta = e.NewSize.Height - e.PreviousSize.Height;
 
-            var top =  _basePosition.Y - items.DesiredSize.Height;  // _basePosition.Y - _content.ActualHeight;
+            var top = _basePosition.Y - items.DesiredSize.Height; // _basePosition.Y - _content.ActualHeight;
             _border.Margin = new Thickness(0, top, 0, 0);
         }
-
-
     }
 }

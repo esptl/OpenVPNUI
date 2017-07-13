@@ -25,27 +25,21 @@ namespace Esp.Tools.OpenVPN.Client
         {
         }
 
-        protected override IEnumerable<IMessageReader> MessageReaders
+        protected override IEnumerable<IMessageReader> MessageReaders => new IMessageReader[]
         {
-            get
-            {
-                return new IMessageReader[]
-                           {
-                               new MessageReader<CertificatesInfo>(AvailableCertificatesMessage.MessageKey)
-                                   {MessageRecieved = OnAvailableCertificates},
-                               new MessageReader<ConfigurationsInfo>(ConfigurationsMessage.MessageKey)
-                                   {MessageRecieved = OnConfigurations},
-                               new MessageReader<EnrollRequestResponseInfo>(EnrollRequestResponseMessage.MessageKey)
-                                   {MessageRecieved = OnEnrollRequestResponse},
-                               new MessageReader<EnrollResponseInfo>(EnrollResponseMessage.MessageKey)
-                                   {MessageRecieved = OnEnrollResponse}
-                           };
-            }
-        }
+            new MessageReader<CertificatesInfo>(AvailableCertificatesMessage.MessageKey)
+                {MessageRecieved = OnAvailableCertificates},
+            new MessageReader<ConfigurationsInfo>(ConfigurationsMessage.MessageKey)
+                {MessageRecieved = OnConfigurations},
+            new MessageReader<EnrollRequestResponseInfo>(EnrollRequestResponseMessage.MessageKey)
+                {MessageRecieved = OnEnrollRequestResponse},
+            new MessageReader<EnrollResponseInfo>(EnrollResponseMessage.MessageKey)
+                {MessageRecieved = OnEnrollResponse}
+        };
 
         public ConfigurationInfo[] Configurations
         {
-            get { return _configurations; }
+            get => _configurations;
             set
             {
                 _configurations = value;
@@ -56,7 +50,7 @@ namespace Esp.Tools.OpenVPN.Client
 
         public CertificateDetails[] Certificates
         {
-            get { return _certificates; }
+            get => _certificates;
             set
             {
                 _certificates = value;
@@ -65,10 +59,7 @@ namespace Esp.Tools.OpenVPN.Client
             }
         }
 
-        public bool IsConnected
-        {
-            get { return _pipe.IsConnected; }
-        }
+        public bool IsConnected => _pipe.IsConnected;
 
         private void OnEnrollResponse(BaseMessage<EnrollResponseInfo> pMessage)
         {
@@ -120,7 +111,10 @@ namespace Esp.Tools.OpenVPN.Client
 
         public void SendDeleteConfigurationCommand(string pConfigurationName)
         {
-            SendCommand(new DeleteConfigurationCommand {Data = new DeleteConfigurationInfo {Name = pConfigurationName}});
+            SendCommand(new DeleteConfigurationCommand
+            {
+                Data = new DeleteConfigurationInfo {Name = pConfigurationName}
+            });
         }
 
         public void SendInstallConfigurationCommand(ConnectionDefinitionFile pConnectionFile)
@@ -128,17 +122,17 @@ namespace Esp.Tools.OpenVPN.Client
             var ms = new MemoryStream();
             pConnectionFile.Save(ms);
             SendCommand(new InstallConfigurationCommand
-                            {Data = new InstallConfigurationInfo {ConfigurationData = ms.ToArray()}});
+                {Data = new InstallConfigurationInfo {ConfigurationData = ms.ToArray()}});
         }
 
         public void SendSetConfigurationCertificateCommand(string pConfigurationName, CertificateDetails pCertificate)
         {
             SendCommand(new SetConfigurationCertificateCommand
-                            {
-                                Data =
-                                    new SetConfigurationCertificateInfo
-                                        {ThumbPrint = pCertificate.ThumbPrint, Name = pConfigurationName}
-                            });
+            {
+                Data =
+                    new SetConfigurationCertificateInfo
+                        {ThumbPrint = pCertificate.ThumbPrint, Name = pConfigurationName}
+            });
         }
 
         public void SendImportPfxCommand(byte[] pPfxData, string pPassword)

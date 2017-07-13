@@ -16,12 +16,13 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Windows.Controls;
 
 namespace Esp.Tools.OpenVPN.UI
 {
     /// <summary>
-    /// Interaction logic for ConnectionSelected.xaml
+    ///     Interaction logic for ConnectionSelected.xaml
     /// </summary>
     public partial class ConnectedView : UserControl
     {
@@ -29,6 +30,5 @@ namespace Esp.Tools.OpenVPN.UI
         {
             InitializeComponent();
         }
-
     }
 }

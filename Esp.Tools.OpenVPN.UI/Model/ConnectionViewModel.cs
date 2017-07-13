@@ -49,14 +49,15 @@ namespace Esp.Tools.OpenVPN.UI.Model
         private bool _isConnectingCanceled;
         private bool _isConnectingWithAuth;
 
-        private Int64 _lastIn, _lastOut;
+        private long _lastIn, _lastOut;
         private string _password;
         private bool _showLog;
         private ConnectionStatus _status;
         private string _totalBandwidthText;
         private string _username;
 
-        public ConnectionViewModel(ConnectionsViewModel pConnections, ControllerPipeClient pPipeClient, BaseMessage<ConfigurationInfo> pInfo)
+        public ConnectionViewModel(ConnectionsViewModel pConnections, ControllerPipeClient pPipeClient,
+            BaseMessage<ConfigurationInfo> pInfo)
         {
             _timer = new Timer(1000);
             _timer.Elapsed += OnTimer;
@@ -101,23 +102,18 @@ namespace Esp.Tools.OpenVPN.UI.Model
                         if (!ShowLog && _connections.AnyShowLog)
                             ShowLog = true;
                         if (pInfo.Data.RequiresUsername)
-                        {
                             Status = ConnectionStatus.Authenticating;
-                        }
                         else
-                        {
                             Status = ConnectionStatus.Connecting;
-                        }
                         _ignoreConnecting = true;
                     }
                     var thread = new Thread(
                         () =>
                         {
                             Thread.Sleep(300);
-                            if ((Status == ConnectionStatus.Connecting) &&
+                            if (Status == ConnectionStatus.Connecting &&
                                 _ignoreConnecting)
                             {
-                              
                             }
                             else
                             {
@@ -130,20 +126,16 @@ namespace Esp.Tools.OpenVPN.UI.Model
                 }, pObj => true);
         }
 
-        public BasicCommand CopyLogCommand
-        {
-            get; private set; }
+        public BasicCommand CopyLogCommand { get; }
 
-        public BasicCommand ClearLogCommand
-        {
-            get; private set; }
+        public BasicCommand ClearLogCommand { get; }
 
         public int Index { get; set; }
-        public string Name { get; private set; }
+        public string Name { get; }
 
         public string TotalBandwidthText
         {
-            get { return _totalBandwidthText; }
+            get => _totalBandwidthText;
             set
             {
                 _totalBandwidthText = value;
@@ -158,7 +150,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
             {
                 if (_status != value)
                 {
-                    ConnectionStatus oldStatus = _status;
+                    var oldStatus = _status;
                     _status = value;
                     OnPropertyChanged("Status");
                     OnPropertyChanged("ConnectButtonName");
@@ -196,7 +188,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         public string Username
         {
-            get { return _username; }
+            get => _username;
             set
             {
                 _username = value;
@@ -208,7 +200,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         public bool IsConnectingCanceled
         {
-            get { return _isConnectingCanceled; }
+            get => _isConnectingCanceled;
             set
             {
                 _isConnectingCanceled = value;
@@ -218,7 +210,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         public bool IsAuthenticatingCanceled
         {
-            get { return _isAuthenticatingCanceled; }
+            get => _isAuthenticatingCanceled;
             set
             {
                 _isAuthenticatingCanceled = value;
@@ -229,7 +221,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         public string Password
         {
-            get { return _password; }
+            get => _password;
             set
             {
                 _password = value;
@@ -258,24 +250,15 @@ namespace Esp.Tools.OpenVPN.UI.Model
             }
         }
 
-        public bool IsConnected
-        {
-            get { return Status == ConnectionStatus.Connected; }
-        }
+        public bool IsConnected => Status == ConnectionStatus.Connected;
 
-        public bool IsAuthenticating
-        {
-            get { return Status == ConnectionStatus.Authenticating && !IsAuthenticatingCanceled; }
-        }
+        public bool IsAuthenticating => Status == ConnectionStatus.Authenticating && !IsAuthenticatingCanceled;
 
-        public bool IsConnecting
-        {
-            get { return Status == ConnectionStatus.Connecting && !IsConnectingWithAuth; }
-        }
+        public bool IsConnecting => Status == ConnectionStatus.Connecting && !IsConnectingWithAuth;
 
         public bool IsConnectingWithAuth
         {
-            get { return _isConnectingWithAuth; }
+            get => _isConnectingWithAuth;
             set
             {
                 _isConnectingWithAuth = value;
@@ -283,15 +266,9 @@ namespace Esp.Tools.OpenVPN.UI.Model
             }
         }
 
-        public bool IsDisconnected
-        {
-            get { return Status == ConnectionStatus.Disconnected && Error == ConnectionError.None; }
-        }
+        public bool IsDisconnected => Status == ConnectionStatus.Disconnected && Error == ConnectionError.None;
 
-        public bool IsError
-        {
-            get { return Status == ConnectionStatus.Disconnected && Error != ConnectionError.None; }
-        }
+        public bool IsError => Status == ConnectionStatus.Disconnected && Error != ConnectionError.None;
 
         public ConnectionError Error { get; set; }
 
@@ -317,17 +294,14 @@ namespace Esp.Tools.OpenVPN.UI.Model
             }
         }
 
-        public bool IsDisconnecting
-        {
-            get { return Status == ConnectionStatus.Disconnecting && !IsConnectingCanceled && !IsAuthenticatingCanceled; }
-        }
+        public bool IsDisconnecting => Status == ConnectionStatus.Disconnecting && !IsConnectingCanceled &&
+                                       !IsAuthenticatingCanceled;
 
         public string InterfaceID
         {
-            get { return _interfaceId; }
+            get => _interfaceId;
             set
             {
-        
                 _interfaceId = value;
                 NetworkInterface =
                     NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(pX => pX.Id == "{" + value + "}");
@@ -337,15 +311,9 @@ namespace Esp.Tools.OpenVPN.UI.Model
             }
         }
 
-        void NetworkChange_NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
-        {
-            
-            throw new NotImplementedException();
-        }
-
         public string IpAddress
         {
-            get { return _ipAddress; }
+            get => _ipAddress;
             set
             {
                 _ipAddress = value;
@@ -371,10 +339,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
             }
         }
 
-        public bool HideLog
-        {
-            get { return !ShowLog; }
-        }
+        public bool HideLog => !ShowLog;
 
         public NetworkInterface NetworkInterface { get; set; }
 
@@ -382,7 +347,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         public string DnsAddresses
         {
-            get { return _dnsAddresses; }
+            get => _dnsAddresses;
             set
             {
                 _dnsAddresses = value;
@@ -392,12 +357,17 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         public string BandwidthText
         {
-            get { return _bandwidthText; }
+            get => _bandwidthText;
             set
             {
                 _bandwidthText = value;
                 OnPropertyChanged("BandwidthText");
             }
+        }
+
+        private void NetworkChange_NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnLogin()
@@ -417,24 +387,25 @@ namespace Esp.Tools.OpenVPN.UI.Model
 
         private void OnCopyLog()
         {
-            bool keepGoing= true;
-            while(keepGoing)
-            try
-            {
-                var txt = Text.Replace("\n", "\r\n");
-                Clipboard.SetText(txt);
-                keepGoing = false;
-            } catch(Exception)
-            {
-                Thread.Sleep(50);
-            }
+            var keepGoing = true;
+            while (keepGoing)
+                try
+                {
+                    var txt = Text.Replace("\n", "\r\n");
+                    Clipboard.SetText(txt);
+                    keepGoing = false;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(50);
+                }
         }
 
         private string ConvertAmount(long pAmount)
         {
-            long cur = pAmount;
-            int multiple = 1;
-            int index = 0;
+            var cur = pAmount;
+            var multiple = 1;
+            var index = 0;
             while (cur > 1024)
             {
                 cur /= 1024;
@@ -447,11 +418,11 @@ namespace Esp.Tools.OpenVPN.UI.Model
                 case 0: // bytes
                     return pAmount + "b";
                 case 1: // k
-                    return string.Format("{0:0.00}k", amt/multiple);
+                    return string.Format("{0:0.00}k", amt / multiple);
                 case 2: // mb
-                    return string.Format("{0:0.00}mb", amt/multiple);
+                    return string.Format("{0:0.00}mb", amt / multiple);
                 default: // gb
-                    return string.Format("{0:0.00}gb", amt/multiple);
+                    return string.Format("{0:0.00}gb", amt / multiple);
             }
         }
 
@@ -459,13 +430,13 @@ namespace Esp.Tools.OpenVPN.UI.Model
         {
             if (NetworkInterface != null)
             {
-                IPv4InterfaceStatistics stats = NetworkInterface.GetIPv4Statistics();
-                long totalIn = stats.BytesReceived - _lastIn;
-                long totalOut = stats.BytesSent - _lastOut;
+                var stats = NetworkInterface.GetIPv4Statistics();
+                var totalIn = stats.BytesReceived - _lastIn;
+                var totalOut = stats.BytesSent - _lastOut;
                 BandwidthText = string.Format("{0}s/{1}s",
-                                              new object[] {ConvertAmount(totalIn), ConvertAmount(totalOut)});
+                    new object[] {ConvertAmount(totalIn), ConvertAmount(totalOut)});
                 TotalBandwidthText = string.Format("{0}/{1}", ConvertAmount(stats.BytesReceived),
-                                                   ConvertAmount(stats.BytesSent));
+                    ConvertAmount(stats.BytesSent));
                 _lastIn = stats.BytesReceived;
                 _lastOut = stats.BytesSent;
             }
@@ -487,28 +458,28 @@ namespace Esp.Tools.OpenVPN.UI.Model
         {
             if (NetworkInterface != null)
             {
-                IPInterfaceProperties ip = NetworkInterface.GetIPProperties();
+                var ip = NetworkInterface.GetIPProperties();
                 IpAddress =
-                    ip.UnicastAddresses.Where(pX => pX.Address.AddressFamily != AddressFamily.InterNetworkV6).Aggregate(
-                        "",
-                        (pAccum, pItem) =>
-                        pAccum +
-                        pItem.Address.
-                            ToString() + " ");
+                    ip.UnicastAddresses.Where(pX => pX.Address.AddressFamily != AddressFamily.InterNetworkV6)
+                        .Aggregate(
+                            "",
+                            (pAccum, pItem) =>
+                                pAccum +
+                                pItem.Address.ToString() + " ");
                 DnsAddresses =
-                    ip.DnsAddresses.Where(pX => pX.AddressFamily != AddressFamily.InterNetworkV6).Aggregate("",
-                                                                                                            (pAccum,
-                                                                                                             pItem) =>
-                                                                                                            pAccum +
-                                                                                                            pItem.
-                                                                                                                ToString
-                                                                                                                () + " ");
+                    ip.DnsAddresses.Where(pX => pX.AddressFamily != AddressFamily.InterNetworkV6)
+                        .Aggregate("",
+                            (pAccum,
+                                    pItem) =>
+                                    pAccum +
+                                    pItem.ToString
+                                        () + " ");
 
-                IPv4InterfaceStatistics stats = NetworkInterface.GetIPv4Statistics();
+                var stats = NetworkInterface.GetIPv4Statistics();
                 _lastIn = stats.BytesReceived;
                 _lastOut = stats.BytesSent;
                 _timer.Enabled = true;
-                long x = stats.BytesReceived;
+                var x = stats.BytesReceived;
             }
             if (Connected != null)
                 Connected();
@@ -535,9 +506,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
             if (Text == null)
                 Text = pInfo.Data.Line;
             else
-            {
                 Text += "\n" + pInfo.Data.Line;
-            }
             OnPropertyChanged("Text");
         }
 

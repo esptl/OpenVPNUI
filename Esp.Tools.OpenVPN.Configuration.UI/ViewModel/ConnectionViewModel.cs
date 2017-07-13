@@ -19,124 +19,100 @@
 
 using System;
 using System.Collections.Generic;
-using System.DirectoryServices.AccountManagement;
+using System.Linq;
 using Esp.Tools.OpenVPN.Certificates;
 using Esp.Tools.OpenVPN.Client;
 using Esp.Tools.OpenVPN.ConnectionFile;
 using Esp.Tools.OpenVPN.IPCProtocol.Contracts;
 using Esp.Tools.OpenVPN.SharedUI;
-using System.Linq;
 
 namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 {
     public class SaveLevelViewModel : ViewModelBase
     {
-        private readonly ConnectionSaveLevel _level;
-        private readonly string _description;
-
         public SaveLevelViewModel(ConnectionSaveLevel pLevel, string pDescription)
         {
-            _level = pLevel;
-            _description = pDescription;
+            Level = pLevel;
+            Description = pDescription;
         }
 
-        public ConnectionSaveLevel Level
-        {
-            get { return _level; }
-        }
+        public ConnectionSaveLevel Level { get; }
 
-        public string Description
-        {
-            get { return _description; }
-        }
+        public string Description { get; }
 
         public bool Equals(SaveLevelViewModel other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(other._level, _level);
+            return Equals(other.Level, Level);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (SaveLevelViewModel)) return false;
+            if (obj.GetType() != typeof(SaveLevelViewModel)) return false;
             return Equals((SaveLevelViewModel) obj);
         }
 
         public override int GetHashCode()
         {
-            return _level.GetHashCode();
+            return Level.GetHashCode();
         }
 
         public override string ToString()
         {
-            return  _description;
+            return Description;
         }
     }
+
     public class ConnectionViewModel : ViewModelBase
     {
         private readonly ConfigurationPipeClient _configClient;
         private readonly ConfigurationInfo _configurationInfo;
 
-        public ConnectionViewModel(ConfigurationPipeClient pConfigClient,ConfigurationInfo pConfigurationInfo)
+        public ConnectionViewModel(ConfigurationPipeClient pConfigClient, ConfigurationInfo pConfigurationInfo)
         {
             _configClient = pConfigClient;
             _configurationInfo = pConfigurationInfo;
         }
 
-        public override string ToString()
+        public IEnumerable<SaveLevelViewModel> AvailableSaveLevels => new[]
         {
-            return string.Format("{0}", _configurationInfo.Name);
-        }
-
-        public IEnumerable<SaveLevelViewModel> AvailableSaveLevels
-        {
-            get
-            {
-                return new[]
-                           {
-                               new SaveLevelViewModel(ConnectionSaveLevel.Session,
-                                                      "Save password for session."),
-                               new SaveLevelViewModel(ConnectionSaveLevel.Persistent,
-                                                      "Save password perminantly."),
-                               new SaveLevelViewModel(ConnectionSaveLevel.None, "Never save password."),
-                               new SaveLevelViewModel(ConnectionSaveLevel.Both,
-                                                      "Allow user to choose."),
-                           };
-            }
-        } 
+            new SaveLevelViewModel(ConnectionSaveLevel.Session,
+                "Save password for session."),
+            new SaveLevelViewModel(ConnectionSaveLevel.Persistent,
+                "Save password perminantly."),
+            new SaveLevelViewModel(ConnectionSaveLevel.None, "Never save password."),
+            new SaveLevelViewModel(ConnectionSaveLevel.Both,
+                "Allow user to choose.")
+        };
 
         public ConnectionCertItemViewModel[] AvailableCertificates
         {
             get
             {
-                return  _configClient.Certificates.Where(
-                    pX => pX.ChainThumbPrints.Length>1 && pX.ChainThumbPrints.ToList().Contains(_configurationInfo.AuthorityThumbPrint)).Select(pX=>new ConnectionCertItemViewModel(this, pX)).ToArray();
+                return _configClient.Certificates.Where(
+                        pX => pX.ChainThumbPrints.Length > 1 && pX.ChainThumbPrints.ToList()
+                                  .Contains(_configurationInfo.AuthorityThumbPrint))
+                    .Select(pX => new ConnectionCertItemViewModel(this, pX))
+                    .ToArray();
             }
         }
 
         public string ThumbPrint
         {
-            get { return _configurationInfo.ThumbPrint; }
-            set { _configurationInfo.ThumbPrint = value; }
-        }
-
-        internal void UseCert(CertificateDetails pCertificate)
-        {
-            _configurationInfo.ThumbPrint = pCertificate.ThumbPrint;
-            OnPropertyChanged("Issuer");
-            OnPropertyChanged("SubjectName");
-            OnPropertyChanged("ThumbPrint");
-            _configClient.SendSetConfigurationCertificateCommand(_configurationInfo.Name,pCertificate);
+            get => _configurationInfo.ThumbPrint;
+            set => _configurationInfo.ThumbPrint = value;
         }
 
         public ConnectionCertItemViewModel Certificate
         {
             get
             {
-                return string.IsNullOrEmpty(ThumbPrint) ? null :AvailableCertificates.FirstOrDefault(pX => pX.Details.ThumbPrint == ThumbPrint);
+                return string.IsNullOrEmpty(ThumbPrint)
+                    ? null
+                    : AvailableCertificates.FirstOrDefault(pX => pX.Details.ThumbPrint == ThumbPrint);
             }
 
             set
@@ -144,30 +120,35 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
                 if (value == null)
                     ThumbPrint = null;
                 else
-                {
                     UseCert(value.Details);
-                }
-
             }
         }
 
-        
+
         public SaveLevelViewModel KeyAuthSaveLevel
         {
-            get { return
-               AvailableSaveLevels.First(pX=>pX.Level== _configurationInfo.Configuration.KeyAuthSaveLevel); }
-            set { _configurationInfo.Configuration.KeyAuthSaveLevel = value.Level; }
+            get
+            {
+                return
+                    AvailableSaveLevels.First(pX => pX.Level == _configurationInfo.Configuration.KeyAuthSaveLevel);
+            }
+            set => _configurationInfo.Configuration.KeyAuthSaveLevel = value.Level;
         }
 
         public SaveLevelViewModel RemoteAuthSaveLevel
         {
-            get { return AvailableSaveLevels.First(pX=>pX.Level== _configurationInfo.Configuration.RemoteAuthSaveLevel); }
-            set { _configurationInfo.Configuration.RemoteAuthSaveLevel = value.Level; }
+            get
+            {
+                return AvailableSaveLevels.First(
+                    pX => pX.Level == _configurationInfo.Configuration.RemoteAuthSaveLevel);
+            }
+            set => _configurationInfo.Configuration.RemoteAuthSaveLevel = value.Level;
         }
 
         public string SubjectName
         {
-            get { 
+            get
+            {
                 var cert = Certificate;
                 return cert != null ? cert.Details.CommonName : null;
             }
@@ -196,19 +177,27 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             get
             {
                 var cert = Certificate;
-                return cert != null ? cert.Details.ValidTo: DateTime.Now;
+                return cert != null ? cert.Details.ValidTo : DateTime.Now;
             }
         }
 
 
-        public bool HasCert
+        public bool HasCert => Certificate != null;
+
+        public bool HasNoCert => !HasCert;
+
+        public override string ToString()
         {
-            get { return Certificate != null; }
+            return string.Format("{0}", _configurationInfo.Name);
         }
 
-        public bool HasNoCert
+        internal void UseCert(CertificateDetails pCertificate)
         {
-            get { return !HasCert; }
+            _configurationInfo.ThumbPrint = pCertificate.ThumbPrint;
+            OnPropertyChanged("Issuer");
+            OnPropertyChanged("SubjectName");
+            OnPropertyChanged("ThumbPrint");
+            _configClient.SendSetConfigurationCertificateCommand(_configurationInfo.Name, pCertificate);
         }
     }
 }

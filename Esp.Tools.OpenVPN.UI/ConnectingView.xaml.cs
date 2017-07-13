@@ -16,12 +16,13 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Windows.Controls;
 
 namespace Esp.Tools.OpenVPN.UI
 {
     /// <summary>
-    /// Interaction logic for ConnectingView.xaml
+    ///     Interaction logic for ConnectingView.xaml
     /// </summary>
     public partial class ConnectingView : UserControl
     {

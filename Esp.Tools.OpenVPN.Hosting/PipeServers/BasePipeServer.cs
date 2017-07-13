@@ -10,11 +10,11 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
     public abstract class BasePipeServer
     {
         private const int BufferSize = 200000;
+        private readonly byte[] _buffer = new byte[BufferSize];
+        private readonly int _maxConnections;
 
         private readonly string _pipeName;
-        private readonly int _maxConnections;
         private IEnumerable<IMessageReader> _messageReaders;
-        private readonly byte[] _buffer = new byte[BufferSize];
 
         private NamedPipeServerStream _pipeServer;
         private IAsyncResult _readAsync;
@@ -26,35 +26,35 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             Initialize();
         }
 
+        protected abstract IEnumerable<PipeAccessRule> PipeAccessRules { get; }
+        protected abstract IEnumerable<IMessageReader> MessageReaders { get; }
+
         private void Initialize()
         {
             _messageReaders = MessageReaders;
 
             var pipeSecurity = new PipeSecurity();
-            
-            foreach(var rule in PipeAccessRules)
+
+            foreach (var rule in PipeAccessRules)
                 pipeSecurity.AddAccessRule(rule);
 
-            _pipeServer = 
+            _pipeServer =
                 new NamedPipeServerStream(
-                    _pipeName, 
+                    _pipeName,
                     PipeDirection.InOut,
-                     _maxConnections, 
+                    _maxConnections,
                     PipeTransmissionMode.Message,
                     PipeOptions.Asynchronous,
                     BufferSize,
-                    BufferSize, 
+                    BufferSize,
                     pipeSecurity);
 
             _pipeServer.BeginWaitForConnection(WaitForConnection, null);
         }
 
-        protected abstract IEnumerable<PipeAccessRule> PipeAccessRules { get;  }
-        protected abstract IEnumerable<IMessageReader> MessageReaders { get; } 
-
         private void WaitForRead(IAsyncResult pAr)
         {
-            int read = _pipeServer.EndRead(_readAsync);
+            var read = _pipeServer.EndRead(_readAsync);
             if (read == 0)
             {
                 _pipeServer.Disconnect();
@@ -66,7 +66,7 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             {
                 var buf = new byte[read];
                 Array.Copy(_buffer, 0, buf, 0, read);
-                UtilityMethods.ReadMessage(buf,_messageReaders);
+                UtilityMethods.ReadMessage(buf, _messageReaders);
                 _readAsync = _pipeServer.BeginRead(_buffer, 0, _buffer.Length, WaitForRead, null);
             }
         }
@@ -75,8 +75,8 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
         {
             _pipeServer.EndWaitForConnection(pAr);
             OnConnection();
-            
-            UtilityMethods.WriteCommandResult(_pipeServer,new InitializedMessage(0));
+
+            UtilityMethods.WriteCommandResult(_pipeServer, new InitializedMessage(0));
             _readAsync = _pipeServer.BeginRead(_buffer, 0, _buffer.Length, WaitForRead, null);
         }
 
@@ -84,7 +84,7 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
         protected void SendMessage(IMessage pMessage)
         {
             if (_pipeServer.CanWrite && _pipeServer.IsConnected)
-                UtilityMethods.WriteCommandResult(_pipeServer,pMessage);
+                UtilityMethods.WriteCommandResult(_pipeServer, pMessage);
         }
 
         protected abstract void OnConnection();

@@ -24,17 +24,11 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Contracts
     [DataContract]
     public enum ConnectionError
     {
-        [EnumMember]
-        None,
-        [EnumMember]
-        Generic,
-        [EnumMember]
-        Password,
-        [EnumMember]
-        Certificate,
-        [EnumMember]
-        NoAvailableInterface,
-        [EnumMember]
-        HostUncontactable
+        [EnumMember] None,
+        [EnumMember] Generic,
+        [EnumMember] Password,
+        [EnumMember] Certificate,
+        [EnumMember] NoAvailableInterface,
+        [EnumMember] HostUncontactable
     }
 }

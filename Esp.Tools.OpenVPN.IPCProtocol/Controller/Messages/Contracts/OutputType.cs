@@ -26,5 +26,5 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages.Contracts
     {
         [EnumMember] Output,
         [EnumMember] Error
-    };
+    }
 }

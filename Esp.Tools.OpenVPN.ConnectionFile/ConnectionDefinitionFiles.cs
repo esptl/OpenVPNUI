@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,16 +31,15 @@ namespace Esp.Tools.OpenVPN.ConnectionFile
         public ConnectionDefinitionFiles()
         {
             _files = new List<ConnectionDefinitionFile>();
-            foreach(var file in Directory.EnumerateFiles(Configuration.Configuration.Current.ConnecitonDataPath, "*.openvpn"))
-            {
+            foreach (var file in Directory.EnumerateFiles(Configuration.Configuration.Current.ConnecitonDataPath,
+                "*.openvpn"))
                 try
                 {
                     _files.Add(ConnectionDefinitionFile.LoadFile(file));
-                }   catch(Exception)
+                }
+                catch (Exception)
                 {
-                    
-                }             
-            }
+                }
         }
 
         public IEnumerator<ConnectionDefinitionFile> GetEnumerator()

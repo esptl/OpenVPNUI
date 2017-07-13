@@ -2,13 +2,13 @@
 
 namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Commands
 {
-    public class SetConfigurationCertificateCommand: BaseMessage<SetConfigurationCertificateInfo>
+    public class SetConfigurationCertificateCommand : BaseMessage<SetConfigurationCertificateInfo>
     {
-        public SetConfigurationCertificateCommand() 
+        public const string MessageKey = "SetConfigCert";
+
+        public SetConfigurationCertificateCommand()
         {
             Code = MessageKey;
         }
-
-        public const string MessageKey = "SetConfigCert";
     }
 }

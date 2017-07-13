@@ -2,14 +2,14 @@
 
 namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Messages
 {
-    public class EnrollResponseMessage: BaseMessage<EnrollResponseInfo>
+    public class EnrollResponseMessage : BaseMessage<EnrollResponseInfo>
     {
+        public const string MessageKey = "EnrollResponse";
+
         public EnrollResponseMessage(int pConnection)
         {
             Connection = pConnection;
             Code = MessageKey;
         }
-
-        public const string MessageKey = "EnrollResponse";
     }
 }

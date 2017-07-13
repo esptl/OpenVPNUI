@@ -4,11 +4,11 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Commands
 {
     public class DeleteCertificateCommand : BaseMessage<DeleteCertificateInfo>
     {
-        public DeleteCertificateCommand() 
+        public const string MessageKey = "DeleteCertificate";
+
+        public DeleteCertificateCommand()
         {
             Code = MessageKey;
         }
-
-        public const string MessageKey = "DeleteCertificate";
     }
 }

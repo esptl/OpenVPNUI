@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Esp.Tools.OpenVPN.ConnectionFile;
 
 namespace MakeOpenVPNConfig
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] pArgs)
+        private static void Main(string[] pArgs)
         {
             if (pArgs.Length < 4)
             {
@@ -65,7 +61,6 @@ namespace MakeOpenVPNConfig
             catch (IOException)
             {
                 Console.WriteLine("ERROR: Error writing output file.");
-                return;
             }
         }
     }

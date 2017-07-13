@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +27,12 @@ namespace Esp.Tools.OpenVPN.Configuration
 {
     public class BaseAccessConfiguration
     {
-        private readonly string _registryKeyPath;
-        private readonly string _registryKeyName;
         private readonly string _default;
-        private List<string> _groups;
+        private readonly string _registryKeyName;
+        private readonly string _registryKeyPath;
+        private readonly List<string> _groups;
 
-        public BaseAccessConfiguration(string pRegistryKeyPath, string pRegistryKeyName,string pDefault)
+        public BaseAccessConfiguration(string pRegistryKeyPath, string pRegistryKeyName, string pDefault)
         {
             _registryKeyPath = pRegistryKeyPath;
             _registryKeyName = pRegistryKeyName;
@@ -39,28 +40,28 @@ namespace Esp.Tools.OpenVPN.Configuration
             _groups = LoadAvailableGroups();
         }
 
-        public List<String> UnselectedGroups
+        public List<string> UnselectedGroups
         {
-            get { 
+            get
+            {
                 var selected = SelectedGroups;
                 return _groups.Where(pX => !selected.Contains(pX)).ToList();
             }
-        } 
+        }
 
 
-        public  List<string> SelectedGroups
+        public List<string> SelectedGroups
         {
             get
             {
                 using (var path = Registry.LocalMachine.OpenSubKey(_registryKeyPath, true) ??
-                                   Registry.LocalMachine.CreateSubKey(_registryKeyPath))
+                                  Registry.LocalMachine.CreateSubKey(_registryKeyPath))
                 {
-
                     var value = path.GetValue(_registryKeyName);
                     if (value == null)
                     {
                         var availableGroups = LoadAvailableGroups();
-                        if(availableGroups.Contains("Home ") || availableGroups.Contains(_default))
+                        if (availableGroups.Contains("Home ") || availableGroups.Contains(_default))
                             value = _default;
                         path.SetValue(_registryKeyName, value);
                     }
@@ -72,17 +73,19 @@ namespace Esp.Tools.OpenVPN.Configuration
             {
                 var str = value.Aggregate("", (pAccum, pItem) => pAccum + "," + pItem).Substring(1);
                 using (var path = Registry.LocalMachine.OpenSubKey(_registryKeyPath, true) ??
-                                   Registry.LocalMachine.CreateSubKey(_registryKeyPath))
+                                  Registry.LocalMachine.CreateSubKey(_registryKeyPath))
                 {
-                    path.SetValue(_registryKeyName,str);
+                    path.SetValue(_registryKeyName, str);
                 }
             }
         }
 
         #region Windows API Wrapper for loading available groups
+
         private static class Win32API
         {
             #region Win32 API Interfaces
+
             [DllImport("netapi32.dll", EntryPoint = "NetApiBufferFree")]
             internal static extern void NetApiBufferFree(IntPtr pBufptr);
 
@@ -96,23 +99,24 @@ namespace Esp.Tools.OpenVPN.Configuration
                 ref uint pTotalentries,
                 IntPtr pResumeHandle);
 
-   
-            [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+
+            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
             internal struct LOCALGROUP_INFO_1
             {
                 public readonly IntPtr lpszGroupName;
                 public readonly IntPtr lpszComment;
             }
+
             #endregion
         }
 
         private List<string> LoadAvailableGroups()
-        {          
-		    int localgroupInfo1Size;
+        {
+            int localgroupInfo1Size;
 
             unsafe
             {
-                localgroupInfo1Size = sizeof(Win32API.LOCALGROUP_INFO_1);           
+                localgroupInfo1Size = sizeof(Win32API.LOCALGROUP_INFO_1);
             }
 
             const uint level = 1;
@@ -121,7 +125,7 @@ namespace Esp.Tools.OpenVPN.Configuration
             uint totalentries = 0;
 
             var groupInfoPtr = IntPtr.Zero;
-            
+
             Win32API.NetLocalGroupEnum(
                 IntPtr.Zero,
                 level,
@@ -140,7 +144,7 @@ namespace Esp.Tools.OpenVPN.Configuration
                     var newOffset = groupInfoPtr.ToInt32() +
                                     localgroupInfo1Size * i;
                     var groupInfo =
-                        (Win32API.LOCALGROUP_INFO_1)Marshal.PtrToStructure(
+                        (Win32API.LOCALGROUP_INFO_1) Marshal.PtrToStructure(
                             new IntPtr(newOffset), typeof(Win32API.LOCALGROUP_INFO_1));
                     var currentGroupName = Marshal.PtrToStringAuto(groupInfo.lpszGroupName);
 
@@ -153,7 +157,7 @@ namespace Esp.Tools.OpenVPN.Configuration
                 Win32API.NetApiBufferFree(groupInfoPtr);
             }
         }
+
         #endregion
     }
-
 }

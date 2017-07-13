@@ -28,6 +28,6 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Contracts
         [EnumMember] Authenticating,
         [EnumMember] Connecting,
         [EnumMember] Connected,
-        [EnumMember] Disconnecting,        
+        [EnumMember] Disconnecting
     }
 }

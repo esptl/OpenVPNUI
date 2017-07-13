@@ -18,19 +18,14 @@
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Drawing.Printing;
-using System.Windows;
 using System.Windows.Input;
 using Esp.Tools.OpenVPN.Certificates;
 using Esp.Tools.OpenVPN.Configuration.UI.ViewModel;
-using Esp.Tools.OpenVPN.SharedUI;
-
 
 namespace Esp.Tools.OpenVPN.Configuration.UI
 {
-    
-
     /// <summary>
-    /// Interaction logic for CreateSelfSignedView.xaml
+    ///     Interaction logic for CreateSelfSignedView.xaml
     /// </summary>
     public partial class CreateEnrollRequestView
     {
@@ -40,7 +35,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
         {
             _viewModelDialogs = pViewModelDialogs;
             InitializeComponent();
-            GlassMargin = new Margins(0,0,30,0);
+            GlassMargin = new Margins(0, 0, 30, 0);
         }
 
         public EnrollRequestDetails GetEnrollmentDetails()
@@ -49,33 +44,30 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
 
             DataContext = viewmodel;
             viewmodel.Close += () =>
-                                   {
-                                       DialogResult = false;
-                                       Close();
-                                   };
+            {
+                DialogResult = false;
+                Close();
+            };
             viewmodel.Ok += () =>
-                                {
-                                    DialogResult = true;
-                                    Close();
-                                };
+            {
+                DialogResult = true;
+                Close();
+            };
 
-            
+
             ShowDialog();
 
-            if(DialogResult.Value)
-            {
-                return new EnrollRequestDetails()
-                           {
-                               CommonName = viewmodel.Name,
-                               City = viewmodel.City,
-                               CompanyName = viewmodel.CompanyName,
-                               Country = viewmodel.Country,
-                               County =  viewmodel.County,
-                               Department = viewmodel.Department,
-                               EmailAddress = viewmodel.EmailAddress
-                           };
-               
-            }
+            if (DialogResult.Value)
+                return new EnrollRequestDetails
+                {
+                    CommonName = viewmodel.Name,
+                    City = viewmodel.City,
+                    CompanyName = viewmodel.CompanyName,
+                    Country = viewmodel.Country,
+                    County = viewmodel.County,
+                    Department = viewmodel.Department,
+                    EmailAddress = viewmodel.EmailAddress
+                };
             return null;
         }
 

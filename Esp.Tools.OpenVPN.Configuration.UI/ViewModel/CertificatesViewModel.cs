@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,11 +31,13 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 {
     public class CertificatesViewModel : ViewModelBase, IDisposable
     {
-        private readonly IViewModelDialogs _dialogs;
         private readonly ConfigurationPipeClient _configClient;
+        private readonly IViewModelDialogs _dialogs;
         private IEnumerable<CertificateViewModel> _certificates;
 
-    
+        private CertificateViewModel _selectedItem;
+
+
         public CertificatesViewModel(IViewModelDialogs pDialogs, ConfigurationPipeClient pConfigClient)
         {
             _dialogs = pDialogs;
@@ -52,7 +55,6 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
                         if (certDetails == null) return;
 
                         _configClient.SendRequestEnrollCommand(certDetails);
-                        
                     });
             ImportEnrollCommand =
                 new BasicCommand(
@@ -61,102 +63,51 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
                         var file = pDialogs.GetEntrollmentFile();
                         if (file == null) return;
                         _configClient.SendEnrollCommand(file);
-                        
                     });
 
             ImportCommand =
                 new BasicCommand(
                     () =>
+                    {
+                        var file = pDialogs.GetImportCertificateFile();
+                        if (file == null || !File.Exists(file)) return;
+
+                        var ext = Path.GetExtension(file);
+                        byte[] pfxData = null;
+                        var password = string.Empty;
+                        switch (ext.ToLower())
                         {
-                            var file = pDialogs.GetImportCertificateFile();
-                            if (file == null || !File.Exists(file)) return;
+                            case ".cer":
+                            case ".crt":
+                                var keyFileName = Path.GetDirectoryName(file) + "\\" +
+                                                  Path.GetFileNameWithoutExtension(file) + ".key";
+                                if (!File.Exists(keyFileName))
+                                {
+                                    _dialogs.ShowError("Missing corrosponding key file");
+                                    return;
+                                }
 
-                            var ext = Path.GetExtension(file);
-                            byte[] pfxData = null;
-                            string password = string.Empty;
-                            switch(ext.ToLower())
-                            {
-                                case ".cer" :
-                                case ".crt" :
-                                    var keyFileName = Path.GetDirectoryName(file)+ "\\"+Path.GetFileNameWithoutExtension(file)+".key";
-                                    if(!File.Exists(keyFileName))
-                                    {
-                                        _dialogs.ShowError("Missing corrosponding key file");
-                                        return;
-                                    }
+                                pfxData = CertificateManager.Current.CreatePfx(file, keyFileName);
+                                password = "password";
+                                break;
 
-                                    pfxData = CertificateManager.Current.CreatePfx(file, keyFileName);
-                                    password = "password";
-                                    break;
-                                
-                                default:
-                                    pfxData = File.ReadAllBytes(file);
-                                    break;
-
-                            }
-                            _configClient.SendImportPfxCommand(pfxData, password);
-                        });
-
-
-
-
+                            default:
+                                pfxData = File.ReadAllBytes(file);
+                                break;
+                        }
+                        _configClient.SendImportPfxCommand(pfxData, password);
+                    });
         }
 
-        public BasicCommand ImportCommand
-        {
-            get; 
-            private set; 
-        }
+        public BasicCommand ImportCommand { get; }
 
-        private void OnCertificatesChanged()
-        {
-            UpdateCertificates();
-        }
+        public BasicCommand ImportEnrollCommand { get; }
 
-        private void UpdateCertificates()
-        {
-            Certificates = _configClient.Certificates.Select(pX => new CertificateViewModel(_dialogs, _configClient, pX));
-            if (Certificates != null && SelectedItem == null)
-            {
-                SelectedItem = Certificates.FirstOrDefault();
-            }
-        }
+        public BasicCommand CreateEnrollCommand { get; }
 
-        private void OnEnrolled(EnrollResponseInfo pObj)
-        {
-            Application.Current.Dispatcher.BeginInvoke(
-                new Action(() => MessageBox.Show("Enrolled: " + pObj.ThumbPrint)));
-            
-        }
-
-        private void OnEnrollRequestResponse(EnrollRequestResponseInfo pRequest)
-        {
-            Application.Current.Dispatcher.BeginInvoke(
-                new Action(() =>
-                               {
-                               
-                                   Clipboard.SetText(pRequest.Request.Replace("\n","\r\n"));
-                                   MessageBox.Show("Copied CSR to clipboard");
-                               }));
-            
-
-        }
-
-        public BasicCommand ImportEnrollCommand
-        {
-            get; private set; }
-
-        public void Dispose()
-        {
-               
-        }
-
-        public BasicCommand CreateEnrollCommand { get; private set; }
-
-        private CertificateViewModel _selectedItem;
         public CertificateViewModel SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
                 _selectedItem = value;
@@ -166,12 +117,45 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 
         public IEnumerable<CertificateViewModel> Certificates
         {
-            get { return _certificates; }
+            get => _certificates;
             set
             {
                 _certificates = value;
                 OnPropertyChanged("Certificates");
             }
+        }
+
+        public void Dispose()
+        {
+        }
+
+        private void OnCertificatesChanged()
+        {
+            UpdateCertificates();
+        }
+
+        private void UpdateCertificates()
+        {
+            Certificates =
+                _configClient.Certificates.Select(pX => new CertificateViewModel(_dialogs, _configClient, pX));
+            if (Certificates != null && SelectedItem == null)
+                SelectedItem = Certificates.FirstOrDefault();
+        }
+
+        private void OnEnrolled(EnrollResponseInfo pObj)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                new Action(() => MessageBox.Show("Enrolled: " + pObj.ThumbPrint)));
+        }
+
+        private void OnEnrollRequestResponse(EnrollRequestResponseInfo pRequest)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                new Action(() =>
+                {
+                    Clipboard.SetText(pRequest.Request.Replace("\n", "\r\n"));
+                    MessageBox.Show("Copied CSR to clipboard");
+                }));
         }
     }
 }

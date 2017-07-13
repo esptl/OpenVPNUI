@@ -36,8 +36,8 @@ namespace Esp.Tools.OpenVPN.SharedUI
 
         public BasicCommand(Action pExecute, Func<bool> pCanExecute)
         {
-            _execute = pObj=> pExecute();
-            _canExecute = pObj=> pCanExecute();
+            _execute = pObj => pExecute();
+            _canExecute = pObj => pCanExecute();
         }
 
         public BasicCommand(Action<object> pExecute)
@@ -53,6 +53,14 @@ namespace Esp.Tools.OpenVPN.SharedUI
             _canExecute = pObj => true;
         }
 
+        public void TriggerChanged()
+        {
+            if (CanExecuteChanged != null)
+                CanExecuteChanged(this, new EventArgs());
+        }
+
+        private event EventHandler CanExecuteChanged;
+
         #region ICommand Members
 
         void ICommand.Execute(object pParameter)
@@ -67,19 +75,11 @@ namespace Esp.Tools.OpenVPN.SharedUI
 
         event EventHandler ICommand.CanExecuteChanged
         {
-            add { CanExecuteChanged += value; }
+            add => CanExecuteChanged += value;
 
-            remove { CanExecuteChanged -= value; }
+            remove => CanExecuteChanged -= value;
         }
 
         #endregion
-
-        public void TriggerChanged()
-        {
-            if (CanExecuteChanged != null)
-                CanExecuteChanged(this, new EventArgs());
-        }
-
-        private event EventHandler CanExecuteChanged;
     }
 }

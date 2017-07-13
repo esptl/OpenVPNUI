@@ -2,13 +2,13 @@
 
 namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Commands
 {
-    public class DeleteConfigurationCommand: BaseMessage<DeleteConfigurationInfo>
+    public class DeleteConfigurationCommand : BaseMessage<DeleteConfigurationInfo>
     {
-        public DeleteConfigurationCommand() 
+        public const string MessageKey = "DeleteConfig";
+
+        public DeleteConfigurationCommand()
         {
             Code = MessageKey;
         }
-
-        public const string MessageKey = "DeleteConfig";
     }
 }

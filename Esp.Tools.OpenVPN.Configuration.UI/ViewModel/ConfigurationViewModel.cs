@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Windows;
 using Esp.Tools.OpenVPN.Client;
@@ -26,7 +27,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
     public class ConfigurationViewModel : ViewModelBase
     {
         private readonly IViewModelDialogs _dialogs;
-        private ConfigurationPipeClient _configClient;
+        private readonly ConfigurationPipeClient _configClient;
 
         public ConfigurationViewModel(IViewModelDialogs pDialogs)
         {
@@ -34,44 +35,38 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             try
             {
                 _configClient = new ConfigurationPipeClient();
-               
+
                 _configClient.Disconnected += () => Dispatch(() => pDialogs.ShowReconnecting(_configClient));
 
-                ControllerAccess = new GroupAccessViewModel(pDialogs,Configuration.Current.ControllerAccess);
+                ControllerAccess = new GroupAccessViewModel(pDialogs, Configuration.Current.ControllerAccess);
 
-                Certificates = new CertificatesViewModel(pDialogs,_configClient);
+                Certificates = new CertificatesViewModel(pDialogs, _configClient);
                 Connections = new ConnectionsViewModel(pDialogs, _configClient);
                 General = new GeneralViewModel(pDialogs, _configClient);
 
                 CloseCommand = new BasicCommand(() => Application.Current.Shutdown());
                 AboutCommand = new BasicCommand(pDialogs.ShowAbout);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message);
             }
         }
 
-        public GeneralViewModel General
-        {
-            get; private set; }
+        public GeneralViewModel General { get; }
 
-        public BasicCommand AboutCommand
-        {
-            get; 
-            private set; 
-        }
+        public BasicCommand AboutCommand { get; }
+
+        public GroupAccessViewModel ControllerAccess { get; }
+        public CertificatesViewModel Certificates { get; }
+        public ConnectionsViewModel Connections { get; }
+
+        public BasicCommand CloseCommand { get; }
 
         public void ShowReconnectingIfRequired()
         {
-            if(!_configClient.IsConnected)
+            if (!_configClient.IsConnected)
                 _dialogs.ShowReconnecting(_configClient);
-            
         }
-
-        public GroupAccessViewModel ControllerAccess { get; private set; }
-        public CertificatesViewModel Certificates { get; private set; }
-        public ConnectionsViewModel Connections { get; private set; }
-
-        public BasicCommand CloseCommand { get; private set; }
     }
 }

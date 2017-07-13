@@ -5,6 +5,5 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Contracts
     [DataContract]
     public class ShutDownInfo
     {
-
     }
 }

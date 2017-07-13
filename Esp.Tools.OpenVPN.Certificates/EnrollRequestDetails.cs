@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Runtime.Serialization;
 
 namespace Esp.Tools.OpenVPN.Certificates
@@ -27,6 +28,7 @@ namespace Esp.Tools.OpenVPN.Certificates
         {
             Country = EnrollCountry.IE;
         }
+
         [DataMember]
         public string CommonName { get; set; }
 

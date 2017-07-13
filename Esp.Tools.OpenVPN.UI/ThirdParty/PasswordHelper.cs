@@ -1,6 +1,7 @@
 ﻿// Original code written by Christian Moser taken from http://www.wpftutorial.net/PasswordBox.html 
 //
 //
+
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,17 +11,17 @@ namespace Esp.Tools.OpenVPN.UI.ThirdParty
     {
         public static readonly DependencyProperty PasswordProperty =
             DependencyProperty.RegisterAttached("Password",
-                                                typeof (string), typeof (PasswordHelper),
-                                                new FrameworkPropertyMetadata(string.Empty, OnPasswordPropertyChanged));
+                typeof(string), typeof(PasswordHelper),
+                new FrameworkPropertyMetadata(string.Empty, OnPasswordPropertyChanged));
 
         public static readonly DependencyProperty AttachProperty =
             DependencyProperty.RegisterAttached("Attach",
-                                                typeof (bool), typeof (PasswordHelper),
-                                                new PropertyMetadata(false, Attach));
+                typeof(bool), typeof(PasswordHelper),
+                new PropertyMetadata(false, Attach));
 
         private static readonly DependencyProperty IsUpdatingProperty =
-            DependencyProperty.RegisterAttached("IsUpdating", typeof (bool),
-                                                typeof (PasswordHelper));
+            DependencyProperty.RegisterAttached("IsUpdating", typeof(bool),
+                typeof(PasswordHelper));
 
 
         public static void SetAttach(DependencyObject dp, bool value)
@@ -54,20 +55,18 @@ namespace Esp.Tools.OpenVPN.UI.ThirdParty
         }
 
         private static void OnPasswordPropertyChanged(DependencyObject sender,
-                                                      DependencyPropertyChangedEventArgs e)
+            DependencyPropertyChangedEventArgs e)
         {
             var passwordBox = sender as PasswordBox;
             passwordBox.PasswordChanged -= PasswordChanged;
 
             if (!GetIsUpdating(passwordBox))
-            {
                 passwordBox.Password = (string) e.NewValue;
-            }
             passwordBox.PasswordChanged += PasswordChanged;
         }
 
         private static void Attach(DependencyObject sender,
-                                   DependencyPropertyChangedEventArgs e)
+            DependencyPropertyChangedEventArgs e)
         {
             var passwordBox = sender as PasswordBox;
 
@@ -75,14 +74,10 @@ namespace Esp.Tools.OpenVPN.UI.ThirdParty
                 return;
 
             if ((bool) e.OldValue)
-            {
                 passwordBox.PasswordChanged -= PasswordChanged;
-            }
 
             if ((bool) e.NewValue)
-            {
                 passwordBox.PasswordChanged += PasswordChanged;
-            }
         }
 
         private static void PasswordChanged(object sender, RoutedEventArgs e)

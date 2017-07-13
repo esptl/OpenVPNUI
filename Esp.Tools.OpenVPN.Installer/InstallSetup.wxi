@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Include>
   <AdminExecuteSequence />
   <InstallExecuteSequence>
     <RemoveExistingProducts Before="InstallInitialize" />
   </InstallExecuteSequence>
-
 
 
   <!-- Product name as you want it to appear in Add/Remove Programs-->

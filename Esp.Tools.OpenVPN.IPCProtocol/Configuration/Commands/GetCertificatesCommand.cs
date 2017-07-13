@@ -4,11 +4,11 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Commands
 {
     public class GetCertificatesCommand : BaseMessage<GetCertificatesInfo>
     {
-        public GetCertificatesCommand() 
+        public const string MessageKey = "GetCertificates";
+
+        public GetCertificatesCommand()
         {
             Code = MessageKey;
         }
-
-        public const string MessageKey = "GetCertificates";
     }
 }

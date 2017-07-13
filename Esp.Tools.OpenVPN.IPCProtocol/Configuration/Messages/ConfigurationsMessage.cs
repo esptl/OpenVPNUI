@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Esp.Tools.OpenVPN.IPCProtocol.Configuration.Messages.Contracts;
+﻿using Esp.Tools.OpenVPN.IPCProtocol.Configuration.Messages.Contracts;
 
 namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Messages
 {
-    public class ConfigurationsMessage: BaseMessage<ConfigurationsInfo>
+    public class ConfigurationsMessage : BaseMessage<ConfigurationsInfo>
     {
+        public const string MessageKey = "Configurations";
+
         public ConfigurationsMessage()
         {
-    
             Code = MessageKey;
         }
-
-        public const string MessageKey = "Configurations";
     }
 }

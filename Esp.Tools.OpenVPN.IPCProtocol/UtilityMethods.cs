@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,21 +31,21 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
         {
             if (pOutput.CanWrite)
             {
-                string str = pMessage.Code + ":" + pMessage.Connection + ":" +
-                             Convert.ToBase64String(Encoding.UTF8.GetBytes(pMessage.DataString));
-                byte[] bytes = Encoding.UTF8.GetBytes(str);
+                var str = pMessage.Code + ":" + pMessage.Connection + ":" +
+                          Convert.ToBase64String(Encoding.UTF8.GetBytes(pMessage.DataString));
+                var bytes = Encoding.UTF8.GetBytes(str);
                 pOutput.Write(bytes, 0, bytes.Length);
                 pOutput.Flush();
             }
-        }        
+        }
 
         public static void ReadMessage(byte[] pInput, IEnumerable<IMessageReader> pList)
         {
             var dict = pList.ToDictionary(pX => pX.Code);
             var line = Encoding.UTF8.GetString(pInput);
-            var parts = line.Split(new[] {':'});
+            var parts = line.Split(':');
             var code = parts[0];
-            var connection = Int32.Parse(parts[1]);
+            var connection = int.Parse(parts[1]);
             var dataStr = Encoding.UTF8.GetString(Convert.FromBase64String(parts[2]));
 
             if (dict.ContainsKey(code))

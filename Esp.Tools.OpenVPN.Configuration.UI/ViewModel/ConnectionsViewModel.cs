@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +26,12 @@ using Esp.Tools.OpenVPN.SharedUI;
 
 namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 {
-    public class ConnectionsViewModel : ViewModelBase 
+    public class ConnectionsViewModel : ViewModelBase
     {
-        private readonly IViewModelDialogs _dialogs;
         private readonly ConfigurationPipeClient _configClient;
+        private readonly IViewModelDialogs _dialogs;
+
+        private IEnumerable<ConnectionViewModel> _connections;
 
         public ConnectionsViewModel(IViewModelDialogs pDialogs, ConfigurationPipeClient pConfigClient)
         {
@@ -40,9 +43,16 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             ImportCommand = new BasicCommand(OnImport);
         }
 
-        public BasicCommand ImportCommand
+        public BasicCommand ImportCommand { get; }
+
+        public IEnumerable<ConnectionViewModel> Connections
         {
-            get; private set;
+            get => _connections;
+            set
+            {
+                _connections = value;
+                OnPropertyChanged("Connections");
+            }
         }
 
         private void OnImport()
@@ -50,7 +60,6 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             var con = _dialogs.GetConnectionFile();
             if (con == null) return;
             _configClient.SendInstallConfigurationCommand(con);
-
         }
 
         private void OnConfigurationsChanged()
@@ -62,18 +71,6 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
         private void UpdateConfigurations()
         {
             Connections = _configClient.Configurations.Select(pX => new ConnectionViewModel(_configClient, pX));
-        }
-
-        private IEnumerable<ConnectionViewModel> _connections;
-
-        public IEnumerable<ConnectionViewModel> Connections
-        {
-            get { return _connections; }
-            set
-            {
-                _connections = value;
-                OnPropertyChanged("Connections");
-            }
         }
     }
 }

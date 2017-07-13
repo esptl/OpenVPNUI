@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 
-
 [assembly: AssemblyTitle("Esp.Tools.OpenVPN.CLI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]

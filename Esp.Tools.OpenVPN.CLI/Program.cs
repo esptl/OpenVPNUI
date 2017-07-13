@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using Esp.Tools.OpenVPN.Client;
@@ -24,11 +25,11 @@ using Esp.Tools.OpenVPN.IPCProtocol.Contracts;
 
 namespace Esp.Tools.OpenVPN.CLI
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] pArgs)
-        {          
-            if(pArgs.Length==0 || pArgs[0] == "--help" || pArgs[0]=="-h")
+        private static void Main(string[] pArgs)
+        {
+            if (pArgs.Length == 0 || pArgs[0] == "--help" || pArgs[0] == "-h")
             {
                 PrintHelp();
                 return;
@@ -42,12 +43,12 @@ namespace Esp.Tools.OpenVPN.CLI
                     var ca = pArgs[3];
                     var name = pArgs[4];
                     var connectionFile = new ConnectionDefinitionFile
-                                             {
-                                                 ConfigurationData = File.ReadAllText(config),
-                                                 AuthorityCertData = File.ReadAllBytes(ca),
-                                                 ConnectionName = name
-                                             };
-                    connectionFile.SaveFile(output+".connection");
+                    {
+                        ConfigurationData = File.ReadAllText(config),
+                        AuthorityCertData = File.ReadAllBytes(ca),
+                        ConnectionName = name
+                    };
+                    connectionFile.SaveFile(output + ".connection");
 
                     return;
             }
@@ -56,68 +57,65 @@ namespace Esp.Tools.OpenVPN.CLI
             try
             {
                 pipeClient = new ControllerPipeClient();
-            } catch(Exception exception)
+            }
+            catch (Exception exception)
             {
                 Console.WriteLine("An error has occured connecting to the OpenVPN UI Host service.");
-                Console.WriteLine("Exception: "+exception.Message);
+                Console.WriteLine("Exception: " + exception.Message);
                 return;
             }
 
             pipeClient.Initialized +=
                 pMessage =>
+                {
+                    switch (pArgs[0])
                     {
-                        switch (pArgs[0])
-                        {                            
-                            case "--list":
-                                ListConnections(pipeClient);
+                        case "--list":
+                            ListConnections(pipeClient);
+                            return;
+                        //case "--start":
+                        //    var con = 0;
+                        //    if(pArgs.Length!=2 || !Int32.TryParse(pArgs[1],out con))
+                        //    {
+                        //        Console.WriteLine("SYNTAX: --start {connection number}");
+                        //        return;
+                        //    }
+
+                        //    if(con < pipeClient.ConnectionCount)
+                        //    {
+                        //        if(pipeClient[con].ConnectionStatus==ConnectionStatus.Disconnected)
+                        //        {
+
+                        //        } else
+                        //        {
+                        //            Console.WriteLine("{0} is already {1}.", pipeClient[con].Name, pipeClient[i].ConnectionStatus.ToString().ToLower());
+                        //        }
+                        //    }
+                        //    else
+                        //        Console.WriteLine("ERROR: Invalid connection number.");
+                        //    break;
+                        case "--stop":
+                            var con = 0;
+                            if (pArgs.Length != 2 || !int.TryParse(pArgs[1], out con))
+                            {
+                                Console.WriteLine("SYNTAX: --start {connection number}");
                                 return;
-                            //case "--start":
-                            //    var con = 0;
-                            //    if(pArgs.Length!=2 || !Int32.TryParse(pArgs[1],out con))
-                            //    {
-                            //        Console.WriteLine("SYNTAX: --start {connection number}");
-                            //        return;
-                            //    }
+                            }
 
-                            //    if(con < pipeClient.ConnectionCount)
-                            //    {
-                            //        if(pipeClient[con].ConnectionStatus==ConnectionStatus.Disconnected)
-                            //        {
-                                        
-                            //        } else
-                            //        {
-                            //            Console.WriteLine("{0} is already {1}.", pipeClient[con].Name, pipeClient[i].ConnectionStatus.ToString().ToLower());
-                            //        }
-                            //    }
-                            //    else
-                            //        Console.WriteLine("ERROR: Invalid connection number.");
-                            //    break;
-                            case "--stop":
-                                var con = 0;
-                                if(pArgs.Length!=2 || !Int32.TryParse(pArgs[1],out con))
+                            if (con < pipeClient.ConnectionCount)
+                                if (pipeClient[con].ConnectionStatus == ConnectionStatus.Disconnected)
                                 {
-                                    Console.WriteLine("SYNTAX: --start {connection number}");
-                                    return;
-                                }
-
-                                if(con < pipeClient.ConnectionCount)
-                                {
-                                    if(pipeClient[con].ConnectionStatus==ConnectionStatus.Disconnected)
-                                    {
-                                        
-                                    } else
-                                    {
-                                        Console.WriteLine("{0} is already {1}.", pipeClient[con].Name, pipeClient[con].ConnectionStatus.ToString().ToLower());
-                                    }
                                 }
                                 else
-                                    Console.WriteLine("ERROR: Invalid connection number.");
-                                break;
-
-                        }
-                    };
-
-
+                                {
+                                    Console.WriteLine("{0} is already {1}.", pipeClient[con].Name,
+                                        pipeClient[con].ConnectionStatus.ToString().ToLower());
+                                }
+                            else
+                                Console.WriteLine("ERROR: Invalid connection number.");
+                            break;
+                    }
+                };
         }
 
         private static void ListConnections(ControllerPipeClient pPipeClient)

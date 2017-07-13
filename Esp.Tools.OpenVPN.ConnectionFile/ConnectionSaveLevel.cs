@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Runtime.Serialization;
 
 namespace Esp.Tools.OpenVPN.ConnectionFile
@@ -23,13 +24,9 @@ namespace Esp.Tools.OpenVPN.ConnectionFile
     [DataContract]
     public enum ConnectionSaveLevel
     {
-        [EnumMember]
-        None,
-        [EnumMember]
-        Session,
-        [EnumMember]
-        Persistent,
-        [EnumMember]
-        Both
+        [EnumMember] None,
+        [EnumMember] Session,
+        [EnumMember] Persistent,
+        [EnumMember] Both
     }
 }

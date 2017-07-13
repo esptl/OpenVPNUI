@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
@@ -28,13 +29,13 @@ using Esp.Tools.OpenVPN.IPCProtocol.Messages;
 
 namespace Esp.Tools.OpenVPN.Client
 {
-    public abstract  class BasePipeClient
+    public abstract class BasePipeClient
     {
-        private readonly string _pipeName;
         private readonly byte[] _buffer = new byte[200000];
+        private readonly string _pipeName;
         private IMessageReader[] _messageTypes;
         protected NamedPipeClientStream _pipe;
-        private Thread _thread;
+        private readonly Thread _thread;
 
         protected BasePipeClient(string pPipeName)
         {
@@ -47,16 +48,16 @@ namespace Esp.Tools.OpenVPN.Client
 
         protected void SendCommand(IMessage pMessage)
         {
-            if(_pipe.CanWrite)
+            if (_pipe.CanWrite)
                 UtilityMethods.WriteCommandResult(_pipe,
-                                                  pMessage);
+                    pMessage);
         }
-        
-       
+
+
         public void Connect(int pConnection)
         {
             if (_pipe.IsConnected)
-                UtilityMethods.WriteCommandResult(_pipe, new ConnectionStartCommand { Connection = pConnection });
+                UtilityMethods.WriteCommandResult(_pipe, new ConnectionStartCommand {Connection = pConnection});
             else
                 Reconnect();
         }
@@ -65,7 +66,7 @@ namespace Esp.Tools.OpenVPN.Client
         {
             if (_pipe.IsAsync)
             {
-                int read = _pipe.EndRead(pAr);
+                var read = _pipe.EndRead(pAr);
                 if (read > 0)
                 {
                     var data = new byte[read];
@@ -83,11 +84,11 @@ namespace Esp.Tools.OpenVPN.Client
             if (_messageTypes == null)
             {
                 var lst = MessageReaders.ToList();
-                lst.Add(new MessageReader<ShutDownInfo>(ShutDownMessage.MessageKey) {MessageRecieved = OnShutDown} );
+                lst.Add(new MessageReader<ShutDownInfo>(ShutDownMessage.MessageKey) {MessageRecieved = OnShutDown});
                 _messageTypes = lst.ToArray();
             }
-            _pipe = new NamedPipeClientStream("localhost",_pipeName, PipeDirection.InOut,
-                                              PipeOptions.Asynchronous);
+            _pipe = new NamedPipeClientStream("localhost", _pipeName, PipeDirection.InOut,
+                PipeOptions.Asynchronous);
 
             if (Connecting != null)
                 Connecting();
@@ -102,7 +103,6 @@ namespace Esp.Tools.OpenVPN.Client
             if (Disconnected != null)
                 Disconnected();
             Reconnect();
-            
         }
 
         public event Action Connecting;
@@ -112,7 +112,7 @@ namespace Esp.Tools.OpenVPN.Client
         public void Disconnect(int pConnection)
         {
             if (_pipe.IsConnected)
-                UtilityMethods.WriteCommandResult(_pipe, new ConnectionStopCommand { Connection = pConnection });
+                UtilityMethods.WriteCommandResult(_pipe, new ConnectionStopCommand {Connection = pConnection});
             else
                 Reconnect();
         }

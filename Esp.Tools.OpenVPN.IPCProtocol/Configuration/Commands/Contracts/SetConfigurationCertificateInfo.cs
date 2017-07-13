@@ -9,9 +9,6 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Commands.Contracts
         public string ThumbPrint { get; set; }
 
         [DataMember]
-        public string Name
-        {
-            get; set; 
-        }
+        public string Name { get; set; }
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Esp.Tools.OpenVPN.IPCProtocol.Configuration.Commands
 {
-    public class InstallConfigurationCommand: BaseMessage<InstallConfigurationInfo>
+    public class InstallConfigurationCommand : BaseMessage<InstallConfigurationInfo>
     {
-        public InstallConfigurationCommand() 
+        public const string MessageKey = "InstallConfig";
+
+        public InstallConfigurationCommand()
         {
             Code = MessageKey;
         }
-
-        public const string MessageKey = "InstallConfig";
     }
 }

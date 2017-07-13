@@ -24,6 +24,5 @@ namespace Esp.Tools.OpenVPN.IPCProtocol.Controller.Commands.Contracts
     [DataContract]
     public class ConnectionStartInfo
     {
-        
     }
 }

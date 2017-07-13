@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,19 +24,17 @@ using System.Windows.Input;
 namespace Esp.Tools.OpenVPN.UI
 {
     /// <summary>
-    /// Interaction logic for AuthenticatingView.xaml
+    ///     Interaction logic for AuthenticatingView.xaml
     /// </summary>
     public partial class AuthenticatingView : UserControl
     {
         public AuthenticatingView()
         {
             InitializeComponent();
-           
         }
 
         private void TextBox_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            
         }
 
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -46,9 +45,7 @@ namespace Esp.Tools.OpenVPN.UI
                     var element = sender as UIElement;
 
                     if (element != null)
-                    {
                         element.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-                    }
                     break;
             }
         }
@@ -57,11 +54,11 @@ namespace Esp.Tools.OpenVPN.UI
         {
             switch (e.Key)
             {
-                case Key.Enter :
-                    if(LoginButton.Command.CanExecute(null))
+                case Key.Enter:
+                    if (LoginButton.Command.CanExecute(null))
                         LoginButton.Command.Execute(null);
                     break;
             }
-        }        
+        }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
-using System.Linq;
 using System.Security.Principal;
 using Esp.Tools.OpenVPN.Certificates;
 using Esp.Tools.OpenVPN.ConnectionFile;
@@ -27,47 +27,35 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             _configurations = pConfigurations;
         }
 
-        protected override IEnumerable<PipeAccessRule> PipeAccessRules
+        protected override IEnumerable<PipeAccessRule> PipeAccessRules => new[]
         {
-            get
-            {
-                return new[]
-                           {
-                               new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null),
-                                                  PipeAccessRights.ReadWrite |
-                                                  PipeAccessRights.CreateNewInstance, AccessControlType.Allow),
-                               new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.CreatorOwnerSid, null), PipeAccessRights.FullControl,
-                                                  AccessControlType.Allow)
-                               
-                           };
-            }
-        }
+            new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null),
+                PipeAccessRights.ReadWrite |
+                PipeAccessRights.CreateNewInstance, AccessControlType.Allow),
+            new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.CreatorOwnerSid, null),
+                PipeAccessRights.FullControl,
+                AccessControlType.Allow)
+        };
 
-        protected override IEnumerable<IMessageReader> MessageReaders
+        protected override IEnumerable<IMessageReader> MessageReaders => new IMessageReader[]
         {
-            get
-            {
-                return new IMessageReader[]
-                           {
-                               new MessageReader<EnrollRequestInfo>(EnrollRequestCommand.MessageKey)
-                                   {MessageRecieved = OnEnrollRequest},
-                               new MessageReader<EnrollInfo>(EnrollCommand.MessageKey)
-                                   {MessageRecieved = OnEnroll},
-                                new MessageReader<ImportPfxInfo>(ImportPfxCommand.MessageKey)
-                                   {MessageRecieved = OnImportPfx},
-                               new MessageReader<GetCertificatesInfo>(GetCertificatesCommand.MessageKey)
-                                   {MessageRecieved = OnGetCertificates},                              
-                               new MessageReader<InstallConfigurationInfo>(InstallConfigurationCommand.MessageKey)
-                                   {MessageRecieved = OnInstallConfiguration},
-                               new MessageReader<DeleteConfigurationInfo>(DeleteConfigurationCommand.MessageKey)
-                                   {MessageRecieved = OnDeleteConfiguration},
-                               new MessageReader<SetConfigurationCertificateInfo>(SetConfigurationCertificateCommand.MessageKey)
-                                   {MessageRecieved = OnSetConfigurationCertificate},
-                               new MessageReader<DeleteCertificateInfo>(DeleteCertificateCommand.MessageKey)
-                                   {MessageRecieved = OnDeleteCertificate}
-                           };
-            }
-        }
+            new MessageReader<EnrollRequestInfo>(EnrollRequestCommand.MessageKey)
+                {MessageRecieved = OnEnrollRequest},
+            new MessageReader<EnrollInfo>(EnrollCommand.MessageKey)
+                {MessageRecieved = OnEnroll},
+            new MessageReader<ImportPfxInfo>(ImportPfxCommand.MessageKey)
+                {MessageRecieved = OnImportPfx},
+            new MessageReader<GetCertificatesInfo>(GetCertificatesCommand.MessageKey)
+                {MessageRecieved = OnGetCertificates},
+            new MessageReader<InstallConfigurationInfo>(InstallConfigurationCommand.MessageKey)
+                {MessageRecieved = OnInstallConfiguration},
+            new MessageReader<DeleteConfigurationInfo>(DeleteConfigurationCommand.MessageKey)
+                {MessageRecieved = OnDeleteConfiguration},
+            new MessageReader<SetConfigurationCertificateInfo>(SetConfigurationCertificateCommand.MessageKey)
+                {MessageRecieved = OnSetConfigurationCertificate},
+            new MessageReader<DeleteCertificateInfo>(DeleteCertificateCommand.MessageKey)
+                {MessageRecieved = OnDeleteCertificate}
+        };
 
         private void OnImportPfx(BaseMessage<ImportPfxInfo> pRequest)
         {
@@ -94,21 +82,20 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             {
                 EventLogHelper.LogEvent("Error setting configuration cert as it does not exist: " + pRequest.Data.Name);
             }
-           
         }
 
         private void OnDeleteConfiguration(BaseMessage<DeleteConfigurationInfo> pRequest)
         {
-            var con = _configurations.FirstOrDefault(pX=>pX.ConfigurationName== pRequest.Data.Name);
-           if(con!=null)
-           {
-               con.Delete();
-               SendConfigurations();
-           }
-           else
-           {
-               EventLogHelper.LogEvent("Error deleting configuration as it does not exist: "+pRequest.Data.Name);
-           }
+            var con = _configurations.FirstOrDefault(pX => pX.ConfigurationName == pRequest.Data.Name);
+            if (con != null)
+            {
+                con.Delete();
+                SendConfigurations();
+            }
+            else
+            {
+                EventLogHelper.LogEvent("Error deleting configuration as it does not exist: " + pRequest.Data.Name);
+            }
         }
 
         private void OnInstallConfiguration(BaseMessage<InstallConfigurationInfo> pRequest)
@@ -117,27 +104,19 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             var configFile = ConnectionDefinitionFile.LoadFromStream(ms);
             var con = _configurations.FirstOrDefault(pX => pX.ConfigurationName == configFile.ConnectionName);
             if (con != null)
-            {
                 con.Delete();
-                
-            }
             _configurations.InstallConfiguration(configFile);
-           
+
             SendCertificates();
             SendConfigurations();
         }
 
         private void OnEnroll(BaseMessage<EnrollInfo> pRequest)
         {
-          
             var certificate = CertificateManager.Current.ImportResponse(pRequest.Data.Certificate);
             if (certificate != null)
                 SendEnrollResponse(certificate);
         }
-
-
-
-
 
 
         private void OnGetCertificates(BaseMessage<GetCertificatesInfo> pRequest)
@@ -148,9 +127,8 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         private void OnEnrollRequest(BaseMessage<EnrollRequestInfo> pRequest)
         {
-       
             var response = CertificateManager.Current.GenerateRequest(pRequest.Data.Request);
-            if(response!=null)
+            if (response != null)
                 SendEnrollRequestResponse(response);
         }
 
@@ -164,23 +142,26 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
         {
             var certificates =
                 new CertificatesInfo
-                    {
-                        Certificates =CertificateManager.Current.GetCertificates(null)
-                    };
-            SendMessage(new AvailableCertificatesMessage(0) { Data = certificates });
+                {
+                    Certificates = CertificateManager.Current.GetCertificates(null)
+                };
+            SendMessage(new AvailableCertificatesMessage(0) {Data = certificates});
         }
 
         private void SendEnrollResponse(X509Certificate2 pCertificate)
         {
             SendCertificates();
             SendConfigurations();
-            SendMessage(new EnrollResponseMessage(0) { Data = new EnrollResponseInfo { ThumbPrint = pCertificate.Thumbprint}});
+            SendMessage(new EnrollResponseMessage(0)
+            {
+                Data = new EnrollResponseInfo {ThumbPrint = pCertificate.Thumbprint}
+            });
         }
 
         private void SendEnrollRequestResponse(string pResponse)
         {
-
-            SendMessage(new EnrollRequestResponseMessage(0) { Data = new EnrollRequestResponseInfo { Request = pResponse } });
+            SendMessage(
+                new EnrollRequestResponseMessage(0) {Data = new EnrollRequestResponseInfo {Request = pResponse}});
         }
 
         private void SendConfigurations()

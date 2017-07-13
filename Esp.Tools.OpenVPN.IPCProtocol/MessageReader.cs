@@ -16,6 +16,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace Esp.Tools.OpenVPN.IPCProtocol
@@ -37,16 +38,16 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
 
         #region IMessageReader Members
 
-        public string Code { get; private set; }
+        public string Code { get; }
 
         public void ProcessMessage(int pConnection, string pMessageData)
         {
             var result = new BaseMessage<TMessageType>
-                             {
-                                 Code = Code,
-                                 Connection = pConnection,
-                                 DataString = pMessageData
-                             };
+            {
+                Code = Code,
+                Connection = pConnection,
+                DataString = pMessageData
+            };
             if (MessageRecieved != null)
                 MessageRecieved(result);
         }

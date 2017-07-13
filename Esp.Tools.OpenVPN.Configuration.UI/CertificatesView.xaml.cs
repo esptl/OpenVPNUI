@@ -22,7 +22,7 @@ using System.Windows;
 namespace Esp.Tools.OpenVPN.Configuration.UI
 {
     /// <summary>
-    /// Interaction logic for CertificatesView.xaml
+    ///     Interaction logic for CertificatesView.xaml
     /// </summary>
     public partial class CertificatesView
     {
@@ -38,7 +38,6 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
 
         private void CloseDeletePopup(object pSender, RoutedEventArgs pE)
         {
-       
         }
     }
 }

@@ -16,9 +16,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.ServiceProcess;
-using System.Threading;
-using System.Windows.Forms;
 using Esp.Tools.OpenVPN.Hosting.Config;
 using Esp.Tools.OpenVPN.Hosting.PipeServers;
 using Esp.Tools.OpenVPN.Hosting.PowerEvents;
@@ -27,10 +26,10 @@ namespace Esp.Tools.OpenVPN.ServiceHost
 {
     public partial class OpenVPNHostService : ServiceBase
     {
+        private ConfigurationPipeServer _configPipe;
         private OpenVPNConfigurations _configs;
         private ControllerPipeServer _controllerPipeServer;
         private PowerEventHandlers _power;
-        private ConfigurationPipeServer _configPipe;
 
         public OpenVPNHostService()
         {
@@ -38,30 +37,27 @@ namespace Esp.Tools.OpenVPN.ServiceHost
             CanHandlePowerEvent = true;
         }
 
-        
 
         protected override bool OnPowerEvent(PowerBroadcastStatus powerStatus)
         {
-           switch(powerStatus)
-           {
-               case PowerBroadcastStatus.Suspend: 
-                   _power.Suspend();
-                   break;
-               case PowerBroadcastStatus.ResumeSuspend: 
-                   _power.Resume();
-                   break;
-           }
+            switch (powerStatus)
+            {
+                case PowerBroadcastStatus.Suspend:
+                    _power.Suspend();
+                    break;
+                case PowerBroadcastStatus.ResumeSuspend:
+                    _power.Resume();
+                    break;
+            }
             return base.OnPowerEvent(powerStatus);
         }
 
         protected override void OnStart(string[] pArgs)
         {
-
             _configs = new OpenVPNConfigurations();
-           _power = new PowerEventHandlers(_configs);
-           _configPipe = new ConfigurationPipeServer(_configs);
+            _power = new PowerEventHandlers(_configs);
+            _configPipe = new ConfigurationPipeServer(_configs);
             _controllerPipeServer = new ControllerPipeServer(_configs);
-          
         }
 
         protected override void OnStop()
@@ -71,7 +67,5 @@ namespace Esp.Tools.OpenVPN.ServiceHost
             _controllerPipeServer.Shutdown();
             base.OnStop();
         }
-
-  
     }
 }

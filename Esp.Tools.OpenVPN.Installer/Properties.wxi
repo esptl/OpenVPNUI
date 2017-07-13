@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Include>
   <Property Id="SCANENGINE_SERVICE_LOGON_TYPE"><![CDATA[CustomServiceAccount]]></Property>
   <Property Id="SCANENGINE_SERVICE_PASSWORD"><![CDATA[ESP\BuildAgent]]></Property>

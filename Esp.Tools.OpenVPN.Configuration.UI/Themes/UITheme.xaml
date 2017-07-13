@@ -8,7 +8,7 @@
                 <Setter Property="TextDecorations" Value="Underline" />
             </Trigger>
         </Style.Triggers>
-        
+
     </Style>
-    <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+    <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
 </ResourceDictionary>

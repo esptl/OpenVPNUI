@@ -31,6 +31,9 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
     public class ViewModelDialogs : IViewModelDialogs
     {
         private readonly Window _parentWindow;
+        private bool _reconnecting;
+
+        private bool _restarting;
 
         public ViewModelDialogs(Window pParentWindow)
         {
@@ -42,21 +45,18 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
             var openDialog = new OpenFileDialog();
             openDialog.Filter = "Certificate|*.crt;*.cer";
             var result = openDialog.ShowDialog();
-            if(result.Value)
-            {
+            if (result.Value)
                 return File.ReadAllText(openDialog.FileName);
-            }
             return null;
-
         }
 
-     
 
         public bool ConfirmReplaceConnection(string pName)
         {
             return
-               MessageBox.Show("Are you sure you wish to replace this connection", pName, MessageBoxButton.YesNo, MessageBoxImage.Question) ==
-               MessageBoxResult.Yes;
+                MessageBox.Show("Are you sure you wish to replace this connection", pName, MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) ==
+                MessageBoxResult.Yes;
         }
 
         public ConnectionDefinitionFile GetConnectionFile()
@@ -65,9 +65,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
             openDialog.Filter = "OpenVPN UI Configuration File|*.openvpn";
             var result = openDialog.ShowDialog();
             if (result.Value)
-            {
                 return ConnectionDefinitionFile.LoadFile(openDialog.FileName);
-            }
             return null;
         }
 
@@ -77,9 +75,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
             openDialog.Filter = "Certificate|*.crt;*.cer|PFX file|*.pfx";
             var result = openDialog.ShowDialog();
             if (result.Value)
-            {
                 return openDialog.FileName;
-            }
             return null;
         }
 
@@ -94,9 +90,6 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
             dialog.Owner = _parentWindow;
             dialog.ShowDialog();
         }
-
-        private bool _restarting;
-        private bool _reconnecting;
 
         public void RestartService()
         {
@@ -116,12 +109,11 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
             {
                 _reconnecting = true;
                 var dialog = new ReconnectingDialog();
-                pConfigClient.Connected+=()=> Application.Current.Dispatcher.BeginInvoke(new Action(dialog.Close));
+                pConfigClient.Connected += () => Application.Current.Dispatcher.BeginInvoke(new Action(dialog.Close));
                 dialog.Owner = _parentWindow;
                 dialog.ShowDialog();
                 _reconnecting = false;
-            } 
-            
+            }
         }
 
         EnrollRequestDetails IViewModelDialogs.CreateEnrollRequestCertificate()

@@ -20,10 +20,11 @@
 //  Copyright 2011 ESP Technologies Ltd.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using Microsoft.Win32;
 
 namespace Esp.Tools.OpenVPN.Configuration
@@ -31,33 +32,28 @@ namespace Esp.Tools.OpenVPN.Configuration
     public sealed class Configuration
     {
         private const string TapDriverName = "tap0901";
+
+        private ControllerAccessConfiguration _controllerAccess;
+
         static Configuration()
         {
             Current = new Configuration();
         }
 
-        public static Configuration Current { get; private set; }
+        public static Configuration Current { get; }
 
-        public string ControlPipe
-        {
-            get { return "opepnvpnui_control"; }
-        }
+        public string ControlPipe => "opepnvpnui_control";
 
-        public string ConfigPipe
-        {
-            get { return "opepnvpnui_config"; }
-        }
+        public string ConfigPipe => "opepnvpnui_config";
 
-        private ControllerAccessConfiguration _controllerAccess;
         public ControllerAccessConfiguration ControllerAccess
         {
             get
             {
-                if(_controllerAccess==null)
+                if (_controllerAccess == null)
                     _controllerAccess = new ControllerAccessConfiguration();
                 return _controllerAccess;
             }
-           
         }
 
         public string AppDataPath
@@ -71,10 +67,7 @@ namespace Esp.Tools.OpenVPN.Configuration
             }
         }
 
-        public string ServiceName
-        {
-            get { return "OpenVPNUIHostService"; }
-        }
+        public string ServiceName => "OpenVPNUIHostService";
 
         public string ConnecitonDataPath
         {
@@ -100,19 +93,17 @@ namespace Esp.Tools.OpenVPN.Configuration
                     foreach (var key in registry.GetSubKeyNames())
                     {
                         var val = 0;
-                        if (Int32.TryParse(key, out val))
-                        {
+                        if (int.TryParse(key, out val))
                             using (var subkey = registry.OpenSubKey(key))
                             {
                                 var componentId = subkey.GetValue("ComponentId");
-                                if(componentId.ToString()==TapDriverName)
+                                if (componentId.ToString() == TapDriverName)
                                 {
-                                    var instanceId =subkey.GetValue("NetCfgInstanceId").ToString();
-                                    if(interFaces.ContainsKey(instanceId))
+                                    var instanceId = subkey.GetValue("NetCfgInstanceId").ToString();
+                                    if (interFaces.ContainsKey(instanceId))
                                         result.Add(interFaces[instanceId]);
                                 }
                             }
-                        }
                     }
                 }
 
@@ -120,16 +111,12 @@ namespace Esp.Tools.OpenVPN.Configuration
             }
         }
 
-        public string WorkingPath
-        {
-            get
-            {
-                return
-                    Path.GetDirectoryName(
-                        System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase.Substring(8).Replace('/',
-                                                                                                                  '\\')) +
-                    "\\";
-            }
-        }
+        public string WorkingPath => Path.GetDirectoryName(
+                                         Assembly.GetExecutingAssembly()
+                                             .GetName()
+                                             .CodeBase.Substring(8)
+                                             .Replace('/',
+                                                 '\\')) +
+                                     "\\";
     }
 }
