@@ -95,21 +95,21 @@ namespace Esp.Tools.OpenVPN.CLI
                         //        Console.WriteLine("ERROR: Invalid connection number.");
                         //    break;
                         case "--stop":
-                            var con = 0;
-                            if (pArgs.Length != 2 || !int.TryParse(pArgs[1], out con))
+                            
+                            if (pArgs.Length != 2 || !int.TryParse(pArgs[1], out var _))
                             {
                                 Console.WriteLine("SYNTAX: --start {connection number}");
                                 return;
                             }
 
-                            if (con < pipeClient.ConnectionCount)
-                                if (pipeClient[con].ConnectionStatus == ConnectionStatus.Disconnected)
+                            if (0 < pipeClient.ConnectionCount)
+                                if (pipeClient[0].ConnectionStatus == ConnectionStatus.Disconnected)
                                 {
                                 }
                                 else
                                 {
-                                    Console.WriteLine("{0} is already {1}.", pipeClient[con].Name,
-                                        pipeClient[con].ConnectionStatus.ToString().ToLower());
+                                    Console.WriteLine("{0} is already {1}.", pipeClient[0].Name,
+                                        pipeClient[0].ConnectionStatus.ToString().ToLower());
                                 }
                             else
                                 Console.WriteLine("ERROR: Invalid connection number.");

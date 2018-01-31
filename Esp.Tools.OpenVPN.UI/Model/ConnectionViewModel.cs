@@ -89,6 +89,7 @@ namespace Esp.Tools.OpenVPN.UI.Model
                                 break;
                             case ConnectionStatus.Connecting:
                                 IsConnectingCanceled = true;
+                                _pipeClient.Disconnect(Index);
                                 break;
 
                             case ConnectionStatus.Connected:
@@ -102,9 +103,14 @@ namespace Esp.Tools.OpenVPN.UI.Model
                         if (!ShowLog && _connections.AnyShowLog)
                             ShowLog = true;
                         if (pInfo.Data.RequiresUsername)
+                        {
                             Status = ConnectionStatus.Authenticating;
+                        }
                         else
-                            Status = ConnectionStatus.Connecting;
+                        {
+                            Status = ConnectionStatus.Connecting;   
+                            _pipeClient.Connect(Index);
+                        }
                         _ignoreConnecting = true;
                     }
                     var thread = new Thread(

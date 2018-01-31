@@ -35,13 +35,12 @@ namespace Esp.Tools.OpenVPN.Client
         private readonly string _pipeName;
         private IMessageReader[] _messageTypes;
         protected NamedPipeClientStream _pipe;
-        private readonly Thread _thread;
 
         protected BasePipeClient(string pPipeName)
         {
             _pipeName = pPipeName;
-            _thread = new Thread(Reconnect);
-            _thread.Start();
+            var thread = new Thread(Reconnect);
+            thread.Start();
         }
 
         protected abstract IEnumerable<IMessageReader> MessageReaders { get; }
