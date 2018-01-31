@@ -65,7 +65,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <TextBlock Foreground="White" Margin="10,10,10,10" TextWrapping="Wrap" FontSize="10">
-                    Version 1.0.7.0 - Beta
+                    Version 1.0.8.0 - Beta
                     <LineBreak />
                     <LineBreak />
                     This application provides a graphical interface for controlling OpenVPN. It consists of
