@@ -141,7 +141,7 @@ namespace Esp.Tools.OpenVPN.Configuration
 
                 for (var i = 0; i < totalentries; i++)
                 {
-                    var newOffset = groupInfoPtr.ToInt32() +
+                    var newOffset = groupInfoPtr.ToInt64() +
                                     localgroupInfo1Size * i;
                     var groupInfo =
                         (Win32API.LOCALGROUP_INFO_1) Marshal.PtrToStructure(

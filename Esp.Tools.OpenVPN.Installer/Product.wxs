@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="8EDA72AA-85B8-474A-B274-B688510B9D9B" Name="OpenVPN UI" Language="1033" Version="1.0.8.0"
+  <Product Id="8EDA72AA-85B8-474A-B274-B688510B9D9C" Name="OpenVPN UI" Language="1033" Version="1.0.9.0"
            Manufacturer="ESP Technologies Ltd" UpgradeCode="DB96C5A7-589F-45D2-8E84-322474207358">
     <Package InstallerVersion="200" Compressed="yes" />
 
