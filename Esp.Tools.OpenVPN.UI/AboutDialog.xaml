@@ -65,7 +65,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <TextBlock Foreground="White" Margin="10,10,10,10" TextWrapping="Wrap" FontSize="10">
-                    Version 1.0.9.0 - Beta
+                    Version 1.0.10.0 - Beta
                     <LineBreak />
                     <LineBreak />
                     This application provides a graphical interface for controlling OpenVPN. It consists of
@@ -116,7 +116,7 @@
                     .
                     <LineBreak />
                     <LineBreak />
-                    OpenVPN is copyright © 2002-2011 OpenVPN Solutions LLC (
+                    OpenVPN is copyright © 2002-2020 OpenVPN Solutions LLC (
                     <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="mailto://info@openvpn.net"
                                Foreground="#FFD0FF9F">
                         info@openvpn.net
