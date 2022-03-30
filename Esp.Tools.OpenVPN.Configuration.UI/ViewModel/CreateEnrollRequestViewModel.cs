@@ -39,7 +39,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 
         private string _emailAddress;
 
-        private string _name;
+        private string _name = $"{Environment.MachineName}{Environment.UserName.Replace(" ","").Replace(".","")}";
 
         public CreateEnrollRequestViewModel()
         {
