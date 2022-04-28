@@ -65,7 +65,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <TextBlock Foreground="White" Margin="10,10,10,10" TextWrapping="Wrap" FontSize="10">
-                    Version 1.0.11.0 - Beta
+                    Version 1.0.12.0 - Beta
                     <LineBreak />
                     <LineBreak />
                     This application provides a graphical interface for controlling OpenVPN. It consists of
@@ -79,7 +79,7 @@
                     </Hyperlink>
                     <LineBreak />
                     <LineBreak />
-                    Copyright © 2011 Esp Technologies Ltd. (
+                    Copyright © 2011-2022 Esp Technologies Ltd. (
                     <Hyperlink NavigateUri="http://www.esptl.com/" Foreground="#FFD0FF9F"
                                RequestNavigate="Hyperlink_RequestNavigate">
                         http://www.esptl.com
