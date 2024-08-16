@@ -4,11 +4,11 @@
   <Directory Id="OpenVPNFiles" Name="OpenVPN">
     <Directory Id="OpenVPNBinFiles" Name="bin">
       <Component Id="OpenVPNbin" DiskId="1" Guid="1E5BFC84-9E8E-4218-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
-        <File Id="libcrypto11x64.dll" LongName="libcrypto-1_1-x64.dll" Source="OpenVPN\bin\x64\libcrypto-1_1-x64.dll" />
+        <File Id="libcrypto11x64.dll" LongName="libcrypto-3-x64.dll" Source="OpenVPN\bin\x64\libcrypto-3-x64.dll" />
         <File Id="liblzo22.dll" LongName="liblzo2-2.dll"
               Source="OpenVPN\bin\x64\liblzo2-2.dll" />
         <File Id="libpkcs11helper1.dll" LongName="libpkcs11-helper-1.dll" Source="OpenVPN\bin\x64\libpkcs11-helper-1.dll" />
-        <File Id="libssl11x64.dll" LongName="libssl-1_1-x64.dll" Source="OpenVPN\bin\x64\libssl-1_1-x64.dll" />
+        <File Id="libssl11x64.dll" LongName="libssl-3-x64.dll" Source="OpenVPN\bin\x64\libssl-3-x64.dll" />
         <File Id="openssl.exe" LongName="openssl.exe" Source="OpenVPN\bin\x64\openssl.exe" />
         <File Id="openvpn.exe" LongName="openvpn.exe" Source="OpenVPN\bin\x64\openvpn.exe" />
         <File Id="tapinstall.exe" LongName="tapinstall.exe" Source="OpenVPN\bin\x64\tapinstall.exe" />

@@ -15,6 +15,13 @@
                 <x:Type TypeName="Certificates:EnrollCountry" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <ObjectDataProvider MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}"
+                            x:Key="AlgorithmEnumValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="Certificates:EnrollRequestCertAlgorithm" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </SharedUI:DropShadowWindow.Resources>
 
     <Grid Background="{x:Null}">
@@ -43,6 +50,7 @@
 
             <Grid Margin="5">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
@@ -93,8 +101,12 @@
                 <TextBox Margin="5" Grid.Row="7" Grid.Column="1" Foreground="White" HorizontalAlignment="Stretch"
                          VerticalAlignment="Center"
                          Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-
-                <StackPanel Margin="5" Orientation="Horizontal" Grid.Row="8" Grid.ColumnSpan="2">
+                <Label Margin="5" Grid.Row="8">Algorithm:</Label>
+                <ComboBox Margin="5" Grid.Row="8" Grid.Column="1" Foreground="White" HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding Source={StaticResource AlgorithmEnumValues}}"
+                          SelectedItem="{Binding Algorithm, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <StackPanel Margin="5" Orientation="Horizontal" Grid.Row="9" Grid.ColumnSpan="2">
                     <Button Command="{Binding OkCommand}" Width="80" VerticalAlignment="Center" Margin="0,0,5,0">Ok</Button>
                     <Button Command="{Binding CancelCommand}" Width="80" VerticalAlignment="Center">Cancel</Button>
                 </StackPanel>

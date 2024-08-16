@@ -199,17 +199,30 @@ namespace Esp.Tools.OpenVPN.Certificates
 
                 //  Provide key container name, key length and key spec to the private key object
                 //objPrivateKey.ContainerName = "AlejaCMa";
-                var algorithm = new CObjectIdClass();
-                
-                algorithm.InitializeFromAlgorithmName(ObjectIdGroupId.XCN_CRYPT_PUBKEY_ALG_OID_GROUP_ID, 
-                  ObjectIdPublicKeyFlags.XCN_CRYPT_OID_INFO_PUBKEY_ANY, 
-                    AlgorithmFlags.AlgorithmFlagsNone, "ECDSA_P384");
-               // objPrivateKey.Length = 4096;
-               objPrivateKey.Algorithm = algorithm;
-                objPrivateKey.LegacyCsp = false;
-                //.objPrivateKey.KeySpec = X509KeySpec.XCN_AT_SIGNATURE;
+
+                switch (pDetails.Algorithm)
+                {
+                    case EnrollRequestCertAlgorithm.RSA4096:
+                        objPrivateKey.Length = 4096;
+                        objPrivateKey.KeySpec = X509KeySpec.XCN_AT_SIGNATURE;
+                        break;
+                    case EnrollRequestCertAlgorithm.ECDSA_P384:
+                        var algorithm = new CObjectIdClass();
+
+                        algorithm.InitializeFromAlgorithmName(ObjectIdGroupId.XCN_CRYPT_PUBKEY_ALG_OID_GROUP_ID,
+                            ObjectIdPublicKeyFlags.XCN_CRYPT_OID_INFO_PUBKEY_ANY,
+                            AlgorithmFlags.AlgorithmFlagsNone, "ECDSA_P384");
+                        
+                        objPrivateKey.Algorithm = algorithm;
+                        objPrivateKey.LegacyCsp = false;
+                        break;
+                    default:
+                        throw new InvalidProgramException("Request for invalid cert type");
+
+                }
+
                 objPrivateKey.ExportPolicy = X509PrivateKeyExportFlags.XCN_NCRYPT_ALLOW_EXPORT_FLAG;
-                objPrivateKey.KeyUsage = X509PrivateKeyUsageFlags.XCN_NCRYPT_ALLOW_SIGNING_FLAG;
+                objPrivateKey.KeyUsage = X509PrivateKeyUsageFlags.XCN_NCRYPT_ALLOW_ALL_USAGES; 
                 objPrivateKey.MachineContext = false;
 
                 //  Provide the CSP collection object (in this case containing only 1 CSP object)

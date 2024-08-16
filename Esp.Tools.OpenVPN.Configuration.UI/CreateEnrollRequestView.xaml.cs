@@ -66,7 +66,8 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
                     Country = viewmodel.Country,
                     County = viewmodel.County,
                     Department = viewmodel.Department,
-                    EmailAddress = viewmodel.EmailAddress
+                    EmailAddress = viewmodel.EmailAddress,
+                    Algorithm = viewmodel.Algorithm
                 };
             return null;
         }

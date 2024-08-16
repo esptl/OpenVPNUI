@@ -3,7 +3,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="8EDA72AA-85B8-474A-B274-B688510B9D9C" Name="OpenVPN UI" Language="1033" Version="1.0.11.0"
            Manufacturer="ESP Technologies Ltd" UpgradeCode="DB96C5A7-589F-45D2-8E84-322474207358">
-    <Package InstallerVersion="200" Compressed="yes" />
+    <Package InstallerVersion="500" Compressed="yes" />
 
     <Media Id="1" Cabinet="OpenVPNUIInstaller.cab" EmbedCab="yes" />
     <Upgrade Id="DB96C5A7-589F-45D2-8E84-322474207359">
@@ -35,6 +35,10 @@
       </Directory>
     </Directory>
 
+    <DirectoryRef Id="TARGETDIR">
+      <Merge Id="OVPN-dco" SourceFile="OpenVPN\ovpn-dco-amd64.msm" DiskId="1" Language="0"/>
+    </DirectoryRef>
+
     <Feature Id="ProductFeature" Title="OpenVPN UI" Level="1">
       <ComponentRef Id="Main" />
       <ComponentRef Id="Service" />
@@ -43,7 +47,7 @@
       <?else ?>
       <ComponentRef Id="OpenVPNTapX86" />
       <?endif ?>
-
+      <MergeRef Id="OVPN-dco"/>
 
       <ComponentRef Id="OpenVPNbin" />
     </Feature>

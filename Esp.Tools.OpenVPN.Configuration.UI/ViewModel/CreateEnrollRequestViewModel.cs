@@ -40,6 +40,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
         private string _emailAddress;
 
         private string _name = $"{Environment.MachineName}{Environment.UserName.Replace(" ","").Replace(".","")}";
+        private EnrollRequestCertAlgorithm _algorithm;
 
         public CreateEnrollRequestViewModel()
         {
@@ -136,6 +137,15 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             set
             {
                 _emailAddress = value;
+                OkCommand.TriggerChanged();
+            }
+        }
+        public EnrollRequestCertAlgorithm Algorithm
+        {
+            get => _algorithm;
+            set
+            {
+                _algorithm = value;
                 OkCommand.TriggerChanged();
             }
         }

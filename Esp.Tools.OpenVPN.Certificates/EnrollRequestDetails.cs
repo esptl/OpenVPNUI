@@ -21,6 +21,16 @@ using System.Runtime.Serialization;
 
 namespace Esp.Tools.OpenVPN.Certificates
 {
+
+    [DataContract]
+    public enum EnrollRequestCertAlgorithm
+    {
+        [EnumMember]
+        RSA4096,
+        [EnumMember]
+        ECDSA_P384
+    }
+
     [DataContract]
     public class EnrollRequestDetails
     {
@@ -28,6 +38,10 @@ namespace Esp.Tools.OpenVPN.Certificates
         {
             Country = EnrollCountry.IE;
         }
+
+        [DataMember]
+        public EnrollRequestCertAlgorithm Algorithm { get; set; }
+
 
         [DataMember]
         public string CommonName { get; set; }

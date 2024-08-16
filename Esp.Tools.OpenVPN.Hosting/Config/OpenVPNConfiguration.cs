@@ -43,7 +43,7 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
         private readonly ConnectionDefinitionFile _file;
 
         private readonly Regex _interfaceRegex =
-            new Regex(".*device (?<intName>.*) opened: .*\\{(?<interface>.*)\\}.*");
+            new Regex("on interface \\{(?<interface>.*)\\}.*");
 
         private readonly List<OutputLine> _output = new List<OutputLine>();
         private ConnectionError _error;
