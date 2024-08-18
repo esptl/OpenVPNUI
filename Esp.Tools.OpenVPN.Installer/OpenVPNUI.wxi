@@ -75,8 +75,18 @@
           Source="..\Esp.Tools.OpenVPN.SharedUI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.SharedUI.dll" />
     <File Id="Interop.CERTENROLLLib.dll" Name="Interop.CERTENROLLLib.dll"
           Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Interop.CERTENROLLLib.dll" />
-    <File Id="ICSharpCode.SharpZLib.dll" Name="ICSharpCode.SharpZLib.dll"
+    <File Id="ICSharpCode.SharpZipLib.dll" Name="ICSharpCode.SharpZipLib.dll"
           Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\ICSharpCode.SharpZipLib.dll" />
+    <File Id="System.Buffers.dll" Name="System.Buffers.dll"
+          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Buffers.dll" />
+    <File Id="System.Memory.dll" Name="System.Memory.dll"
+          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Memory.dll" />
+    <File Id="System.Numerics.Vectors.dll" Name="System.Numerics.Vectors.dll"
+          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Numerics.Vectors.dll" />
+    <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll"
+          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Runtime.CompilerServices.Unsafe.dll" />
+    <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll"
+          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Threading.Tasks.Extensions.dll" />
     <RemoveFolder Id="WHATEVER" Directory="ProgramMenuDir" On="uninstall" />
   </Component>
 </Include>

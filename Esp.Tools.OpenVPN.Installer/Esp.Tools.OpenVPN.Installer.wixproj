@@ -60,6 +60,8 @@
     <Content Include="OpenVPN\bin\x64\openssl.exe" />
     <Content Include="OpenVPN\bin\x64\openvpn.exe" />
     <Content Include="OpenVPN\bin\x64\tapinstall.exe" />
+    <Content Include="OpenVPN\ovpn-dco-amd64.msm" />
+    <Content Include="OpenVPN\ovpn-dco-x86.msm" />
     <Content Include="OpenVPN\tap-x64\OemVista.inf" />
     <Content Include="OpenVPN\tap-x64\tap0901.cat" />
     <Content Include="OpenVPN\tap-x64\tap0901.sys" />

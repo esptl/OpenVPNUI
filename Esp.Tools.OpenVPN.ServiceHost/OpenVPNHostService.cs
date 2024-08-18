@@ -17,6 +17,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.IO;
 using System.ServiceProcess;
 using Esp.Tools.OpenVPN.Hosting.Config;
 using Esp.Tools.OpenVPN.Hosting.PipeServers;
@@ -35,6 +37,7 @@ namespace Esp.Tools.OpenVPN.ServiceHost
         {
             InitializeComponent();
             CanHandlePowerEvent = true;
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         }
 
 

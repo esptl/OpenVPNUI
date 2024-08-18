@@ -89,21 +89,34 @@ namespace Esp.Tools.OpenVPN.Client
 
         protected void Reconnect()
         {
-            if (_messageTypes == null)
+            while (true)
             {
-                var lst = MessageReaders.ToList();
-                lst.Add(new MessageReader<ShutDownInfo>(ShutDownMessage.MessageKey) {MessageRecieved = OnShutDown});
-                _messageTypes = lst.ToArray();
-            }
-            _pipe = new NamedPipeClientStream("localhost", _pipeName, PipeDirection.InOut,
-                PipeOptions.Asynchronous);
+                try
+                {
+                    if (_messageTypes == null)
+                    {
+                        var lst = MessageReaders.ToList();
+                        lst.Add(new MessageReader<ShutDownInfo>(ShutDownMessage.MessageKey)
+                            { MessageRecieved = OnShutDown });
+                        _messageTypes = lst.ToArray();
+                    }
 
-            if (Connecting != null)
-                Connecting();
-            _pipe.Connect();
-            if (Connected != null)
-                Connected();
-            _pipe.BeginRead(_buffer, 0, _buffer.Length, OnReadData, null);
+                    _pipe = new NamedPipeClientStream("localhost", _pipeName, PipeDirection.InOut,
+                        PipeOptions.Asynchronous);
+
+                    if (Connecting != null)
+                        Connecting();
+                    _pipe.Connect();
+                    if (Connected != null)
+                        Connected();
+                    _pipe.BeginRead(_buffer, 0, _buffer.Length, OnReadData, null);
+                    break;
+                }
+                catch (IOException ex)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
         }
 
         private void OnShutDown(BaseMessage<ShutDownInfo> pObj)

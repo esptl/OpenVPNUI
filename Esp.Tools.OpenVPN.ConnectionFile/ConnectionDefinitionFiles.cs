@@ -17,6 +17,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
 
+using Esp.Tools.OpenVPN.EventLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,8 +38,9 @@ namespace Esp.Tools.OpenVPN.ConnectionFile
                 {
                     _files.Add(ConnectionDefinitionFile.LoadFile(file));
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    EventLogHelper.LogEvent($"Failed Loading '{file}' CurDir is '{Directory.GetCurrentDirectory()}': " + ex.Message + "\n\r" + ex.StackTrace);
                 }
         }
 
