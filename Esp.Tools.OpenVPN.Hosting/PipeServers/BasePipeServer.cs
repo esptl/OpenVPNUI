@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Pipes;
 using Esp.Tools.OpenVPN.IPCProtocol;
 using Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages;
@@ -83,8 +84,23 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         protected void SendMessage(IMessage pMessage)
         {
-            if (_pipeServer.CanWrite && _pipeServer.IsConnected)
-                UtilityMethods.WriteCommandResult(_pipeServer, pMessage);
+            try
+            {
+                if (_pipeServer.CanWrite && _pipeServer.IsConnected)
+                    UtilityMethods.WriteCommandResult(_pipeServer, pMessage);
+            }
+            catch (IOException)
+            {
+                RestartWaiting();
+            }
+        }
+
+        private void RestartWaiting()
+        {
+            _pipeServer.Disconnect();
+
+            _pipeServer.BeginWaitForConnection(WaitForConnection, null);
+            _readAsync = null;
         }
 
         protected abstract void OnConnection();

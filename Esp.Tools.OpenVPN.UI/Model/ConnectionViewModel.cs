@@ -308,9 +308,10 @@ namespace Esp.Tools.OpenVPN.UI.Model
             get => _interfaceId;
             set
             {
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces().ToArray();
                 _interfaceId = value;
                 NetworkInterface =
-                    NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(pX => pX.Id == "{" + value + "}");
+                    interfaces.FirstOrDefault(pX => pX.Id == "{" + value + "}");
 
                 // i[0].GetIPProperties(). 
                 OnPropertyChanged("InterfaceName");

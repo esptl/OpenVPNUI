@@ -4,20 +4,20 @@
   <Directory Id="OpenVPNFiles" Name="OpenVPN">
     <Directory Id="OpenVPNBinFiles" Name="bin">
       <Component Id="OpenVPNbin" DiskId="1" Guid="1E5BFC84-9E8E-4218-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
-        <File Id="libcrypto11.dll" LongName="libcrypto-1_1.dll" Source="OpenVPN\bin\libcrypto-1_1.dll" />
-        <File Id="liblzo22.dll" LongName="liblzo2-2.dll" Source="OpenVPN\bin\liblzo2-2.dll" />
-        <File Id="libpkcs11helper1.dll" LongName="libpkcs11-helper-1.dll" Source="OpenVPN\bin\libpkcs11-helper-1.dll" />
-        <File Id="libssl11.dll" LongName="libssl-1_1.dll" Source="OpenVPN\bin\libssl-1_1.dll" />
-        <File Id="openssl.exe" LongName="openssl.exe" Source="OpenVPN\bin\openssl.exe" />
-        <File Id="openvpn.exe" LongName="openvpn.exe" Source="OpenVPN\bin\openvpn.exe" />
-        <File Id="tapinstall.exe" LongName="tapinstall.exe" Source="OpenVPN\bin\tapinstall.exe" />
+        <File Id="libcrypto11.dll" Name="libcrypto-1_1.dll" Source="OpenVPN\bin\libcrypto-1_1.dll" />
+        <File Id="liblzo22.dll" Name="liblzo2-2.dll" Source="OpenVPN\bin\liblzo2-2.dll" />
+        <File Id="libpkcs11helper1.dll" Name="libpkcs11-helper-1.dll" Source="OpenVPN\bin\libpkcs11-helper-1.dll" />
+        <File Id="libssl11.dll" Name="libssl-1_1.dll" Source="OpenVPN\bin\libssl-1_1.dll" />
+        <File Id="openssl.exe" Name="openssl.exe" Source="OpenVPN\bin\openssl.exe" />
+        <File Id="openvpn.exe" Name="openvpn.exe" Source="OpenVPN\bin\openvpn.exe" />
+        <File Id="tapinstall.exe" Name="tapinstall.exe" Source="OpenVPN\bin\tapinstall.exe" />
       </Component>
     </Directory>
     <Directory Id="OpenVPNTapFiles" Name="tap">
       <Component Id="OpenVPNTapX86" DiskId="1" Guid="1E5BFC84-9E8E-1218-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
-        <File Id="OemWin2k.inf" LongName="OemVista.inf" Source="OpenVPN\tap-x86\OemVista.inf" />
-        <File Id="tap0901.cat" LongName="tap0901.cat" Source="OpenVPN\tap-x86\tap0901.cat" />
-        <File Id="tap0901.sys" LongName="tap0901.sys" Source="OpenVPN\tap-x86\tap0901.sys" />
+        <File Id="OemWin2k.inf" Name="OemVista.inf" Source="OpenVPN\tap-x86\OemVista.inf" />
+        <File Id="tap0901.cat" Name="tap0901.cat" Source="OpenVPN\tap-x86\tap0901.cat" />
+        <File Id="tap0901.sys" Name="tap0901.sys" Source="OpenVPN\tap-x86\tap0901.sys" />
       </Component>
     </Directory>
   </Directory>

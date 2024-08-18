@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -44,6 +45,11 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
 
         private readonly Regex _interfaceRegex =
             new Regex("on interface \\{(?<interface>.*)\\}.*");
+
+
+        private readonly Regex _dcoInterfaceRegex =
+            new Regex(@"IPv4 MTU set to \d* on interface (?<interfaceId>\d*) using SetIpInterfaceEntry()");
+            
 
         private readonly List<OutputLine> _output = new List<OutputLine>();
         private ConnectionError _error;
@@ -252,6 +258,13 @@ namespace Esp.Tools.OpenVPN.Hosting.Config
                 {
                     var matches = _interfaceRegex.Matches(pLine.Line);
                     Interface = matches[0].Groups["interface"].Value;
+                }
+
+                if (_dcoInterfaceRegex.IsMatch(pLine.Line))
+                {
+                    var matches = _dcoInterfaceRegex.Matches(pLine.Line);
+                    var interfaceId = Int32.Parse(matches[0].Groups["interfaceId"].Value);
+                    Interface = NetworkInterface.GetAllNetworkInterfaces().First(pX => pX.GetIPProperties().GetIPv4Properties().Index == interfaceId).Id.Trim('{', '}');
                 }
 
                 if (pLine.Line.Contains("process restarting"))

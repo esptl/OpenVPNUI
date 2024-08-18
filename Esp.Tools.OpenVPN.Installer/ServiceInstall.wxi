@@ -2,7 +2,7 @@
 
 <Include>
   <Component Id="Service" DiskId="1" Guid="1E5BFC84-9E8E-4298-AA4B-C5DFDA50482C" Win64="$(var.Win64)">
-    <File Id="Esp.Tools.OpenVPN.ServiceHost.exe" LongName="Esp.Tools.OpenVPN.ServiceHost.exe"
+    <File Id="Esp.Tools.OpenVPN.ServiceHost.exe" Name="Esp.Tools.OpenVPN.ServiceHost.exe"
           Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.ServiceHost.exe" />
     <ServiceInstall Id="ESPOpenVPNHostServiceInstall"
                     Name="OpenVPNUIHostService"

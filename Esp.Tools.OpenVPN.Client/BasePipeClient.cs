@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Threading;
@@ -63,19 +64,27 @@ namespace Esp.Tools.OpenVPN.Client
 
         private void OnReadData(IAsyncResult pAr)
         {
-            if (_pipe.IsAsync)
+            try
             {
-                var read = _pipe.EndRead(pAr);
-                if (read > 0)
+                if (_pipe.IsAsync)
                 {
-                    var data = new byte[read];
-                    Array.Copy(_buffer, 0, data, 0, read);
-                    UtilityMethods.ReadMessage(data, _messageTypes);
-                }
+                    var read = _pipe.EndRead(pAr);
+                    if (read > 0)
+                    {
+                        var data = new byte[read];
+                        Array.Copy(_buffer, 0, data, 0, read);
+                        UtilityMethods.ReadMessage(data, _messageTypes);
+                    }
 
-                _pipe.BeginRead(_buffer, 0, _buffer.Length, OnReadData, null);
+                    _pipe.BeginRead(_buffer, 0, _buffer.Length, OnReadData, null);
+                }
+            }
+            catch (IOException)
+            {
+                Reconnect();
             }
         }
+
 
 
         protected void Reconnect()
