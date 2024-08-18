@@ -73,13 +73,13 @@
                     <LineBreak />
                     <LineBreak />
                     The project page can be accessed at:
-                    <Hyperlink NavigateUri="http://sourceforge.net/projects/openvpnui/" Foreground="#FFD0FF9F"
+                    <Hyperlink NavigateUri="https://github.com/esptl/OpenVPNUI" Foreground="#FFD0FF9F"
                                RequestNavigate="Hyperlink_RequestNavigate">
-                        http://sourceforge.net/projects/openvpnui/
+                        https://github.com/esptl/OpenVPNUI
                     </Hyperlink>
                     <LineBreak />
                     <LineBreak />
-                    Copyright © 2011-2022 Esp Technologies Ltd. (
+                    Copyright © 2011-2024 Esp Technologies Ltd. (
                     <Hyperlink NavigateUri="http://www.esptl.com/" Foreground="#FFD0FF9F"
                                RequestNavigate="Hyperlink_RequestNavigate">
                         http://www.esptl.com
@@ -116,7 +116,7 @@
                     .
                     <LineBreak />
                     <LineBreak />
-                    OpenVPN is copyright © 2002-2020 OpenVPN Solutions LLC (
+                    OpenVPN is copyright © 2002-2024 OpenVPN Solutions LLC (
                     <Hyperlink RequestNavigate="Hyperlink_RequestNavigate" NavigateUri="mailto://info@openvpn.net"
                                Foreground="#FFD0FF9F">
                         info@openvpn.net
