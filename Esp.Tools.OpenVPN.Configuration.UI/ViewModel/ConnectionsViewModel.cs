@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using Esp.Tools.OpenVPN.Client;
 using Esp.Tools.OpenVPN.SharedUI;
@@ -62,7 +63,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             _configClient.SendInstallConfigurationCommand(con);
         }
 
-        private void OnConfigurationsChanged()
+        private async Task OnConfigurationsChanged()
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(UpdateConfigurations));
         }

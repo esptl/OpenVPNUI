@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
+using System.Threading;
+using System.Threading.Tasks;
 using Esp.Tools.OpenVPN.EventLog;
 using Esp.Tools.OpenVPN.IPCProtocol;
 using Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages;
@@ -20,6 +22,8 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         private NamedPipeServerStream _pipeServer;
         private IAsyncResult _readAsync;
+        private readonly CancellationToken _cancellationToken = new CancellationToken(false);
+        private Task _task;
 
         protected BasePipeServer(string pPipeName, int pMaxConnections)
         {
@@ -51,73 +55,64 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
                     BufferSize,
                     pipeSecurity);
 
-            _pipeServer.BeginWaitForConnection(WaitForConnection, null);
+
+            _task = RunConnectLoop();
+
+
         }
 
-        private void WaitForRead(IAsyncResult pAr)
+        private async Task RunConnectLoop()
         {
-            var read = _pipeServer.EndRead(_readAsync);
-            if (read == 0)
+            while (true)
             {
+                await _pipeServer.WaitForConnectionAsync(_cancellationToken);
+
+                var connected = true;
+
+                await OnConnection();
+
+                await UtilityMethods.WriteCommandResultAsync(_pipeServer, new InitializedMessage(0), _cancellationToken);
+
+                while (connected)
+                {
+                    try
+                    {
+                        var bytesRead = await _pipeServer.ReadAsync(_buffer, 0, _buffer.Length, _cancellationToken);
+                        if (bytesRead == 0)
+                            connected = false;
+                        else
+                        {
+                            var buf = new byte[bytesRead];
+                            Array.Copy(_buffer, 0, buf, 0, bytesRead);
+                            await UtilityMethods.ReadMessage(buf, _messageReaders);
+                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        connected = false;
+                        EventLogHelper.LogEvent($"IOException Reading From Pipe: " + ex.Message + "\n\r" + ex.StackTrace);
+                    }
+                }
                 _pipeServer.Disconnect();
-
-                _pipeServer.BeginWaitForConnection(WaitForConnection, null);
-                _readAsync = null;
-            }
-            else
-            {
-                var buf = new byte[read];
-                Array.Copy(_buffer, 0, buf, 0, read);
-                UtilityMethods.ReadMessage(buf, _messageReaders);
-                _readAsync = _pipeServer.BeginRead(_buffer, 0, _buffer.Length, WaitForRead, null);
             }
         }
 
-        protected void WaitForConnection(IAsyncResult pAr)
+      
+
+
+
+        protected async Task SendMessageAsync(IMessage pMessage)
         {
-            try
-            {
-                _pipeServer.EndWaitForConnection(pAr);
-                OnConnection();
-
-                UtilityMethods.WriteCommandResult(_pipeServer, new InitializedMessage(0));
-                _readAsync = _pipeServer.BeginRead(_buffer, 0, _buffer.Length, WaitForRead, null);
-            }
-            catch (Exception ex)
-            {
-                EventLogHelper.LogEvent($"Wait for Connect failed restarting: " + ex.Message + "\n\r" + ex.StackTrace);
-                RestartWaiting();
-            }
+           if (_pipeServer.CanWrite && _pipeServer.IsConnected)
+              await UtilityMethods.WriteCommandResultAsync(_pipeServer, pMessage, _cancellationToken);
         }
 
-
-        protected void SendMessage(IMessage pMessage)
-        {
-            try
-            {
-                if (_pipeServer.CanWrite && _pipeServer.IsConnected)
-                    UtilityMethods.WriteCommandResult(_pipeServer, pMessage);
-            }
-            catch (IOException)
-            {
-
-                RestartWaiting();
-            }
-        }
-
-        private void RestartWaiting()
-        {
-            _pipeServer.Disconnect();
-
-            _pipeServer.BeginWaitForConnection(WaitForConnection, null);
-            _readAsync = null;
-        }
-
-        protected abstract void OnConnection();
+      
+        protected abstract Task OnConnection();
 
         public void Shutdown()
         {
-            SendMessage(new ShutDownMessage());
+            SendMessageAsync(new ShutDownMessage());
         }
     }
 }

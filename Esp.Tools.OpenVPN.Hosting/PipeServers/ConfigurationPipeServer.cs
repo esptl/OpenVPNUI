@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using Esp.Tools.OpenVPN.Certificates;
 using Esp.Tools.OpenVPN.ConnectionFile;
 using Esp.Tools.OpenVPN.EventLog;
@@ -57,26 +58,26 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
                 {MessageRecieved = OnDeleteCertificate}
         };
 
-        private void OnImportPfx(BaseMessage<ImportPfxInfo> pRequest)
+        private async Task OnImportPfx(BaseMessage<ImportPfxInfo> pRequest)
         {
             CertificateManager.Current.ImportPfx(pRequest.Data.PfxData, pRequest.Data.Password);
-            SendCertificates();
-            SendConfigurations();
+            await SendCertificates();
+            await SendConfigurations();
         }
 
-        private void OnDeleteCertificate(BaseMessage<DeleteCertificateInfo> pRequest)
+        private async Task OnDeleteCertificate(BaseMessage<DeleteCertificateInfo> pRequest)
         {
             CertificateManager.Current.DeleteCertificate(pRequest.Data.ThumbPrint);
-            SendCertificates();
+            await SendCertificates();
         }
 
-        private void OnSetConfigurationCertificate(BaseMessage<SetConfigurationCertificateInfo> pRequest)
+        private async Task OnSetConfigurationCertificate(BaseMessage<SetConfigurationCertificateInfo> pRequest)
         {
             var con = _configurations.FirstOrDefault(pX => pX.ConfigurationName == pRequest.Data.Name);
             if (con != null)
             {
                 con.SetCertificate(pRequest);
-                SendConfigurations();
+                await SendConfigurations();
             }
             else
             {
@@ -84,13 +85,13 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             }
         }
 
-        private void OnDeleteConfiguration(BaseMessage<DeleteConfigurationInfo> pRequest)
+        private async Task OnDeleteConfiguration(BaseMessage<DeleteConfigurationInfo> pRequest)
         {
             var con = _configurations.FirstOrDefault(pX => pX.ConfigurationName == pRequest.Data.Name);
             if (con != null)
             {
                 con.Delete();
-                SendConfigurations();
+                await SendConfigurations();
             }
             else
             {
@@ -98,7 +99,7 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             }
         }
 
-        private void OnInstallConfiguration(BaseMessage<InstallConfigurationInfo> pRequest)
+        private async Task OnInstallConfiguration(BaseMessage<InstallConfigurationInfo> pRequest)
         {
             var ms = new MemoryStream(pRequest.Data.ConfigurationData);
             var configFile = ConnectionDefinitionFile.LoadFromStream(ms);
@@ -107,67 +108,67 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
                 con.Delete();
             _configurations.InstallConfiguration(configFile);
 
-            SendCertificates();
-            SendConfigurations();
+            await SendCertificates();
+            await SendConfigurations();
         }
 
-        private void OnEnroll(BaseMessage<EnrollInfo> pRequest)
+        private async Task OnEnroll(BaseMessage<EnrollInfo> pRequest)
         {
             var certificate = CertificateManager.Current.ImportResponse(pRequest.Data.Certificate);
             if (certificate != null)
-                SendEnrollResponse(certificate);
+                await SendEnrollResponse(certificate);
         }
 
 
-        private void OnGetCertificates(BaseMessage<GetCertificatesInfo> pRequest)
+        private async Task OnGetCertificates(BaseMessage<GetCertificatesInfo> pRequest)
         {
-            SendCertificates();
-            SendConfigurations();
+            await SendCertificates();
+            await SendConfigurations();
         }
 
-        private void OnEnrollRequest(BaseMessage<EnrollRequestInfo> pRequest)
+        private async Task OnEnrollRequest(BaseMessage<EnrollRequestInfo> pRequest)
         {
             var response = CertificateManager.Current.GenerateRequest(pRequest.Data.Request);
             if (response != null)
-                SendEnrollRequestResponse(response);
+                await SendEnrollRequestResponse(response);
         }
 
-        protected override void OnConnection()
+        protected override async Task OnConnection()
         {
-            SendCertificates();
-            SendConfigurations();
+            await SendCertificates();
+            await SendConfigurations();
         }
 
-        private void SendCertificates()
+        private async Task SendCertificates()
         {
             var certificates =
                 new CertificatesInfo
                 {
                     Certificates = CertificateManager.Current.GetCertificates(null)
                 };
-            SendMessage(new AvailableCertificatesMessage(0) {Data = certificates});
+            await SendMessageAsync(new AvailableCertificatesMessage(0) {Data = certificates});
         }
 
-        private void SendEnrollResponse(X509Certificate2 pCertificate)
+        private async Task SendEnrollResponse(X509Certificate2 pCertificate)
         {
-            SendCertificates();
-            SendConfigurations();
-            SendMessage(new EnrollResponseMessage(0)
+            await SendCertificates();
+            await SendConfigurations();
+            await SendMessageAsync(new EnrollResponseMessage(0)
             {
                 Data = new EnrollResponseInfo {ThumbPrint = pCertificate.Thumbprint}
             });
         }
 
-        private void SendEnrollRequestResponse(string pResponse)
+        private async Task SendEnrollRequestResponse(string pResponse)
         {
-            SendMessage(
+            await SendMessageAsync(
                 new EnrollRequestResponseMessage(0) {Data = new EnrollRequestResponseInfo {Request = pResponse}});
         }
 
-        private void SendConfigurations()
+        private async Task SendConfigurations()
         {
             var configurations = _configurations.Select(pX => pX.ConfigurationInfo).ToArray();
-            SendMessage(new ConfigurationsMessage {Data = new ConfigurationsInfo {Configurations = configurations}});
+            await SendMessageAsync(new ConfigurationsMessage {Data = new ConfigurationsInfo {Configurations = configurations}});
         }
     }
 }

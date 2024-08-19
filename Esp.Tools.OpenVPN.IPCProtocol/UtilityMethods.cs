@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Esp.Tools.OpenVPN.IPCProtocol
 {
@@ -39,7 +41,19 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
             }
         }
 
-        public static void ReadMessage(byte[] pInput, IEnumerable<IMessageReader> pList)
+        public static async Task WriteCommandResultAsync(Stream pOutput, IMessage pMessage, CancellationToken pCancellationToken)
+        {
+            if (pOutput.CanWrite)
+            {
+                var str = pMessage.Code + ":" + pMessage.Connection + ":" +
+                          Convert.ToBase64String(Encoding.UTF8.GetBytes(pMessage.DataString));
+                var bytes = Encoding.UTF8.GetBytes(str);
+                await pOutput.WriteAsync(bytes, 0, bytes.Length, pCancellationToken);
+                await pOutput.FlushAsync(pCancellationToken);
+            }
+        }
+
+        public static async Task ReadMessage(byte[] pInput, IEnumerable<IMessageReader> pList)
         {
             var dict = pList.ToDictionary(pX => pX.Code);
             var line = Encoding.UTF8.GetString(pInput);
@@ -51,7 +65,7 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
             if (dict.ContainsKey(code))
             {
                 var reader = dict[code];
-                reader.ProcessMessage(connection, dataStr);
+                await reader.ProcessMessage(connection, dataStr);
             }
         }
     }

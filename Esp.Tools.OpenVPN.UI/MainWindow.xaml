@@ -51,11 +51,15 @@
                     <BooleanToVisibilityConverter x:Key="boolToVis" />
                 </Grid.Resources>
 
-
+                <Grid Grid.Row="1" Visibility="{Binding IsPipeDisconnected, Converter={StaticResource ResourceKey=boolToVis}}">
+                   <UI:PipeDisconnectedView></UI:PipeDisconnectedView>
+                </Grid>
                 <ItemsControl Grid.Row="1" Margin="5"
                               ItemsSource="{Binding Connections, UpdateSourceTrigger=PropertyChanged}"
                               Name="items" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                              VerticalContentAlignment="Top" IsTextSearchEnabled="False" Focusable="False">
+                              VerticalContentAlignment="Top" IsTextSearchEnabled="False" Focusable="False"
+                              
+                              Visibility="{Binding IsPipeConnected, Converter={StaticResource ResourceKey=boolToVis}}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid VerticalAlignment="Top">

@@ -19,10 +19,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Esp.Tools.OpenVPN.IPCProtocol;
 using Esp.Tools.OpenVPN.IPCProtocol.Contracts;
 using Esp.Tools.OpenVPN.IPCProtocol.Controller.Commands;
@@ -36,12 +38,14 @@ namespace Esp.Tools.OpenVPN.Client
         private readonly string _pipeName;
         private IMessageReader[] _messageTypes;
         protected NamedPipeClientStream _pipe;
+        private readonly CancellationToken _cancellationToken = new CancellationToken(false);
+        private readonly Task _task;
+        private bool _connected = true;
 
         protected BasePipeClient(string pPipeName)
         {
             _pipeName = pPipeName;
-            var thread = new Thread(Reconnect);
-            thread.Start();
+            _task = Reconnect();
         }
 
         protected abstract IEnumerable<IMessageReader> MessageReaders { get; }
@@ -54,87 +58,66 @@ namespace Esp.Tools.OpenVPN.Client
         }
 
 
-        public void Connect(int pConnection)
+        protected async Task SendCommandAsync(IMessage pMessage)
         {
-            if (_pipe.IsConnected)
-                UtilityMethods.WriteCommandResult(_pipe, new ConnectionStartCommand {Connection = pConnection});
-            else
-                Reconnect();
+            if (_pipe.CanWrite && _pipe.IsConnected)
+                await UtilityMethods.WriteCommandResultAsync(_pipe, pMessage, _cancellationToken);
         }
 
-        private void OnReadData(IAsyncResult pAr)
+
+        protected async Task Reconnect()
         {
-            try
+            while (!_cancellationToken.IsCancellationRequested)
             {
-                if (_pipe.IsAsync)
+                if (_messageTypes == null)
                 {
-                    var read = _pipe.EndRead(pAr);
+                    var lst = MessageReaders.ToList();
+                    lst.Add(new MessageReader<ShutDownInfo>(ShutDownMessage.MessageKey)
+                        { MessageRecieved = OnShutDown });
+                    _messageTypes = lst.ToArray();
+                }
+
+                _pipe = new NamedPipeClientStream("localhost", _pipeName, PipeDirection.InOut,
+                    PipeOptions.Asynchronous);
+
+                Connecting?.Invoke();
+                await _pipe.ConnectAsync(_cancellationToken);
+
+
+                Connected?.Invoke();
+                _connected = true;
+                while (_connected)
+                {
+                    var read = await _pipe.ReadAsync(_buffer, 0, _buffer.Length, _cancellationToken);
                     if (read > 0)
                     {
                         var data = new byte[read];
                         Array.Copy(_buffer, 0, data, 0, read);
-                        UtilityMethods.ReadMessage(data, _messageTypes);
+                        await UtilityMethods.ReadMessage(data, _messageTypes);
                     }
-
-                    _pipe.BeginRead(_buffer, 0, _buffer.Length, OnReadData, null);
+                    else
+                        _connected = false;
                 }
-            }
-            catch (IOException)
-            {
-                Reconnect();
+                Disconnected?.Invoke();
+                await Task.Delay(500, _cancellationToken);
             }
         }
+    
 
-
-
-        protected void Reconnect()
+        private async Task OnShutDown(BaseMessage<ShutDownInfo> pObj)
         {
-            while (true)
+            if (_connected)
             {
-                try
-                {
-                    if (_messageTypes == null)
-                    {
-                        var lst = MessageReaders.ToList();
-                        lst.Add(new MessageReader<ShutDownInfo>(ShutDownMessage.MessageKey)
-                            { MessageRecieved = OnShutDown });
-                        _messageTypes = lst.ToArray();
-                    }
+                await _pipe.FlushAsync(_cancellationToken);
+                _connected = false;
 
-                    _pipe = new NamedPipeClientStream("localhost", _pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
-
-                    if (Connecting != null)
-                        Connecting();
-                    _pipe.Connect();
-                    if (Connected != null)
-                        Connected();
-                    _pipe.BeginRead(_buffer, 0, _buffer.Length, OnReadData, null);
-                    break;
-                }
-                catch (IOException ex)
-                {
-                    Thread.Sleep(1000);
-                }
             }
-        }
-
-        private void OnShutDown(BaseMessage<ShutDownInfo> pObj)
-        {
-            if (Disconnected != null)
-                Disconnected();
-            Reconnect();
         }
 
         public event Action Connecting;
         public event Action Disconnected;
         public event Action Connected;
 
-        public void Disconnect(int pConnection)
-        {
-            if (_pipe.IsConnected)
-                UtilityMethods.WriteCommandResult(_pipe, new ConnectionStopCommand {Connection = pConnection});
-            else
-                Reconnect();
-        }
+
     }
 }

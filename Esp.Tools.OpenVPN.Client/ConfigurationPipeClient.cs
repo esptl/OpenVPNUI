@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using Esp.Tools.OpenVPN.Certificates;
 using Esp.Tools.OpenVPN.ConnectionFile;
 using Esp.Tools.OpenVPN.IPCProtocol;
@@ -37,56 +39,42 @@ namespace Esp.Tools.OpenVPN.Client
                 {MessageRecieved = OnEnrollResponse}
         };
 
-        public ConfigurationInfo[] Configurations
-        {
-            get => _configurations;
-            set
-            {
-                _configurations = value;
-                if (ConfigurationsChanged != null)
-                    ConfigurationsChanged();
-            }
-        }
+        public ConfigurationInfo[] Configurations => _configurations;
 
-        public CertificateDetails[] Certificates
-        {
-            get => _certificates;
-            set
-            {
-                _certificates = value;
-                if (CertificatesChanged != null)
-                    CertificatesChanged();
-            }
-        }
+        public CertificateDetails[] Certificates => _certificates;
 
         public bool IsConnected => _pipe.IsConnected;
 
-        private void OnEnrollResponse(BaseMessage<EnrollResponseInfo> pMessage)
+        private async Task OnEnrollResponse(BaseMessage<EnrollResponseInfo> pMessage)
         {
             if (Enrolled != null)
-                Enrolled(pMessage.Data);
+                await Enrolled(pMessage.Data);
         }
 
-        private void OnEnrollRequestResponse(BaseMessage<EnrollRequestResponseInfo> pMessage)
+        private async Task OnEnrollRequestResponse(BaseMessage<EnrollRequestResponseInfo> pMessage)
         {
             if (EnrollRequestResponse != null)
-                EnrollRequestResponse(pMessage.Data);
+                await EnrollRequestResponse(pMessage.Data);
         }
 
-        private void OnConfigurations(BaseMessage<ConfigurationsInfo> pMessage)
+        private async Task OnConfigurations(BaseMessage<ConfigurationsInfo> pMessage)
         {
-            Configurations = pMessage.Data.Configurations;
+            _configurations = pMessage.Data.Configurations; 
+            if (ConfigurationsChanged != null)
+                await ConfigurationsChanged();
         }
 
-        private void OnAvailableCertificates(BaseMessage<CertificatesInfo> pMessage)
+        private async Task OnAvailableCertificates(BaseMessage<CertificatesInfo> pMessage)
         {
-            Certificates = pMessage.Data.Certificates;
+            _certificates = pMessage.Data.Certificates;
+            if (CertificatesChanged != null)
+                await CertificatesChanged();
         }
 
-        public event Action ConfigurationsChanged;
-        public event Action CertificatesChanged;
-        public event Action<EnrollRequestResponseInfo> EnrollRequestResponse;
-        public event Action<EnrollResponseInfo> Enrolled;
+        public event Func<Task> ConfigurationsChanged;
+        public event Func<Task> CertificatesChanged;
+        public event Func<EnrollRequestResponseInfo, Task> EnrollRequestResponse;
+        public event Func<EnrollResponseInfo, Task> Enrolled;
 
 
         public void SendRefreshCertificatesCommand()

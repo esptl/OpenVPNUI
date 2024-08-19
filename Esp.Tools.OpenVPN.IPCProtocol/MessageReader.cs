@@ -18,18 +18,19 @@
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading.Tasks;
 
 namespace Esp.Tools.OpenVPN.IPCProtocol
 {
     public interface IMessageReader
     {
         string Code { get; }
-        void ProcessMessage(int pConnection, string pMessageData);
+        Task ProcessMessage(int pConnection, string pMessageData);
     }
 
     public class MessageReader<TMessageType> : IMessageReader where TMessageType : new()
     {
-        public Action<BaseMessage<TMessageType>> MessageRecieved;
+        public Func<BaseMessage<TMessageType>, Task> MessageRecieved;
 
         public MessageReader(string pCode)
         {
@@ -40,7 +41,7 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
 
         public string Code { get; }
 
-        public void ProcessMessage(int pConnection, string pMessageData)
+        public async Task ProcessMessage(int pConnection, string pMessageData)
         {
             var result = new BaseMessage<TMessageType>
             {
@@ -49,7 +50,7 @@ namespace Esp.Tools.OpenVPN.IPCProtocol
                 DataString = pMessageData
             };
             if (MessageRecieved != null)
-                MessageRecieved(result);
+                await MessageRecieved(result);
         }
 
         #endregion

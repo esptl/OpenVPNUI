@@ -18,6 +18,8 @@
 //  along with OpenVPN UI.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Esp.Tools.OpenVPN.Client;
 using Esp.Tools.OpenVPN.SharedUI;
@@ -35,7 +37,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
             try
             {
                 _configClient = new ConfigurationPipeClient();
-
+                
                 _configClient.Disconnected += () => Dispatch(() => pDialogs.ShowReconnecting(_configClient));
 
                 ControllerAccess = new GroupAccessViewModel(pDialogs, Configuration.Current.ControllerAccess);

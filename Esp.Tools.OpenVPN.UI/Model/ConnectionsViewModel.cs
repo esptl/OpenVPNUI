@@ -33,10 +33,13 @@ namespace Esp.Tools.OpenVPN.UI.Model
     {
         private readonly ControllerPipeClient _controllerPipeClient;
         private bool _initialized;
+        private bool _isPipeConnected;
 
         public ConnectionsViewModel()
         {
             _controllerPipeClient = new ControllerPipeClient();
+            _controllerPipeClient.Connected += OnPipeConnected;
+            _controllerPipeClient.Disconnected += OnPipeDisconnected;
             _controllerPipeClient.ConnectionInfo += OnConnectInfo;
             _controllerPipeClient.RequestPassword += OnRequestPassword;
             _controllerPipeClient.Message += OnMessage;
@@ -66,6 +69,21 @@ namespace Esp.Tools.OpenVPN.UI.Model
             get { return Connections.Any(con => con.ShowLog); }
         }
 
+        public bool IsPipeConnected
+        {
+            get => _isPipeConnected;
+            set
+            {
+                if (value == _isPipeConnected) return;
+                _isPipeConnected = value;
+                OnPropertyChanged(nameof(IsPipeConnected));
+                OnPropertyChanged(nameof(IsPipeDisconnected));
+            }
+        }
+
+
+        public bool IsPipeDisconnected => !IsPipeConnected;
+
         private void OnInitialized(BaseMessage<InitializedInfo> pObj)
         {
             _initialized = true;
@@ -82,6 +100,27 @@ namespace Esp.Tools.OpenVPN.UI.Model
                         Connections.FirstOrDefault(pX => pX.Index == pInfo.Connection);
                     if (item != null)
                         item.OnRequestPassword(pInfo.Data);
+                }));
+        }
+
+        private void OnPipeConnected()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    IsPipeConnected = true;
+                }));
+        }
+
+
+        private void OnPipeDisconnected()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    IsPipeConnected = false;
                 }));
         }
 

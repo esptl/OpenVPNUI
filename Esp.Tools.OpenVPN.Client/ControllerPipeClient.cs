@@ -20,6 +20,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Esp.Tools.OpenVPN.IPCProtocol;
 using Esp.Tools.OpenVPN.IPCProtocol.Contracts;
 using Esp.Tools.OpenVPN.IPCProtocol.Controller.Commands;
@@ -70,12 +72,12 @@ namespace Esp.Tools.OpenVPN.Client
         public event Action<BaseMessage<OutputLine>> Message;
         public event Action<BaseMessage<InitializedInfo>> Initialized;
 
+        private CancellationToken _cancellationToken = new CancellationToken(false);
+
         public void ClearLog(int pConnection)
         {
             if (_pipe.IsConnected)
                 UtilityMethods.WriteCommandResult(_pipe, new ClearLogCommand {Connection = pConnection});
-            else
-                Reconnect();
         }
 
         public void GetFullInfo(int pConnection)
@@ -84,32 +86,33 @@ namespace Esp.Tools.OpenVPN.Client
                 new ConnectionInfoCommand {Connection = pConnection, Data = {Long = true}});
         }
 
-        public void SendUsernamePassword(int pConnection, string pUsername, string pPassword)
+        public async Task SendUsernamePassword(int pConnection, string pUsername, string pPassword)
         {
-            UtilityMethods.WriteCommandResult(_pipe,
+            await UtilityMethods.WriteCommandResultAsync(_pipe,
                 new SendAuthInfoCommand
                 {
                     Connection = pConnection,
                     Data = {UserName = pUsername, Password = pPassword}
-                });
+                },
+                _cancellationToken);
         }
 
-        private void OnInitialized(BaseMessage<InitializedInfo> pInfo)
+        private async Task OnInitialized(BaseMessage<InitializedInfo> pInfo)
         {
             Initialized?.Invoke(pInfo);
         }
 
-        private void OnRequestPassword(BaseMessage<RequestPasswordInfo> pInfo)
+        private async Task OnRequestPassword(BaseMessage<RequestPasswordInfo> pInfo)
         {
             RequestPassword?.Invoke(pInfo);
         }
 
-        private void OnConnectionOutput(BaseMessage<OutputLine> pObj)
+        private async Task OnConnectionOutput(BaseMessage<OutputLine> pObj)
         {
             Message?.Invoke(pObj);
         }
 
-        private void OnConnectionInfo(BaseMessage<ConfigurationInfo> pObj)
+        private async Task OnConnectionInfo(BaseMessage<ConfigurationInfo> pObj)
         {
             for (var i = pObj.Connection - _connections.Count + 1; i > 0; i--)
                 _connections.Add(null);
@@ -117,5 +120,9 @@ namespace Esp.Tools.OpenVPN.Client
 
             ConnectionInfo?.Invoke(pObj);
         }
+
+        public async Task Connect(int pConnection) => await SendCommandAsync(new ConnectionStartCommand { Connection = pConnection });
+
+        public async Task Disconnect(int pConnection) => await SendCommandAsync(new ConnectionStopCommand { Connection = pConnection });
     }
 }

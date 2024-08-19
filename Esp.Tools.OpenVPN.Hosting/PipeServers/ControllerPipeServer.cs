@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using Esp.Tools.OpenVPN.Hosting.Config;
 using Esp.Tools.OpenVPN.IPCProtocol;
 using Esp.Tools.OpenVPN.IPCProtocol.Contracts;
@@ -39,17 +40,17 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             Configuration.Configuration.Current.ControlPipe, 1)
         {
             _configurations = pConfigurations;
-            _configurations.OutputRecieved += SendOutputRecievedMessage;
-            _configurations.StatusChanged += SendStatusChangedMessage;
-            _configurations.InterfaceChanged += SendInterfaceChangedMessage;
-            _configurations.AuthInfoRequired += SendRequestAuthInfoMessage;
+            _configurations.OutputRecieved += (pConfig, pLine) => Task.WaitAll(SendOutputRecievedMessage(pConfig, pLine));
+            _configurations.StatusChanged += (pConfig,pStatus) => Task.WaitAll(SendStatusChangedMessage(pConfig, pStatus));
+            _configurations.InterfaceChanged += (pConfig, pInterface) => Task.WaitAll(SendInterfaceChangedMessage(pConfig, pInterface));
+            _configurations.AuthInfoRequired += (pConfig)=> Task.WaitAll(SendRequestAuthInfoMessage(pConfig));
         }
 
         #region Overrides
 
-        protected override void OnConnection()
+        protected override async Task OnConnection()
         {
-            SendConnectionInfoForAllConnections();
+            await SendConnectionInfoForAllConnections();
         }
 
         protected override IEnumerable<PipeAccessRule> PipeAccessRules => new[]
@@ -86,68 +87,68 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         #region Message Sending Methods
 
-        private void SendInterfaceChangedMessage(OpenVPNConfiguration pConfig, string pInterface)
+        private async Task SendInterfaceChangedMessage(OpenVPNConfiguration pConfig, string pInterface)
         {
-            SendConnectionInfoMessage(pConfig);
+            await SendConnectionInfoMessage(pConfig);
         }
 
-        private void SendStatusChangedMessage(OpenVPNConfiguration pConfig, ConnectionStatus pStatus)
+        private async Task SendStatusChangedMessage(OpenVPNConfiguration pConfig, ConnectionStatus pStatus)
         {
-            SendConnectionInfoMessage(pConfig);
+            await SendConnectionInfoMessage(pConfig);
         }
 
-        private void SendOutputRecievedMessage(OpenVPNConfiguration pConfig, OutputLine pLine)
+        private async Task SendOutputRecievedMessage(OpenVPNConfiguration pConfig, OutputLine pLine)
         {
-            SendMessage(new ConnectionOutputMessage {Connection = pConfig.Index, Data = pLine});
+            await SendMessageAsync(new ConnectionOutputMessage {Connection = pConfig.Index, Data = pLine});
         }
 
-        private void SendRequestAuthInfoMessage(OpenVPNConfiguration pConfig)
+        private async Task SendRequestAuthInfoMessage(OpenVPNConfiguration pConfig)
         {
-            SendMessage(new RequestAuthInfoMessage {Connection = pConfig.Index});
+            await SendMessageAsync(new RequestAuthInfoMessage {Connection = pConfig.Index});
         }
 
-        private void SendConnectionInfoMessage(OpenVPNConfiguration pConfig)
+        private async Task SendConnectionInfoMessage(OpenVPNConfiguration pConfig)
         {
-            SendMessage(new ConnectionInfoMessage(pConfig.Index)
+            await SendMessageAsync(new ConnectionInfoMessage(pConfig.Index)
                 {Data = pConfig.ConfigurationInfo});
         }
 
-        private void SendConnectionInfoForAllConnections()
+        private async Task SendConnectionInfoForAllConnections()
         {
             foreach (var con in _configurations)
-                SendConnectionInfoMessage(con);
+                await SendConnectionInfoMessage(con);
         }
 
         #endregion
 
         #region Command Handlers
 
-        private void OnConnectionInfoCommand(BaseMessage<ConnectionInfoCommandInfo> pInfo)
+        private async Task OnConnectionInfoCommand(BaseMessage<ConnectionInfoCommandInfo> pInfo)
         {
             var con = _configurations[pInfo.Connection];
-            SendConnectionInfoMessage(con);
+            await SendConnectionInfoMessage(con);
             if (pInfo.Data.Long)
                 foreach (var line in con.Output)
-                    SendOutputRecievedMessage(con, line);
+                    await SendOutputRecievedMessage(con, line);
         }
 
-        private void OnConnectionStopCommand(BaseMessage<ConnectionStopInfo> pInfo)
+        private async Task OnConnectionStopCommand(BaseMessage<ConnectionStopInfo> pInfo)
         {
             _configurations[pInfo.Connection].Disconnect(pInfo.Data.Kill);
         }
 
-        private void OnConnectionStartCommand(BaseMessage<ConnectionStartInfo> pInfo)
+        private async Task OnConnectionStartCommand(BaseMessage<ConnectionStartInfo> pInfo)
         {
             _configurations[pInfo.Connection].Connect();
         }
 
-        private void OnClearLogCommand(BaseMessage<ClearLogInfo> pInfo)
+        private async Task OnClearLogCommand(BaseMessage<ClearLogInfo> pInfo)
         {
             _configurations[pInfo.Connection].ClearOutput();
         }
 
 
-        private void OnSendPasswordCommand(BaseMessage<AuthInfo> pInfo)
+        private async Task OnSendPasswordCommand(BaseMessage<AuthInfo> pInfo)
         {
             _configurations[pInfo.Connection].SendAuthInfo(pInfo);
         }

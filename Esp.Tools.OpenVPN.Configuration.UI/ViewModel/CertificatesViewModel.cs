@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Windows;
 using Esp.Tools.OpenVPN.Certificates;
 using Esp.Tools.OpenVPN.Client;
@@ -129,7 +131,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
         {
         }
 
-        private void OnCertificatesChanged()
+        private async Task OnCertificatesChanged()
         {
             UpdateCertificates();
         }
@@ -142,13 +144,13 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
                 SelectedItem = Certificates.FirstOrDefault();
         }
 
-        private void OnEnrolled(EnrollResponseInfo pObj)
+        private async Task OnEnrolled(EnrollResponseInfo pObj)
         {
             Application.Current.Dispatcher.BeginInvoke(
                 new Action(() => MessageBox.Show("Enrolled: " + pObj.ThumbPrint)));
         }
 
-        private void OnEnrollRequestResponse(EnrollRequestResponseInfo pRequest)
+        private async Task OnEnrollRequestResponse(EnrollRequestResponseInfo pRequest)
         {
             Application.Current.Dispatcher.BeginInvoke(
                 new Action(() =>

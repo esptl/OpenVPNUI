@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -37,10 +38,10 @@ namespace Esp.Tools.OpenVPN.UI.Model
     {
         private readonly ConnectionsViewModel _connections;
         private readonly ControllerPipeClient _pipeClient;
+        private readonly BaseMessage<ConfigurationInfo> _pInfo;
         private readonly Timer _timer;
         private string _bandwidthText;
         private string _dnsAddresses;
-        private string _errorMessage;
         private bool _ignoreConnecting;
         private bool _insetLog;
         private string _interfaceId;
@@ -63,13 +64,14 @@ namespace Esp.Tools.OpenVPN.UI.Model
             _timer.Elapsed += OnTimer;
             _connections = pConnections;
             _pipeClient = pPipeClient;
+            _pInfo = pInfo;
             Error = pInfo.Data.Error;
 
             Index = pInfo.Connection;
             InterfaceID = pInfo.Data.Interface;
 
-            LoginCommand = new BasicCommand(OnLogin, () => !string.IsNullOrEmpty(Username) &&
-                                                           !string.IsNullOrEmpty(Password));
+            LoginCommand = new BasicCommand(()=>_ = OnLogin(), () => !string.IsNullOrEmpty(Username) &&
+                                                                     !string.IsNullOrEmpty(Password));
             ClearLogCommand = new BasicCommand(OnClearLog);
             CopyLogCommand = new BasicCommand(OnCopyLog);
             Status = pInfo.Data.ConnectionStatus;
@@ -78,58 +80,54 @@ namespace Esp.Tools.OpenVPN.UI.Model
                 _pipeClient.GetFullInfo(Index);
             Name = pInfo.Data.Name;
             ConnectCommand = new BasicCommand(
-                pObj =>
+               pObj => _ = ConnectButton(), pObj => true);
+        }
+
+        private async Task ConnectButton()
+        {
+            
+            if (Status != ConnectionStatus.Disconnected)
+            {
+                switch (Status)
                 {
-                    if (Status != ConnectionStatus.Disconnected)
-                    {
-                        switch (Status)
-                        {
-                            case ConnectionStatus.Authenticating:
-                                IsAuthenticatingCanceled = true;
-                                break;
-                            case ConnectionStatus.Connecting:
-                                IsConnectingCanceled = true;
-                                _pipeClient.Disconnect(Index);
-                                break;
+                    case ConnectionStatus.Authenticating:
+                        IsAuthenticatingCanceled = true;
+                        break;
+                    case ConnectionStatus.Connecting:
+                        IsConnectingCanceled = true;
+                        await _pipeClient.Disconnect(Index);
+                        break;
+                    case ConnectionStatus.Connected:
+                        Status = ConnectionStatus.Disconnecting;
+                        break;
+                }
+                ShowLog = false;
+            }
+            else
+            {
+                if (!ShowLog && _connections.AnyShowLog)
+                    ShowLog = true;
+                if (_pInfo.Data.RequiresUsername)
+                {
+                    Status = ConnectionStatus.Authenticating;
+                }
+                else
+                {
+                    Status = ConnectionStatus.Connecting;   
+                    await _pipeClient.Connect(Index);
+                }
+                _ignoreConnecting = true;
+            }
+            await Task.Delay(300);
+            if (Status == ConnectionStatus.Connecting &&
+                _ignoreConnecting)
+            {
+            }
+            else
+            {
+                await _pipeClient.Disconnect(_pInfo.Connection);
+            }
 
-                            case ConnectionStatus.Connected:
-                                Status = ConnectionStatus.Disconnecting;
-                                break;
-                        }
-                        ShowLog = false;
-                    }
-                    else
-                    {
-                        if (!ShowLog && _connections.AnyShowLog)
-                            ShowLog = true;
-                        if (pInfo.Data.RequiresUsername)
-                        {
-                            Status = ConnectionStatus.Authenticating;
-                        }
-                        else
-                        {
-                            Status = ConnectionStatus.Connecting;   
-                            _pipeClient.Connect(Index);
-                        }
-                        _ignoreConnecting = true;
-                    }
-                    var thread = new Thread(
-                        () =>
-                        {
-                            Thread.Sleep(300);
-                            if (Status == ConnectionStatus.Connecting &&
-                                _ignoreConnecting)
-                            {
-                            }
-                            else
-                            {
-                                _pipeClient.Disconnect(pInfo.Connection);
-                            }
-                        });
-                    thread.Priority = ThreadPriority.Lowest;
-
-                    thread.Start();
-                }, pObj => true);
         }
 
         public BasicCommand CopyLogCommand { get; }
@@ -377,10 +375,10 @@ namespace Esp.Tools.OpenVPN.UI.Model
             throw new NotImplementedException();
         }
 
-        private void OnLogin()
+        private async Task OnLogin()
         {
-            _pipeClient.SendUsernamePassword(Index, Username, Password);
-            _pipeClient.Connect(Index);
+            await _pipeClient.SendUsernamePassword(Index, Username, Password);
+            await _pipeClient.Connect(Index);
             Username = null;
             Password = null;
         }

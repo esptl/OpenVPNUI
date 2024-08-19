@@ -63,6 +63,11 @@ namespace Esp.Tools.OpenVPN.ServiceHost
             _controllerPipeServer = new ControllerPipeServer(_configs);
         }
 
+        public void T()
+        {
+            OnStart(new string[0]);
+        }
+
         protected override void OnStop()
         {
             _power.Suspend();
