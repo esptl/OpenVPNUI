@@ -64,13 +64,14 @@ namespace Esp.Tools.OpenVPN.Configuration.UI.ViewModel
 
         private void OnConfigurationsChanged()
         {
-            Application.Current.Dispatcher.BeginInvoke(
-                new Action(UpdateConfigurations));
+            Application.Current.Dispatcher.BeginInvoke(new Action(UpdateConfigurations));
         }
 
         private void UpdateConfigurations()
         {
             Connections = _configClient.Configurations.Select(pX => new ConnectionViewModel(_configClient, pX));
+            while (TapDeviceManager.GetTapDevices().ToArray().Length <_configClient.Configurations.Count())
+                TapDeviceManager.SetupTapDevice();
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Esp.Tools.OpenVPN.Configuration.UI
 
             try
             {
+
                 if (TapDeviceManager.GetTapDevices().ToArray().Length == 0)
                     TapDeviceManager.SetupTapDevice();
             }

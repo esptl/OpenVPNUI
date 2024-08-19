@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
+using Esp.Tools.OpenVPN.EventLog;
 using Esp.Tools.OpenVPN.IPCProtocol;
 using Esp.Tools.OpenVPN.IPCProtocol.Controller.Messages;
 using Esp.Tools.OpenVPN.IPCProtocol.Messages;
@@ -74,11 +75,19 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         protected void WaitForConnection(IAsyncResult pAr)
         {
-            _pipeServer.EndWaitForConnection(pAr);
-            OnConnection();
+            try
+            {
+                _pipeServer.EndWaitForConnection(pAr);
+                OnConnection();
 
-            UtilityMethods.WriteCommandResult(_pipeServer, new InitializedMessage(0));
-            _readAsync = _pipeServer.BeginRead(_buffer, 0, _buffer.Length, WaitForRead, null);
+                UtilityMethods.WriteCommandResult(_pipeServer, new InitializedMessage(0));
+                _readAsync = _pipeServer.BeginRead(_buffer, 0, _buffer.Length, WaitForRead, null);
+            }
+            catch (Exception ex)
+            {
+                EventLogHelper.LogEvent($"Wait for Connect failed restarting: " + ex.Message + "\n\r" + ex.StackTrace);
+                RestartWaiting();
+            }
         }
 
 
@@ -91,6 +100,7 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             }
             catch (IOException)
             {
+
                 RestartWaiting();
             }
         }
