@@ -54,7 +54,7 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
                     BufferSize,
                     BufferSize,
                     pipeSecurity);
-
+            
 
             _task = RunConnectLoop();
 

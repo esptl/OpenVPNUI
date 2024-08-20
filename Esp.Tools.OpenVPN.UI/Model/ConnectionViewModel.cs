@@ -92,7 +92,8 @@ namespace Esp.Tools.OpenVPN.UI.Model
                 {
                     case ConnectionStatus.Authenticating:
                         IsAuthenticatingCanceled = true;
-                        break;
+                        Status = ConnectionStatus.Disconnected;
+                        return;
                     case ConnectionStatus.Connecting:
                         IsConnectingCanceled = true;
                         await _pipeClient.Disconnect(Index);

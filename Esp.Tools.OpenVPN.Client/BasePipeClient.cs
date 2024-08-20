@@ -77,7 +77,7 @@ namespace Esp.Tools.OpenVPN.Client
                     _messageTypes = lst.ToArray();
                 }
 
-                _pipe = new NamedPipeClientStream("localhost", _pipeName, PipeDirection.InOut,
+                _pipe = new NamedPipeClientStream(".", _pipeName, PipeDirection.InOut,
                     PipeOptions.Asynchronous);
 
                 Connecting?.Invoke();
