@@ -22,11 +22,14 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         private NamedPipeServerStream _pipeServer;
         private IAsyncResult _readAsync;
-        private readonly CancellationToken _cancellationToken = new CancellationToken(false);
+       
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _cancellationToken;
         private Task _task;
 
         protected BasePipeServer(string pPipeName, int pMaxConnections)
         {
+            _cancellationToken = _cancellationTokenSource.Token;
             _pipeName = pPipeName;
             _maxConnections = pMaxConnections;
             Initialize();
@@ -63,38 +66,61 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         private async Task RunConnectLoop()
         {
-            while (true)
+            try
             {
-                await _pipeServer.WaitForConnectionAsync(_cancellationToken);
-
-                var connected = true;
-
-                await OnConnection();
-
-                await UtilityMethods.WriteCommandResultAsync(_pipeServer, new InitializedMessage(0), _cancellationToken);
-
-                while (connected)
+                while (!_cancellationToken.IsCancellationRequested)
                 {
+                    await _pipeServer.WaitForConnectionAsync(_cancellationToken);
+
+                    var connected = true;
+
+                    await OnConnection();
+
                     try
                     {
-                        var bytesRead = await _pipeServer.ReadAsync(_buffer, 0, _buffer.Length, _cancellationToken);
-                        if (bytesRead == 0)
-                            connected = false;
-                        else
+                        await UtilityMethods.WriteCommandResultAsync(_pipeServer, new InitializedMessage(0),
+                            _cancellationToken);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        EventLogHelper.LogEvent($"InvalidOperationException Writing To Pipe: " + ex.Message + "\n\r" + ex.StackTrace);
+                        connected = false;
+                    }
+
+                    while (connected)
+                    {
+                        try
                         {
-                            var buf = new byte[bytesRead];
-                            Array.Copy(_buffer, 0, buf, 0, bytesRead);
-                            await UtilityMethods.ReadMessage(buf, _messageReaders);
+                            var bytesRead = await _pipeServer.ReadAsync(_buffer, 0, _buffer.Length, _cancellationToken);
+                            if (bytesRead == 0)
+                                connected = false;
+                            else
+                            {
+                                var buf = new byte[bytesRead];
+                                Array.Copy(_buffer, 0, buf, 0, bytesRead);
+                                await UtilityMethods.ReadMessage(buf, _messageReaders);
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            connected = false;
+                            EventLogHelper.LogEvent($"IOException Reading From Pipe: {ex.Message}\n\r {ex.StackTrace}");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            connected = false;
+                            EventLogHelper.LogEvent($"InvalidOperationException Reading From Pipe: {ex.Message}\n\r {ex.StackTrace}");
                         }
                     }
-                    catch (IOException ex)
-                    {
-                        connected = false;
-                        EventLogHelper.LogEvent($"IOException Reading From Pipe: " + ex.Message + "\n\r" + ex.StackTrace);
-                    }
+
+                    _pipeServer.Disconnect();
                 }
-                _pipeServer.Disconnect();
             }
+            catch (OperationCanceledException)
+            {
+                
+            }
+            EventLogHelper.LogEvent($"OpenVPN Host Server shutting down pipe '{_pipeName}'");
         }
 
       
@@ -103,16 +129,41 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
 
         protected async Task SendMessageAsync(IMessage pMessage)
         {
-           if (_pipeServer.CanWrite && _pipeServer.IsConnected)
-              await UtilityMethods.WriteCommandResultAsync(_pipeServer, pMessage, _cancellationToken);
+            try
+            {
+                if (_pipeServer.CanWrite && _pipeServer.IsConnected)
+                    await UtilityMethods.WriteCommandResultAsync(_pipeServer, pMessage, _cancellationToken);
+            }
+            catch (InvalidOperationException ex)
+            {
+                EventLogHelper.LogEvent($"InvalidOperationException Writing To Pipe: {ex.Message}\n\r {ex.StackTrace}");
+            }
         }
 
       
         protected abstract Task OnConnection();
 
-        public void Shutdown()
+        public async Task Shutdown()
         {
-            SendMessageAsync(new ShutDownMessage());
+            if (_pipeServer.IsConnected)
+            {
+                try
+                {
+                    await SendMessageAsync(new ShutDownMessage());
+                    await _pipeServer.FlushAsync();
+                }
+                catch (Exception ex)
+                {
+                    EventLogHelper.LogEvent(
+                        $"{ex.GetType().Name} Sending shutdown message to pipe: {ex.Message}\n\r {ex.StackTrace}");
+                }
+            }
+
+            Task.WaitAll(_task, Task.Run(() =>
+            {
+                _cancellationTokenSource.Cancel();
+            }));
+
+            }
         }
     }
-}

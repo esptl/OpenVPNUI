@@ -20,6 +20,7 @@
 using System;
 using System.IO;
 using System.ServiceProcess;
+using System.Threading.Tasks;
 using Esp.Tools.OpenVPN.Hosting.Config;
 using Esp.Tools.OpenVPN.Hosting.PipeServers;
 using Esp.Tools.OpenVPN.Hosting.PowerEvents;
@@ -71,8 +72,7 @@ namespace Esp.Tools.OpenVPN.ServiceHost
         protected override void OnStop()
         {
             _power.Suspend();
-            _configPipe.Shutdown();
-            _controllerPipeServer.Shutdown();
+            Task.WaitAll(_configPipe.Shutdown(), _controllerPipeServer.Shutdown());
             base.OnStop();
         }
     }
