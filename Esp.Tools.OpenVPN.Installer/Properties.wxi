@@ -1,52 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Property Id="SCANENGINE_SERVICE_LOGON_TYPE" Value="CustomServiceAccount" />
+  <Property Id="SCANENGINE_SERVICE_PASSWORD" Value="ESP\BuildAgent" />
+  <Property Id="SCANENGINE_SERVICE_USERNAME" Value=" " />
 
-<Include>
-  <Property Id="SCANENGINE_SERVICE_LOGON_TYPE"><![CDATA[CustomServiceAccount]]></Property>
-  <Property Id="SCANENGINE_SERVICE_PASSWORD"><![CDATA[ESP\BuildAgent]]></Property>
-  <Property Id="SCANENGINE_SERVICE_USERNAME"><![CDATA[]]></Property>
-
-  <Property Id="ButtonText_No"><![CDATA[&No]]></Property>
-  <Property Id="ButtonText_Install"><![CDATA[&Install]]></Property>
-  <Property Id="ButtonText_Next"><![CDATA[&Next >]]></Property>
-  <Property Id="ButtonText_IAgree"><![CDATA[I &Agree]]></Property>
-  <Property Id="Setup"><![CDATA[Setup]]></Property>
-  <Property Id="ButtonText_Browse"><![CDATA[Br&owse]]></Property>
-  <Property Id="CustomSetupIcon"><![CDATA[custicon]]></Property>
-  <Property Id="RepairIcon"><![CDATA[repairic]]></Property>
-  <Property Id="ExclamationIcon"><![CDATA[exclamic]]></Property>
-  <Property Id="ButtonText_Repair"><![CDATA[&Repair]]></Property>
-  <Property Id="ButtonText_Back"><![CDATA[< &Back]]></Property>
-  <Property Id="InstallMode"><![CDATA[Typical]]></Property>
-  <Property Id="Progress2"><![CDATA[installs]]></Property>
-  <Property Id="Progress1"><![CDATA[Installing]]></Property>
-  <Property Id="Wizard"><![CDATA[Setup Wizard]]></Property>
-  <Property Id="RemoveIcon"><![CDATA[removico]]></Property>
-  <Property Id="ButtonText_Yes"><![CDATA[&Yes]]></Property>
-  <Property Id="ButtonText_Ignore"><![CDATA[&Ignore]]></Property>
-  <Property Id="ProductID"><![CDATA[none]]></Property>
-  <Property Id="ButtonText_Reset"><![CDATA[&Reset]]></Property>
-  <Property Id="ButtonText_Remove"><![CDATA[&Remove]]></Property>
-  <Property Id="ShowUserRegistrationDlg"><![CDATA[0]]></Property>
-  <Property Id="ButtonText_Exit"><![CDATA[&Exit]]></Property>
-  <Property Id="ButtonText_Return"><![CDATA[&Return]]></Property>
-  <Property Id="ButtonText_OK"><![CDATA[OK]]></Property>
-  <Property Id="CompleteSetupIcon"><![CDATA[completi]]></Property>
-  <Property Id="ButtonText_Resume"><![CDATA[&Resume]]></Property>
-  <Property Id="InstallerIcon"><![CDATA[insticon]]></Property>
-  <Property Id="ButtonText_Finish"><![CDATA[&Finish]]></Property>
-  <Property Id="PROMPTROLLBACKCOST"><![CDATA[P]]></Property>
-  <Property Id="PIDTemplate"><![CDATA[12345<###-%%%%%%%>@@@@@]]></Property>
-  <Property Id="DlgTitleFont"><![CDATA[{&DlgFontBold8}]]></Property>
-  <Property Id="ButtonText_Cancel"><![CDATA[Cancel]]></Property>
-  <Property Id="INSTALLLEVEL"><![CDATA[3]]></Property>
-  <Property Id="InfoIcon"><![CDATA[info]]></Property>
-  <Property Id="ButtonText_Retry"><![CDATA[&Retry]]></Property>
-  <Property Id="ComponentDownload"><![CDATA[ftp://anonymous@microsoft.com/components/]]></Property>
-  <Property Id="BannerBitmap"><![CDATA[bannrbmp]]></Property>
-  <Property Id="DialogBitmap"><![CDATA[dlgbmp]]></Property>
+  <Property Id="ButtonText_No" Value="&amp;No" />
+  <Property Id="ButtonText_Install" Value="&amp;Install" />
+  <Property Id="ButtonText_Next" Value="&amp;Next &gt;" />
+  <Property Id="ButtonText_IAgree" Value="I &amp;Agree" />
+  <Property Id="Setup" Value="Setup" />
+  <Property Id="ButtonText_Browse" Value="Br&amp;owse" />
+  <Property Id="CustomSetupIcon" Value="custicon" />
+  <Property Id="RepairIcon" Value="repairic" />
+  <Property Id="ExclamationIcon" Value="exclamic" />
+  <Property Id="ButtonText_Repair" Value="&amp;Repair" />
+  <Property Id="ButtonText_Back" Value="&lt; &amp;Back" />
+  <Property Id="InstallMode" Value="Typical" />
+  <Property Id="Progress2" Value="installs" />
+  <Property Id="Progress1" Value="Installing" />
+  <Property Id="Wizard" Value="Setup Wizard" />
+  <Property Id="RemoveIcon" Value="removico" />
+  <Property Id="ButtonText_Yes" Value="&amp;Yes" />
+  <Property Id="ButtonText_Ignore" Value="&amp;Ignore" />
+  <Property Id="ButtonText_Reset" Value="&amp;Reset" />
+  <Property Id="ButtonText_Remove" Value="&amp;Remove" />
+  <Property Id="ShowUserRegistrationDlg" Value="0" />
+  <Property Id="ButtonText_Exit" Value="&amp;Exit" />
+  <Property Id="ButtonText_Return" Value="&amp;Return" />
+  <Property Id="ButtonText_OK" Value="OK" />
+  <Property Id="CompleteSetupIcon" Value="completi" />
+  <Property Id="ButtonText_Resume" Value="&amp;Resume" />
+  <Property Id="InstallerIcon" Value="insticon" />
+  <Property Id="ButtonText_Finish" Value="&amp;Finish" />
+  <Property Id="PROMPTROLLBACKCOST" Value="P" />
+  <Property Id="PIDTemplate" Value="12345&lt;###-%%%%%%%&gt;@@@@@" />
+  <Property Id="DlgTitleFont" Value="{&amp;DlgFontBold8}" />
+  <Property Id="ButtonText_Cancel" Value="Cancel" />
+  <Property Id="INSTALLLEVEL" Value="3" />
+  <Property Id="InfoIcon" Value="info" />
+  <Property Id="ButtonText_Retry" Value="&amp;Retry" />
+  <Property Id="ComponentDownload" Value="ftp://anonymous@microsoft.com/components/" />
+  <Property Id="BannerBitmap" Value="bannrbmp" />
+  <Property Id="DialogBitmap" Value="dlgbmp" />
   <Property Id="NETADAPTERCX21" Secure="yes">
     <DirectorySearch Id="searchAdvApiDir2" Path="[SystemFolder]" Depth="0">
-      <FileSearch Id="searchAdvApiDir2" Name="advapi32.dll" MinVersion="6.3.20348.0"/>
+      <FileSearch Id="searchAdvApiDir2" Name="advapi32.dll" MinVersion="6.3.20348.0" />
     </DirectorySearch>
   </Property>
 </Include>

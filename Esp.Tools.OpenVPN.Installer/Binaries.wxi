@@ -1,6 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Include>
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Binary Id="bannrbmp" SourceFile="Binary\bannrbmp.bmp" />
   <Binary Id="completi" SourceFile="Binary\completi.ico" />
   <Binary Id="custicon" SourceFile="Binary\custicon.ico" />

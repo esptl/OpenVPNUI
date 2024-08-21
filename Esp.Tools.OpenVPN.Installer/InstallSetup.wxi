@@ -1,6 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Include>
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <AdminExecuteSequence />
   <InstallExecuteSequence>
     <RemoveExistingProducts Before="InstallInitialize" />
@@ -13,10 +11,10 @@
   <?define Win64 = "yes" ?>
   <?define OutputPrefix = "x64\" ?>
   <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-  <?else ?>
+  <?else?>
   <?define ProductName = "Product Name" ?>
   <?define Win64 = "no" ?>
   <?define OutputPrefix = "" ?>
   <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-  <?endif ?>
+  <?endif?>
 </Include>

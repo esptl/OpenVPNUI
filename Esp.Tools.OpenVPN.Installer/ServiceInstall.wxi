@@ -1,20 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Include>
-  <Component Id="Service" DiskId="1" Guid="1E5BFC84-9E8E-4298-AA4B-C5DFDA50482C" Win64="$(var.Win64)">
-    <File Id="Esp.Tools.OpenVPN.ServiceHost.exe" Name="Esp.Tools.OpenVPN.ServiceHost.exe"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.ServiceHost.exe" />
-    <ServiceInstall Id="ESPOpenVPNHostServiceInstall"
-                    Name="OpenVPNUIHostService"
-                    DisplayName="OpenVPN UI Host Service"
-                    Type="ownProcess"
-                    Start="auto"
-                    ErrorControl="normal"
-                    Description="Background service that manages OpenVPN connections." />
-    <ServiceControl Id="StartWebAppDeploymentServer"
-                    Name="OpenVPNUIHostService" Start="install" Wait="no" />
-    <ServiceControl Id="StopWebAppDeploymentServer" Name="OpenVPNUIHostService"
-                    Stop="both" Wait="yes" Remove="uninstall" />
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Component Id="Service" DiskId="1" Guid="1E5BFC84-9E8E-4298-AA4B-C5DFDA50482C" Bitness="always64">
+    <File Id="Esp.Tools.OpenVPN.ServiceHost.exe" Name="Esp.Tools.OpenVPN.ServiceHost.exe" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.ServiceHost.exe" />
+    <ServiceInstall Id="ESPOpenVPNHostServiceInstall" Name="OpenVPNUIHostService" DisplayName="OpenVPN UI Host Service" Type="ownProcess" Start="auto" ErrorControl="normal" Description="Background service that manages OpenVPN connections." />
+    <ServiceControl Id="StartWebAppDeploymentServer" Name="OpenVPNUIHostService" Start="install" Wait="no" />
+    <ServiceControl Id="StopWebAppDeploymentServer" Name="OpenVPNUIHostService" Stop="both" Wait="yes" Remove="uninstall" />
 
   </Component>
 </Include>

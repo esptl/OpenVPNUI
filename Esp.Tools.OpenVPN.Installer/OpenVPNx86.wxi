@@ -1,9 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Include>
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Directory Id="OpenVPNFiles" Name="OpenVPN">
     <Directory Id="OpenVPNBinFiles" Name="bin">
-      <Component Id="OpenVPNbin" DiskId="1" Guid="1E5BFC84-9E8E-4218-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
+      <Component Id="OpenVPNbin" DiskId="1" Guid="1E5BFC84-9E8E-4218-AA4B-C5DFDA50422D" Bitness="always32">
         <File Id="libcrypto11.dll" Name="libcrypto-1_1.dll" Source="OpenVPN\bin\libcrypto-1_1.dll" />
         <File Id="liblzo22.dll" Name="liblzo2-2.dll" Source="OpenVPN\bin\liblzo2-2.dll" />
         <File Id="libpkcs11helper1.dll" Name="libpkcs11-helper-1.dll" Source="OpenVPN\bin\libpkcs11-helper-1.dll" />
@@ -14,7 +12,7 @@
       </Component>
     </Directory>
     <Directory Id="OpenVPNTapFiles" Name="tap">
-      <Component Id="OpenVPNTapX86" DiskId="1" Guid="1E5BFC84-9E8E-1218-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
+      <Component Id="OpenVPNTapX86" DiskId="1" Guid="1E5BFC84-9E8E-1218-AA4B-C5DFDA50422D" Bitness="always32">
         <File Id="OemWin2k.inf" Name="OemVista.inf" Source="OpenVPN\tap-x86\OemVista.inf" />
         <File Id="tap0901.cat" Name="tap0901.cat" Source="OpenVPN\tap-x86\tap0901.cat" />
         <File Id="tap0901.sys" Name="tap0901.sys" Source="OpenVPN\tap-x86\tap0901.sys" />

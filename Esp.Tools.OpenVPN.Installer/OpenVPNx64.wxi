@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<Include>
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
 
   <Directory Id="OpenVPNFiles" Name="OpenVPN">
     <Directory Id="OpenVPNBinFiles" Name="bin">
-      <Component Id="OpenVPNbin" DiskId="1" Guid="1E5BFC84-9E8E-4218-AA4B-C5DFDA50422D" Win64="$(var.Win64)">
+      <Component Id="OpenVPNbin" DiskId="1" Guid="1E5BFC84-9E8E-4218-AA4B-C5DFDA50422D" Bitness="always64">
         <File Id="libcrypto11x64.dll" Name="libcrypto-3-x64.dll" Source="OpenVPN\bin\x64\libcrypto-3-x64.dll" />
-        <File Id="liblzo22.dll" Name="liblzo2-2.dll"
-              Source="OpenVPN\bin\x64\liblzo2-2.dll" />
+        <File Id="liblzo22.dll" Name="liblzo2-2.dll" Source="OpenVPN\bin\x64\liblzo2-2.dll" />
         <File Id="libpkcs11helper1.dll" Name="libpkcs11-helper-1.dll" Source="OpenVPN\bin\x64\libpkcs11-helper-1.dll" />
         <File Id="libssl11x64.dll" Name="libssl-3-x64.dll" Source="OpenVPN\bin\x64\libssl-3-x64.dll" />
         <File Id="openssl.exe" Name="openssl.exe" Source="OpenVPN\bin\x64\openssl.exe" />

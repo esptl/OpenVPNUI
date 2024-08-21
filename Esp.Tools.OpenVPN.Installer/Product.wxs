@@ -1,39 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="8EDA72AA-85B8-474A-B274-B688510B9D9C" Name="OpenVPN UI" Language="1033" Version="1.0.13.0"
-           Manufacturer="ESP Technologies Ltd" UpgradeCode="DB96C5A7-589F-45D2-8E84-322474207358">
-    <Package InstallerVersion="500" Compressed="yes" />
-
-    <Media Id="1" Cabinet="OpenVPNUIInstaller.cab" EmbedCab="yes" />
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="OpenVPN UI" Language="1033" Version="1.0.13.0" Manufacturer="ESP Technologies Ltd" UpgradeCode="DB96C5A7-589F-45D2-8E84-322474207358" ProductCode="8EDA72AA-85B8-474A-B274-B688510B9D9C"><Media Id="1" Cabinet="OpenVPNUIInstaller.cab" EmbedCab="yes" />
     <Upgrade Id="DB96C5A7-589F-45D2-8E84-322474207359">
-      <UpgradeVersion OnlyDetect="no" Property="PREVIOUSFOUND"
-                      Maximum="1.0.9.0" IncludeMaximum="yes" RemoveFeatures='all' />
+      <UpgradeVersion OnlyDetect="no" Property="PREVIOUSFOUND" Maximum="1.0.12.0" IncludeMaximum="yes" RemoveFeatures="all" />
     </Upgrade>
 
     <?include Dialogs.wxi ?>
     <?include Properties.wxi ?>
     <?include Binaries.wxi ?>
     <?include InstallSetup.wxi ?>
-    
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramMenuFolder" Name="Programs">
-        <Directory Id="ProgramMenuDir" Name="OpenVPN UI" />
-      </Directory>
-      <?include AppData.wxi ?>
-      <Directory Id="$(var.PlatformProgramFilesFolder)">
-        <Directory Id="INSTALLLOCATION" Name="OpenVPN UI">
-          <?include OpenVPNUI.wxi ?>
-          <?if $(var.Platform) = x64 ?>
-          <?include OpenVPNx64.wxi ?>
-          <?else ?>
-          <?include OpenVPNx86.wxi ?>
-          <?endif ?>
-          <?include ServiceInstall.wxi ?>
 
-        </Directory>
-      </Directory>
-    </Directory>
+    <PropertyRef Id="WIX_IS_NETFRAMEWORK_48_OR_LATER_INSTALLED" />
+    <Launch Condition="Installed OR WIX_IS_NETFRAMEWORK_48_OR_LATER_INSTALLED" Message="[ProductName] requires .NET Framework 4.8 or later." />
+    
     <DirectoryRef Id="INSTALLLOCATION">
       <Merge Id="OVPNdco" SourceFile="OpenVPN\ovpn-dco-amd64.msm" DiskId="1" Language="0">
         <ConfigurationData Name="NETADAPTERCX21_Property" Value="[NETADAPTERCX21]" />
@@ -45,13 +23,30 @@
       <ComponentRef Id="Main" />
       <ComponentRef Id="Service" />
       <?if $(var.Platform) = x64 ?>      
-      <MergeRef Id="OVPNdco"/>
-      <?else ?>
+      <MergeRef Id="OVPNdco" />
+      <?else?>
       <ComponentRef Id="OpenVPNTapX86" />
-      <?endif ?>
+      <?endif?>
       
 
       <ComponentRef Id="OpenVPNbin" />
     </Feature>
-  </Product>
+  
+      <StandardDirectory Id="ProgramMenuFolder">
+        <Directory Id="ProgramMenuDir" Name="OpenVPN UI" />
+      </StandardDirectory>
+      <?include AppData.wxi ?>
+    <StandardDirectory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLLOCATION" Name="OpenVPN UI">
+          <?include OpenVPNUI.wxi ?>
+          <?if $(var.Platform) = x64 ?>
+          <?include OpenVPNx64.wxi ?>
+          <?else?>
+          <?include OpenVPNx86.wxi ?>
+          <?endif?>
+          <?include ServiceInstall.wxi ?>
+
+        </Directory>
+      </StandardDirectory>
+    </Package>
 </Wix>

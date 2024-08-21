@@ -1,13 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<Include>
-  <Component Id="Main" DiskId="1" Guid="1E5BFC84-9E8E-4298-AA4B-C5DFDA50482B" Win64="$(var.Win64)">
-    <File Id="Esp.Tools.OpenVPN.UI.exe" Name="Esp.Tools.OpenVPN.UI.exe"
-          Source="..\Esp.Tools.OpenVPN.UI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.UI.exe">
-      <Shortcut Id="startmenuFoobar10" Directory="ProgramMenuDir" Name="OpenVPN UI" WorkingDirectory='INSTALLDIR'
-                Icon="ICOGui.ico" IconIndex="0" Advertise="yes">
-        <Icon Id="ICOGui.ico"
-              SourceFile="..\Esp.Tools.OpenVPN.UI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.UI.exe" />
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Component Id="Main" DiskId="1" Guid="1E5BFC84-9E8E-4298-AA4B-C5DFDA50482B" Bitness="always64">
+    <File Id="Esp.Tools.OpenVPN.UI.exe" Name="Esp.Tools.OpenVPN.UI.exe" Source="..\Esp.Tools.OpenVPN.UI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.UI.exe">
+      <Shortcut Id="startmenuFoobar10" Directory="ProgramMenuDir" Name="OpenVPN UI" WorkingDirectory="INSTALLLOCATION" Icon="ICOGui.ico" IconIndex="0" Advertise="yes">
+        <Icon Id="ICOGui.ico" SourceFile="..\Esp.Tools.OpenVPN.UI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.UI.exe" />
 
       </Shortcut>
     </File>
@@ -31,62 +26,38 @@
       </RegistryKey>
     </RegistryKey>
 
-    <RegistryKey Root="HKLM"
-                 Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace\{4F97D3DD-06CC-47E9-851A-1A10D1B02172}"
-                 >
+    <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace\{4F97D3DD-06CC-47E9-851A-1A10D1B02172}">
       <RegistryValue Type="string" Value="Configure OpenVPN options" />
     </RegistryKey>
-    <RegistryKey Root="HKLM"
-                 Key="SOFTWARE\OpenVPN UI"
-                 >
+    <RegistryKey Root="HKLM" Key="SOFTWARE\OpenVPN UI">
       <RegistryValue Type="string" Name="InstalledLocation" Value="[INSTALLLOCATION]" />
     </RegistryKey>
 
-    <File Id="Esp.Tools.OpenVPN.Certificates.dll" Name="Esp.Tools.OpenVPN.Certificates.dll"
-          Source="..\Esp.Tools.OpenVPN.Certificates\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Certificates.dll" />
-    <File Id="ovpncli.exe" Name="ovpncli.exe"
-          Source="..\Esp.Tools.OpenVPN.CLI\bin\$(var.OutputPrefix)Release\ovpncli.exe" />
-    <File Id="MakeOpenVPNConfig.exe" Name="MakeOpenVPNConfig.exe"
-          Source="..\MakeOpenVPNConfig\bin\$(var.OutputPrefix)Release\MakeOpenVPNConfig.exe" />
-    <File Id="Esp.Tools.OpenVPN.Client.dll" Name="Esp.Tools.OpenVPN.Client.dll"
-          Source="..\Esp.Tools.OpenVPN.Client\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Client.dll" />
-    <File Id="Esp.Tools.OpenVPN.Configuration.dll" Name="Esp.Tools.OpenVPN.Configuration.dll"
-          Source="..\Esp.Tools.OpenVPN.Configuration\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Configuration.dll" />
-    <File Id="Esp.Tools.OpenVPN.Configuration.UI.exe" Name="Esp.Tools.OpenVPN.Configuration.UI.exe"
-          Source="..\Esp.Tools.OpenVPN.Configuration.UI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Configuration.UI.exe" />
+    <File Id="Esp.Tools.OpenVPN.Certificates.dll" Name="Esp.Tools.OpenVPN.Certificates.dll" Source="..\Esp.Tools.OpenVPN.Certificates\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Certificates.dll" />
+    <File Id="ovpncli.exe" Name="ovpncli.exe" Source="..\Esp.Tools.OpenVPN.CLI\bin\$(var.OutputPrefix)Release\ovpncli.exe" />
+    <File Id="MakeOpenVPNConfig.exe" Name="MakeOpenVPNConfig.exe" Source="..\MakeOpenVPNConfig\bin\$(var.OutputPrefix)Release\MakeOpenVPNConfig.exe" />
+    <File Id="Esp.Tools.OpenVPN.Client.dll" Name="Esp.Tools.OpenVPN.Client.dll" Source="..\Esp.Tools.OpenVPN.Client\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Client.dll" />
+    <File Id="Esp.Tools.OpenVPN.Configuration.dll" Name="Esp.Tools.OpenVPN.Configuration.dll" Source="..\Esp.Tools.OpenVPN.Configuration\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Configuration.dll" />
+    <File Id="Esp.Tools.OpenVPN.Configuration.UI.exe" Name="Esp.Tools.OpenVPN.Configuration.UI.exe" Source="..\Esp.Tools.OpenVPN.Configuration.UI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Configuration.UI.exe" />
 
     <File Id="Tasks.xml" Name="Tasks.xml" Source="..\Esp.Tools.OpenVPN.Configuration.UI\Tasks.xml" />
-    <File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll"
-          Source="..\Esp.Tools.OpenVPN.Configuration.UI\bin\$(var.OutputPrefix)Release\System.Windows.Interactivity.dll" />
+    <File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll" Source="..\Esp.Tools.OpenVPN.Configuration.UI\bin\$(var.OutputPrefix)Release\System.Windows.Interactivity.dll" />
 
-    <File Id="Esp.Tools.OpenVPN.ConnectionFile.dll" Name="Esp.Tools.OpenVPN.ConnectionFile.dll"
-          Source="..\Esp.Tools.OpenVPN.ConnectionFile\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.ConnectionFile.dll" />
-    <File Id="Esp.Tools.OpenVPN.ConnectionFile.Editor.exe" Name="Esp.Tools.OpenVPN.ConnectionFile.Editor.exe"
-          Source="..\Esp.Tools.OpenVPN.ConnectionFile.Editor\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.ConnectionFile.Editor.exe" />
+    <File Id="Esp.Tools.OpenVPN.ConnectionFile.dll" Name="Esp.Tools.OpenVPN.ConnectionFile.dll" Source="..\Esp.Tools.OpenVPN.ConnectionFile\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.ConnectionFile.dll" />
+    <File Id="Esp.Tools.OpenVPN.ConnectionFile.Editor.exe" Name="Esp.Tools.OpenVPN.ConnectionFile.Editor.exe" Source="..\Esp.Tools.OpenVPN.ConnectionFile.Editor\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.ConnectionFile.Editor.exe" />
     <File Id="License.txt" Name="License.txt" Source="License.txt" />
-    <File Id="Esp.Tools.OpenVPN.EventLog.dll" Name="Esp.Tools.OpenVPN.EventLog.dll"
-          Source="..\Esp.Tools.OpenVPN.EventLog\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.EventLog.dll" />
-    <File Id="Esp.Tools.OpenVPN.Hosting.dll" Name="Esp.Tools.OpenVPN.Hosting.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Hosting.dll" />
+    <File Id="Esp.Tools.OpenVPN.EventLog.dll" Name="Esp.Tools.OpenVPN.EventLog.dll" Source="..\Esp.Tools.OpenVPN.EventLog\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.EventLog.dll" />
+    <File Id="Esp.Tools.OpenVPN.Hosting.dll" Name="Esp.Tools.OpenVPN.Hosting.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.Hosting.dll" />
 
-    <File Id="Esp.Tools.OpenVPN.IPCProtocol.dll" Name="Esp.Tools.OpenVPN.IPCProtocol.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.IPCProtocol.dll" />
-    <File Id="Esp.Tools.OpenVPN.ShareUI.dll" Name="Esp.Tools.OpenVPN.SharedUI.dll"
-          Source="..\Esp.Tools.OpenVPN.SharedUI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.SharedUI.dll" />
-    <File Id="Interop.CERTENROLLLib.dll" Name="Interop.CERTENROLLLib.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Interop.CERTENROLLLib.dll" />
-    <File Id="ICSharpCode.SharpZipLib.dll" Name="ICSharpCode.SharpZipLib.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\ICSharpCode.SharpZipLib.dll" />
-    <File Id="System.Buffers.dll" Name="System.Buffers.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Buffers.dll" />
-    <File Id="System.Memory.dll" Name="System.Memory.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Memory.dll" />
-    <File Id="System.Numerics.Vectors.dll" Name="System.Numerics.Vectors.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Numerics.Vectors.dll" />
-    <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Runtime.CompilerServices.Unsafe.dll" />
-    <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll"
-          Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Threading.Tasks.Extensions.dll" />
+    <File Id="Esp.Tools.OpenVPN.IPCProtocol.dll" Name="Esp.Tools.OpenVPN.IPCProtocol.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.IPCProtocol.dll" />
+    <File Id="Esp.Tools.OpenVPN.ShareUI.dll" Name="Esp.Tools.OpenVPN.SharedUI.dll" Source="..\Esp.Tools.OpenVPN.SharedUI\bin\$(var.OutputPrefix)Release\Esp.Tools.OpenVPN.SharedUI.dll" />
+    <File Id="Interop.CERTENROLLLib.dll" Name="Interop.CERTENROLLLib.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\Interop.CERTENROLLLib.dll" />
+    <File Id="ICSharpCode.SharpZipLib.dll" Name="ICSharpCode.SharpZipLib.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\ICSharpCode.SharpZipLib.dll" />
+    <File Id="System.Buffers.dll" Name="System.Buffers.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Buffers.dll" />
+    <File Id="System.Memory.dll" Name="System.Memory.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Memory.dll" />
+    <File Id="System.Numerics.Vectors.dll" Name="System.Numerics.Vectors.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Numerics.Vectors.dll" />
+    <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Runtime.CompilerServices.Unsafe.dll" />
+    <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll" Source="..\Esp.Tools.OpenVPN.ServiceHost\bin\$(var.OutputPrefix)Release\System.Threading.Tasks.Extensions.dll" />
     <RemoveFolder Id="WHATEVER" Directory="ProgramMenuDir" On="uninstall" />
   </Component>
 </Include>
