@@ -72,6 +72,7 @@ namespace Esp.Tools.OpenVPN.ServiceHost
         protected override void OnStop()
         {
             _power.Suspend();
+            _configs.Shutdown();
             Task.WaitAll(_configPipe.Shutdown(), _controllerPipeServer.Shutdown());
             base.OnStop();
         }

@@ -44,6 +44,7 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             _configurations.StatusChanged += (pConfig,pStatus) => Task.WaitAll(SendStatusChangedMessage(pConfig, pStatus));
             _configurations.InterfaceChanged += (pConfig, pInterface) => Task.WaitAll(SendInterfaceChangedMessage(pConfig, pInterface));
             _configurations.AuthInfoRequired += (pConfig)=> Task.WaitAll(SendRequestAuthInfoMessage(pConfig));
+            
         }
 
         #region Overrides

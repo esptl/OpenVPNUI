@@ -57,11 +57,8 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
                     BufferSize,
                     BufferSize,
                     pipeSecurity);
-            
 
-            _task = RunConnectLoop();
-
-
+            _ = Task.Run(async () => await (_task = RunConnectLoop()));
         }
 
         private async Task RunConnectLoop()
@@ -83,7 +80,8 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
                     }
                     catch (InvalidOperationException ex)
                     {
-                        EventLogHelper.LogEvent($"InvalidOperationException Writing To Pipe: " + ex.Message + "\n\r" + ex.StackTrace);
+                        EventLogHelper.LogEvent($"InvalidOperationException Writing To Pipe: " + ex.Message + "\n\r" +
+                                                ex.StackTrace);
                         connected = false;
                     }
 
@@ -109,11 +107,20 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
                         catch (InvalidOperationException ex)
                         {
                             connected = false;
-                            EventLogHelper.LogEvent($"InvalidOperationException Reading From Pipe: {ex.Message}\n\r {ex.StackTrace}");
+                            EventLogHelper.LogEvent(
+                                $"InvalidOperationException Reading From Pipe: {ex.Message}\n\r {ex.StackTrace}");
                         }
                     }
 
-                    _pipeServer.Disconnect();
+                    if (_pipeServer.IsConnected)
+                        try
+                        {
+                            _pipeServer.Disconnect();
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                
                 }
             }
             catch (OperationCanceledException)
@@ -151,6 +158,7 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
                 {
                     await SendMessageAsync(new ShutDownMessage());
                     await _pipeServer.FlushAsync();
+                    _pipeServer.Disconnect();
                 }
                 catch (Exception ex)
                 {
@@ -163,7 +171,8 @@ namespace Esp.Tools.OpenVPN.Hosting.PipeServers
             {
                 _cancellationTokenSource.Cancel();
             }));
-
-            }
         }
     }
+        
+       
+}
