@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("VPNGui")]
+[assembly: AssemblyTitle("OpenVPN UI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ESP Technologies Ltd.")]

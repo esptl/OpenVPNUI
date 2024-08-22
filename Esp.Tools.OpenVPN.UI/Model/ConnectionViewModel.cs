@@ -166,8 +166,9 @@ namespace Esp.Tools.OpenVPN.UI.Model
                             OnConnected();
                             break;
                         case ConnectionStatus.Connecting:
-                            if (oldStatus == ConnectionStatus.Authenticating)
-                                IsConnectingWithAuth = true;
+                            /// TODO Not sure what my original thinking was here, needs to be revisited.
+                            //if (oldStatus == ConnectionStatus.Authenticating)
+                            IsConnectingWithAuth = true;
                             OnConnecting();
                             break;
                         case ConnectionStatus.Disconnected:
